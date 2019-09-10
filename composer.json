@@ -1,0 +1,39 @@
+{
+    "name": "chriha/project-cli",
+    "license": "MIT",
+    "prefer-stable": true,
+    "minimum-stability": "stable",
+    "authors": [
+        {
+            "name": "Christopher Hartmann",
+            "email": "chriha84@gmail.com"
+        }
+    ],
+    "bin": [
+        "project"
+    ],
+    "require": {
+        "php": "^7.1|^7.2",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "illuminate/container": "^5.8",
+        "illuminate/support": "^5.8",
+        "symfony/console": "^4.3",
+        "symfony/dotenv": "^4.3",
+        "symfony/process": "^4.3",
+        "symfony/var-dumper": "^4.3",
+        "symfony/yaml": "^4.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Chriha\\ProjectCLI\\": "src/"
+        },
+        "files": [
+            "src/helper_functions.php"
+        ]
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}

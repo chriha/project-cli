@@ -1,0 +1,26 @@
+<?php
+
+return [
+    new \Chriha\ProjectCLI\Commands\Docker\ComposeCommand,
+    new \Chriha\ProjectCLI\Commands\Docker\DownCommand,
+    new \Chriha\ProjectCLI\Commands\Docker\ExecCommand,
+    new \Chriha\ProjectCLI\Commands\Docker\LogsCommand,
+    new \Chriha\ProjectCLI\Commands\Docker\RestartCommand,
+    new \Chriha\ProjectCLI\Commands\Docker\StatusCommand,
+    new \Chriha\ProjectCLI\Commands\Docker\TopCommand,
+    new \Chriha\ProjectCLI\Commands\Docker\UpCommand,
+    new \Chriha\ProjectCLI\Commands\Laravel\ArtisanCommand,
+    new \Chriha\ProjectCLI\Commands\Laravel\DumpServerCommand,
+    new \Chriha\ProjectCLI\Commands\Php\ComposerCommand,
+    new \Chriha\ProjectCLI\Commands\Php\PhpCommand,
+    new \Chriha\ProjectCLI\Commands\Php\TestCommand,
+    new \Chriha\ProjectCLI\Commands\Php\XdebugCommand,
+    new \Chriha\ProjectCLI\Commands\Logs\ClearCommand,
+    new \Chriha\ProjectCLI\Commands\Logs\TailCommand,
+    new \Chriha\ProjectCLI\Commands\Node\NodeCommand,
+    new \Chriha\ProjectCLI\Commands\Node\NpmCommand,
+    new \Chriha\ProjectCLI\Commands\ProjectCLI\CloneCommand,
+    new \Chriha\ProjectCLI\Commands\ProjectCLI\HostsCommand,
+    new \Chriha\ProjectCLI\Commands\ProjectCLI\InitCommand,
+    new \Chriha\ProjectCLI\Commands\Ssh\ConfigCommand,
+];

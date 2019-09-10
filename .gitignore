@@ -1,0 +1,6 @@
+/vendor
+/.idea
+/.vscode
+/.vagrant
+/.save.json
+/.env

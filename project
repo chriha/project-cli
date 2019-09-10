@@ -1,0 +1,19 @@
+#!/usr/bin/env php
+<?php
+
+define( 'PROJECT_START', microtime( true ) );
+define( 'DS', DIRECTORY_SEPARATOR );
+
+require __DIR__ . '/vendor/autoload.php';
+
+use Chriha\ProjectCLI\Application;
+use Illuminate\Container\Container;
+
+Container::setInstance( $container = new Container );
+
+$application = new Application( 'Project CLI', '0.1.0' );
+
+$application->addCommands( require __DIR__ . '/src/Config/commands.php' );
+$application->addProjectCommands();
+
+$application->run();
