@@ -2,6 +2,7 @@
 
 namespace Chriha\ProjectCLI\Libraries\Ssh;
 
+use Chriha\ProjectCLI\Helpers;
 use Closure;
 use Illuminate\Support\Traits\Macroable;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -174,7 +175,7 @@ class Processor
 
         foreach ( $frames as $frame )
         {
-            $frames[] = "[" . mb_str_rev( substr( $frame, 1, -1 ) ) . "]";
+            $frames[] = "[" . Helpers::mbStrReverse( substr( $frame, 1, -1 ) ) . "]";
         }
 
         return $frames;
