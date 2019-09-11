@@ -116,7 +116,7 @@ class Processor
             $env[$k] = 'export ' . $k . '="' . $v . '"' . PHP_EOL;
         }
 
-        $delimiter = 'EOF-PROCLI';
+        $delimiter = 'EOF-PROJECT-CLI';
 
         if ( $this->connection->isLocal() )
         {
@@ -139,7 +139,7 @@ class Processor
     protected function getEnvironmentVariables( $host )
     {
         return [
-            'PROCLI_HOST' => $host
+            'PROJECT_CLI_HOST' => $host
         ];
     }
 
