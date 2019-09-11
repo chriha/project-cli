@@ -21,10 +21,9 @@ class NpmCommand extends Command
 
     public function handle( Docker $docker ) : void
     {
-        $arguments = implode( ' ', $this->argument( 'commands' ) );
-        $options   = implode( ' ', $this->additionalArgs() );
+        $arguments = implode( ' ', $this->additionalArgs() );
 
-        passthru( "{$docker->compose()} {$docker->runExec( 'node' )} npm {$arguments} {$options}" );
+        passthru( "{$docker->compose()} {$docker->runExec( 'node' )} npm {$arguments}" );
     }
 
 }
