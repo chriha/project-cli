@@ -12,6 +12,9 @@ class NpmCommand extends Command
     /** @var string */
     protected static $defaultName = 'npm';
 
+    /** @var bool */
+    protected $hasDynamicOptions = true;
+
 
     public function configure() : void
     {
