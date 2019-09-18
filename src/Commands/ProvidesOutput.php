@@ -4,7 +4,9 @@ namespace Chriha\ProjectCLI\Commands;
 
 use Chriha\ProjectCLI\Helpers;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Process\Process;
 
 trait ProvidesOutput
@@ -212,6 +214,15 @@ trait ProvidesOutput
         }
 
         return $result;
+    }
+
+    public function confirm( string $question, bool $default = false )
+    {
+        /** @var QuestionHelper $helper */
+        $helper   = $this->getHelper( 'question' );
+        $question = new ConfirmationQuestion( $question, $default );
+
+        return $helper->ask( $this->input, $this->output, $question );
     }
 
 }
