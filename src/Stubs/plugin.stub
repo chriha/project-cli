@@ -1,0 +1,41 @@
+<?php
+
+namespace ProjectCLI\Plugins\DummyNamespace;
+
+use Chriha\ProjectCLI\Commands\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+
+class DummyClass extends Command
+{
+
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $defaultName = 'dummy:command';
+
+
+    /**
+     * Configure the command by adding a description, arguments and options
+     *
+     * @return void
+     */
+    public function configure() : void
+    {
+        $this->setDescription( 'Command description' );
+        //$this->addArgument( 'argument', InputArgument::OPTIONAL, 'Argument description', 'default' );
+        //$this->addOption( 'name', 'shortcut', InputOption::VALUE_OPTIONAL, 'Option description' );
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return void
+     */
+    public function handle() : void
+    {
+        //
+    }
+}
