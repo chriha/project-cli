@@ -33,7 +33,7 @@ class Helpers
     {
         $root = static::app( 'project.path' );
 
-        return ! $root ? null : $root . DS . ltrim( $path, '/' );
+        return ! $root ? null : $root . DS . ltrim( $path, DS );
     }
 
     public static function rootPath( string $path = '' ) : ?string
@@ -43,6 +43,11 @@ class Helpers
         $path = $file . ltrim( $path, "/" );
 
         return str_replace( '///', '/', str_replace( 'phar://', '', $path ) );
+    }
+
+    public static function home( string $path = '' ) : string
+    {
+        return self::app( 'paths.home' ) . DS . ltrim( $path, DS );
     }
 
     /**
