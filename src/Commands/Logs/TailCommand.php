@@ -60,7 +60,7 @@ class TailCommand extends Command
             $this->exit( 'No files specified!' );
         }
 
-        $tail = new Tail( Helpers::rootPath( '/.save.json' ) );
+        $tail = new Tail( Helpers::home( 'tailed-logs.json' ) );
 
         foreach ( $files as $key => $file )
         {
