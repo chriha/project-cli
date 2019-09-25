@@ -2,6 +2,7 @@
 
 namespace Chriha\ProjectCLI;
 
+use Chriha\ProjectCLI\Commands\Command;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -11,6 +12,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Dotenv\Dotenv;
 
 class Application extends \Symfony\Component\Console\Application
 {
@@ -109,8 +111,14 @@ class Application extends \Symfony\Component\Console\Application
         return $exitCode;
     }
 
-    public function addProjectCommands() : void
+    public function configureApp() : void
     {
+        $home = $_SERVER['HOME'] . DS . '.project';
+
+        if ( ! is_dir( $home ) ) mkdir( $home, 700, true );
+
+        Helpers::app()->instance( 'paths.home', $home );
+
         $path      = trim( shell_exec( 'git rev-parse --show-toplevel 2>/dev/null' ) );
         $path      = ( empty( $path ) && ! is_dir( getcwd() . DS . 'src' ) ) ? null : $path;
         $inProject = ! ! $path;
@@ -118,7 +126,17 @@ class Application extends \Symfony\Component\Console\Application
         Helpers::app()->instance( 'project.path', $path ?? '' );
         Helpers::app()->instance( 'project.inside', $inProject );
 
-        if ( empty( $path ) ) return;
+        if ( $inProject && ! ! $path
+            && file_exists( ( $envPath = Helpers::projectPath( '.env' ) ) ) )
+        {
+            $dotEnv = new Dotenv();
+            $dotEnv->loadEnv( $envPath );
+        }
+    }
+
+    public function addProjectCommands() : void
+    {
+        if ( empty( $path = Helpers::projectPath() ) ) return;
 
         if ( ! is_dir( "{$path}/commands" ) ) return;
 
@@ -132,7 +150,7 @@ class Application extends \Symfony\Component\Console\Application
 
             require_once( $path . DS . 'commands' . DS . $file );
 
-            /** @var Plugin $class */
+            /** @var Command $class */
             $class = "\Project\Commands\\" . rtrim( $file, '.php' );
 
             // TODO: throw exception

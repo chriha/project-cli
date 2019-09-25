@@ -13,6 +13,7 @@ Container::setInstance( $container = new Container );
 
 $application = new Application( 'Project CLI', '0.1.0' );
 
+$application->configureApp();
 $application->addCommands( require __DIR__ . '/src/Config/commands.php' );
 $application->addProjectCommands();
 

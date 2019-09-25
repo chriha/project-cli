@@ -10,7 +10,6 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Dotenv\Dotenv;
 
 abstract class Command extends SymfonyCommand
 {
@@ -59,10 +58,6 @@ abstract class Command extends SymfonyCommand
      */
     protected function initialize( InputInterface $input, OutputInterface $output )
     {
-        $this->configureApp();
-        $this->configureProject();
-        $this->loadProjectCommands();
-
         if ( ! $output->getFormatter()->hasStyle( 'red' ) )
         {
             $style = new OutputFormatterStyle( 'red' );
@@ -109,66 +104,6 @@ abstract class Command extends SymfonyCommand
         return $this->getApplication()->find( $command )->run(
             new ArrayInput( $arguments ), Helpers::app( 'output' )
         );
-    }
-
-    protected function configureApp() : void
-    {
-        $home = $_SERVER['HOME'] . DS . '.project';
-
-        if ( ! is_dir( $home ) ) mkdir( $home, 700, true );
-
-        Helpers::app()->instance( 'paths.home', $home );
-    }
-
-    protected function configureProject() : void
-    {
-        //$path = trim( shell_exec( 'git rev-parse --show-toplevel 2>/dev/null' ) );
-        //$path = ( empty( $path ) && ! is_dir( getcwd() . DS . 'src' ) ) ? null : getcwd();
-        //
-        //Helpers::app()->instance( 'project.path', $path );
-        //Helpers::app()->instance( 'project.inside', (bool)$path );
-
-        if ( Helpers::app( 'project.inside' )
-            && ! ! Helpers::projectPath()
-            && file_exists( ( $envPath = Helpers::projectPath( '.env' ) ) ) )
-        {
-            $dotEnv = new Dotenv();
-            $dotEnv->loadEnv( $envPath );
-        }
-    }
-
-    protected function loadProjectCommands() : void
-    {
-        if ( ! Helpers::app( 'project.inside' ) ) return;
-
-        /**
-         * we can't just add the path to the configuration
-         * as the namespaces get messed up
-         */
-        $path = Helpers::projectPath( 'commands' );
-
-        if ( ! file_exists( $path ) ) return;
-
-        if ( is_null( $path ) || ! ( $handle = opendir( $path ) ) ) return;
-
-        $classes = [];
-
-        while ( false !== ( $file = readdir( $handle ) ) )
-        {
-            if ( $file == "." || $file == ".." ) continue;
-
-            require_once( $path . DS . $file );
-
-            /** @var Plugin $class */
-            $class = "\Project\Commands\\" . rtrim( $file, '.php' );
-
-            // TODO: throw exception
-            if ( ! class_exists( $class ) ) continue;
-
-            $classes[] = $class;
-        }
-
-        closedir( $handle );
     }
 
     protected function prepareForDynamicOptions()

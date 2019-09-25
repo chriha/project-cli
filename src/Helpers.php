@@ -45,9 +45,11 @@ class Helpers
         return str_replace( '///', '/', str_replace( 'phar://', '', $path ) );
     }
 
-    public static function home( string $path = '' ) : string
+    public static function home( string $path = '' ) : ?string
     {
-        return self::app( 'paths.home' ) . DS . ltrim( $path, DS );
+        if ( ! $home = static::app( 'paths.home' ) ) return null;
+
+        return $home . DS . ltrim( $path, DS );
     }
 
     /**
