@@ -3,10 +3,11 @@
 namespace ProjectCLI\Plugins\DummyNamespace;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Contracts\Plugin;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-class DummyClass extends Command
+class DummyClass extends Command implements Plugin
 {
 
     /**
@@ -14,7 +15,7 @@ class DummyClass extends Command
      *
      * @var string
      */
-    protected $defaultName = 'dummy:command';
+    protected static $defaultName = 'dummy:command';
 
 
     /**
@@ -37,5 +38,39 @@ class DummyClass extends Command
     public function handle() : void
     {
         //
+    }
+
+    /**
+     * @return string
+     */
+    public static function pluginName() : string
+    {
+        // TODO: Implement pluginName() method.
+    }
+
+    /**
+     * @return string
+     */
+    public static function pluginDescription() : string
+    {
+        // TODO: Implement pluginDescription() method.
+    }
+
+    /**
+     * Returns the URL of the repository
+     *
+     * @return string
+     */
+    public static function pluginSource() : string
+    {
+        // TODO: Implement pluginSource() method.
+    }
+
+    /**
+     * @return string
+     */
+    public static function pluginVersion() : string
+    {
+        // TODO: Implement pluginVersion() method.
     }
 }

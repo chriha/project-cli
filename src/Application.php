@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Contracts\Plugin;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -160,6 +161,49 @@ class Application extends \Symfony\Component\Console\Application
         }
 
         closedir( $handle );
+
+        $this->addCommands( $classes );
+    }
+
+    public function addPluginCommands() : void
+    {
+        if ( empty( $path = Helpers::home( 'plugins' ) ) ) return;
+
+        if ( ! is_dir( $path ) ) return;
+
+        if ( ! ( $dirHandle = opendir( $path ) ) ) return;
+
+        $classes = [];
+
+        while ( false !== ( $dir = readdir( $dirHandle ) ) )
+        {
+            if ( $dir == "." || $dir == ".." ) continue;
+
+            if ( ! is_dir( $path . DS . $dir ) ) continue;
+
+            if ( ! ( $fileHandle = opendir( $path . DS . $dir ) ) ) return;
+
+            while ( false !== ( $file = readdir( $fileHandle ) ) )
+            {
+                if ( $file == "." || $file == ".." ) continue;
+
+                $filePath  = $path . DS . $dir . DS . $file;
+                $namespace = Helpers::findNamespace( $filePath );
+                /** @var Plugin $class */
+                $class = "\\{$namespace}\\" . rtrim( $file, '.php' );
+
+                require_once( $filePath );
+
+                // TODO: throw exception
+                if ( ! class_exists( $class ) ) continue;
+
+                $classes[] = new $class;
+            }
+
+            closedir( $fileHandle );
+        }
+
+        closedir( $dirHandle );
 
         $this->addCommands( $classes );
     }
