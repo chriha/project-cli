@@ -3,7 +3,6 @@
 namespace Chriha\ProjectCLI\Commands\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
-use Chriha\ProjectCLI\Helpers;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 
@@ -25,9 +24,8 @@ class SelfUpdateCommand extends Command
         if ( $this->option( 'check' ) && ( $version = $this->isUpdateAvailable() ) )
         {
             $this->warn( "New version available: <info>{$version}</info>" );
-            $confirmed = Helpers::confirm( "Would you like to update?", false );
 
-            if ( ! $confirmed ) return;
+            if ( ! $this->confirm( "Would you like to update?", false ) ) return;
 
             $this->call( 'self-update' );
 

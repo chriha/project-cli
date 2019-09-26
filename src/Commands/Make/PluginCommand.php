@@ -32,7 +32,7 @@ class PluginCommand extends Command
 
         if ( file_exists( $file ) )
         {
-            $this->exit( 'Plugin with this name already exists!' );
+            $this->abort( 'Plugin with this name already exists!' );
         }
 
         @mkdir( Helpers::home( $dir ), 0755, true );

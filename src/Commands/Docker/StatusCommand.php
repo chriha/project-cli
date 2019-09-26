@@ -28,7 +28,7 @@ class StatusCommand extends Command
 
         if ( ! $process->isSuccessful() )
         {
-            Helpers::abort( $process->getErrorOutput() );
+            $this->abort( $process->getErrorOutput() );
         }
 
         echo $process->getOutput();

@@ -57,7 +57,7 @@ class TailCommand extends Command
 
         if ( empty( $files ) )
         {
-            $this->exit( 'No files specified!' );
+            $this->abort( 'No files specified!' );
         }
 
         $tail = new Tail( Helpers::home( 'tailed-logs.json' ) );
@@ -83,7 +83,7 @@ class TailCommand extends Command
 
         if ( empty( $files ) )
         {
-            $this->exit( 'No file to tail' );
+            $this->abort( 'No file to tail' );
         }
 
         //  TODO: tbd
@@ -142,7 +142,7 @@ class TailCommand extends Command
 
         if ( $size < 2000000 ) return;
 
-        Helpers::info( "Your log file '{$file}' is getting big (" . round( ( $size / 1000000 ), 3 ) . " MB). Consider clearing it for better performance." );
+        $this->info( "Your log file '{$file}' is getting big (" . round( ( $size / 1000000 ), 3 ) . " MB). Consider clearing it for better performance." );
 
         $this->informedAboutLogSize = true;
         sleep( 5 );

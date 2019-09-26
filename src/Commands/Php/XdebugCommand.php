@@ -43,7 +43,7 @@ class XdebugCommand extends Command
 
         if ( ( ! $this->version = $result[1] ?? null ) )
         {
-            $this->exit( 'Unable to get PHP version' );
+            $this->abort( 'Unable to get PHP version' );
         }
 
         $this->hostIp    = gethostbyname( gethostname() );

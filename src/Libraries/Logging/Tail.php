@@ -136,6 +136,7 @@ class Tail
 
     /**
      * @param Closure $callback
+     * @throws Exception
      */
     public function listenForLines( Closure $callback ) : void
     {

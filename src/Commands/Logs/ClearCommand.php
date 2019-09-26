@@ -23,7 +23,7 @@ class ClearCommand extends Command
     {
         if ( empty( $this->option( 'file' ) ) )
         {
-            Helpers::abort( 'No file specified.' );
+            $this->abort( 'No file specified.' );
         }
 
         foreach ( $this->option( 'file' ) as $file )

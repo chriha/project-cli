@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Libraries\Ssh;
 
 use Chriha\ProjectCLI\Helpers;
+use Exception;
 
 class Config
 {
@@ -137,14 +138,14 @@ class Config
     /**
      * @param string $line
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     protected function parseLine( string $line ) : array
     {
         if ( ! preg_match( '/(\w+)(?:\s*=\s*|\s+)(.+)/', trim( $line ), $match ) )
         {
             echo $line . PHP_EOL;
-            throw new \Exception( 'Invalid SSH config' );
+            throw new Exception( 'Invalid SSH config' );
         }
 
         return $match;

@@ -64,7 +64,7 @@ class ConfigCommand extends Command
 
         if ( ! $host )
         {
-            $this->exit( 'No host found!' );
+            $this->abort( 'No host found!' );
         }
 
         $rows = [];

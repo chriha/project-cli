@@ -3,16 +3,18 @@
 namespace Chriha\ProjectCLI\Commands;
 
 use Chriha\ProjectCLI\Helpers;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Support\Str;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
 
 trait ProvidesOutput
 {
 
-    /** @var OutputInterface */
+    /** @var SymfonyStyle */
     public $output;
 
     public function spinner( string $title, Process $process, \Closure $output = null ) : Process
@@ -62,43 +64,60 @@ trait ProvidesOutput
     }
 
     /**
-     * Format input into a textual table.
+     * Format input to textual table.
      *
      * @param array $headers
      * @param array $rows
-     * @param string $style
+     * @param string $tableStyle
+     * @param array $columnStyles
      * @return void
      */
-    public function table( array $headers, array $rows, $style = 'borderless' )
+    public function table( array $headers, array $rows, $tableStyle = 'default', array $columnStyles = [] )
     {
-        Helpers::table( $headers, $rows, $style );
+        $table = new Table( $this->output );
+
+        if ( $rows instanceof Arrayable )
+        {
+            $rows = $rows->toArray();
+        }
+
+        $table->setHeaders( (array)$headers )->setRows( $rows )->setStyle( $tableStyle );
+
+        foreach ( $columnStyles as $columnIndex => $columnStyle )
+        {
+            $table->setColumnStyle( $columnIndex, $columnStyle );
+        }
+
+        $table->render();
     }
 
     /**
      * @param string|null $message
      */
-    public function exit( ?string $message ) : void
+    public function abort( string $message ) : void
     {
-        Helpers::abort( $message );
+        $this->error( $message );
+        exit( 1 );
     }
 
     /**
-     * @param string|null $message
+     * @param string $question
      * @param null $default
+     * @param null $validator
      * @return mixed
      */
-    public function ask( string $message, $default = null )
+    public function ask( string $question, $default = null, $validator = null )
     {
-        return Helpers::ask( $message, $default );
+        return $this->output->ask( $question, $default, $validator );
     }
 
     /**
-     * @param string|null $message
+     * @param string $string
      * @return void
      */
-    public function info( string $message ) : void
+    public function info( string $string ) : void
     {
-        Helpers::info( $message );
+        $this->line( $string, 'info' );
     }
 
     /**
@@ -113,6 +132,11 @@ trait ProvidesOutput
         $styled = $style ? "<$style>$string</$style>" : $string;
 
         $this->output->writeln( $styled );
+    }
+
+    public function example( string $command ) : void
+    {
+        $this->line( "  $ {$command}" . PHP_EOL );
     }
 
     /**
@@ -131,6 +155,119 @@ trait ProvidesOutput
         }
 
         $this->line( $string, 'warning' );
+    }
+
+    /**
+     * Confirm a question with the user.
+     *
+     * @param string $question
+     * @param bool $default
+     * @return bool
+     */
+    public function confirm( string $question, bool $default = true )
+    {
+        return $this->output->confirm( $question, $default );
+    }
+
+    /**
+     * Write a string in an alert box.
+     *
+     * @param string $string
+     * @return void
+     */
+    public function alert( $string )
+    {
+        $length = Str::length( strip_tags( $string ) ) + 12;
+
+        $this->comment( str_repeat( '*', $length ) );
+        $this->comment( '*     ' . $string . '     *' );
+        $this->comment( str_repeat( '*', $length ) );
+
+        $this->output->newLine();
+    }
+
+    /**
+     * Write a string as comment output.
+     *
+     * @param string $string
+     * @return void
+     */
+    public function comment( $string )
+    {
+        $this->line( $string, 'comment' );
+    }
+
+    /**
+     * Prompt the user for input with auto completion.
+     *
+     * @param string $question
+     * @param array $choices
+     * @param string|null $default
+     * @return mixed
+     */
+    public function anticipate( $question, array $choices, $default = null )
+    {
+        return $this->askWithCompletion( $question, $choices, $default );
+    }
+
+    /**
+     * Prompt the user for input with auto completion.
+     *
+     * @param string $question
+     * @param array $choices
+     * @param string|null $default
+     * @return mixed
+     */
+    public function askWithCompletion( $question, array $choices, $default = null )
+    {
+        $question = new Question( $question, $default );
+
+        $question->setAutocompleterValues( $choices );
+
+        return $this->output->askQuestion( $question );
+    }
+
+    /**
+     * Write a string as question output.
+     *
+     * @param string $string
+     * @return void
+     */
+    public function question( $string )
+    {
+        $this->line( $string, 'question' );
+    }
+
+    /**
+     * Write a string as error output.
+     *
+     * @param string $string
+     * @return void
+     */
+    public function error( $string )
+    {
+        $this->line( $string, 'error' );
+    }
+
+    /**
+     * Write line as step
+     *
+     * @param $text
+     */
+    public function step( $text )
+    {
+        $this->line( '<fg=blue>==></> ' . $text );
+    }
+
+    /**
+     * Hide the user input
+     *
+     * @param $question
+     * @return mixed
+     */
+    public function secret( $question )
+    {
+        return $this->output->askHidden( $question );
     }
 
     /**
@@ -214,15 +351,6 @@ trait ProvidesOutput
         }
 
         return $result;
-    }
-
-    public function confirm( string $question, bool $default = false )
-    {
-        /** @var QuestionHelper $helper */
-        $helper   = $this->getHelper( 'question' );
-        $question = new ConfirmationQuestion( $question, $default );
-
-        return $helper->ask( $this->input, $this->output, $question );
     }
 
 }

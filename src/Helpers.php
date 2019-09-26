@@ -2,33 +2,28 @@
 
 namespace Chriha\ProjectCLI;
 
-use Illuminate\Support\Arr;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Container\Container;
-use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class Helpers
 {
 
     /**
-     * Display a danger message and exit.
-     *
-     * @param string $text
-     * @return void
+     * @param null $name
+     * @return Container|mixed
+     * @throws BindingResolutionException
      */
-    public static function abort( $text )
-    {
-        static::danger( $text );
-
-        exit( 1 );
-    }
-
     public static function app( $name = null )
     {
         return $name ? Container::getInstance()->make( $name ) : Container::getInstance();
     }
 
+    /**
+     * @param string $path
+     * @return string|null
+     * @throws BindingResolutionException
+     */
     public static function projectPath( string $path = '' ) : ?string
     {
         $root = static::app( 'project.path' );
@@ -36,15 +31,13 @@ class Helpers
         return ! $root ? null : $root . DS . ltrim( $path, DS );
     }
 
-    public static function rootPath( string $path = '' ) : ?string
-    {
-        $trim = 'app';//config( 'app.production' ) ? 'project/app' : 'app';
-        $file = rtrim( dirname( __FILE__ ), $trim );
-        $path = $file . ltrim( $path, "/" );
-
-        return str_replace( '///', '/', str_replace( 'phar://', '', $path ) );
-    }
-
+    /**
+     * Return the home directory of ProjectCLI
+     *
+     * @param string $path
+     * @return string|null
+     * @throws BindingResolutionException
+     */
     public static function home( string $path = '' ) : ?string
     {
         if ( ! $home = static::app( 'paths.home' ) ) return null;
@@ -53,95 +46,34 @@ class Helpers
     }
 
     /**
-     * @todo: extract to own Config class
+     * @param string $text
+     * @throws BindingResolutionException
      */
-    public static function configFile( string $path = '' ) : ?string
+    public static function line( $text = '' )
     {
-        $root = static::projectPath( 'project.yaml' );
-
-        return ! $root ? null : $root . DS . ltrim( $path, '/' );
+        static::app( 'output' )->writeln( $text );
     }
 
-    public static function ask( $question, $default = null )
-    {
-        $style = new SymfonyStyle( static::app( 'input' ), static::app( 'output' ) );
-
-        return $style->ask( $question, $default );
-    }
-
-    public static function comment( $text )
-    {
-        static::app( 'output' )->writeln( '<comment>' . $text . '</comment>' );
-    }
-
-    public static function confirm( $question, $default = true )
-    {
-        $style = new SymfonyStyle( static::app( 'input' ), static::app( 'output' ) );
-
-        return $style->confirm( $question, $default );
-    }
-
+    /**
+     * @param $text
+     * @throws BindingResolutionException
+     */
     public static function danger( $text )
     {
         static::app( 'output' )->writeln( '<fg=red>' . $text . '</>' );
     }
 
     /**
-     * Get a random exclamation.
+     * Display a danger message and exit.
      *
-     * @return string
+     * @param string $text
+     * @return void
+     * @throws BindingResolutionException
      */
-    public static function exclaim()
+    public static function abort( $text )
     {
-        return Arr::random( [
-            'Amazing',
-            'Awesome',
-            'Beautiful',
-            'Boom',
-            'Cool',
-            'Done',
-            'Got it',
-            'Great',
-            'Magic',
-            'Nice',
-            'Sweet',
-            'Wonderful',
-            'Yes',
-        ] );
-    }
-
-    public static function info( $text )
-    {
-        static::app( 'output' )->writeln( '<info>' . $text . '</info>' );
-    }
-
-    public static function line( $text = '' )
-    {
-        static::app( 'output' )->writeln( $text );
-    }
-
-    public static function secret( $question )
-    {
-        $style = new SymfonyStyle( static::app( 'input' ), static::app( 'output' ) );
-
-        return $style->askHidden( $question );
-    }
-
-    public static function step( $text )
-    {
-        static::line( '<fg=blue>==></> ' . $text );
-    }
-
-    public static function table( array $headers, array $rows, $style = 'borderless' )
-    {
-        if ( empty( $rows ) )
-        {
-            return;
-        }
-
-        $table = new Table( static::app( 'output' ) );
-
-        $table->setHeaders( $headers )->setRows( $rows )->setStyle( $style )->render();
+        static::danger( $text );
+        exit( 1 );
     }
 
     /**
@@ -150,16 +82,15 @@ class Helpers
      * @param string $date
      * @return string
      */
-    public static function time_ago( $date )
+    public static function timeAgo( $date )
     {
         return Carbon::parse( $date )->diffForHumans();
     }
 
-    public static function write( $text )
-    {
-        static::app( 'output' )->write( $text );
-    }
-
+    /**
+     * @param string $string
+     * @return string
+     */
     public static function mbStrReverse( string $string ) : string
     {
         $r = '';

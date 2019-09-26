@@ -10,6 +10,8 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\OutputStyle;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class Command extends SymfonyCommand
 {
@@ -25,7 +27,7 @@ abstract class Command extends SymfonyCommand
     /** @var array */
     protected $dynamicOptions = [];
 
-    /** @var OutputInterface */
+    /** @var OutputStyle */
     public $output;
 
     /** @var InputInterface */
@@ -69,7 +71,7 @@ abstract class Command extends SymfonyCommand
     protected function execute( InputInterface $input, OutputInterface $output )
     {
         Helpers::app()->instance( 'input', $this->input = $input );
-        Helpers::app()->instance( 'output', $this->output = $output );
+        Helpers::app()->instance( 'output', $this->output = new SymfonyStyle( $input, $output ) );
 
         if ( $this->requiresProject && ! Helpers::app( 'project.inside' ) )
         {
@@ -80,6 +82,8 @@ abstract class Command extends SymfonyCommand
     }
 
     /**
+     * @param int|null $index
+     * @return array
      * @todo: use $dynamicOptions instead
      */
     public function additionalArgs( int $index = null ) : array

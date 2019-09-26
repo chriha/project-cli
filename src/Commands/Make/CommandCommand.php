@@ -34,7 +34,7 @@ class CommandCommand extends Command
 
         if ( file_exists( $file ) )
         {
-            $this->exit( 'Command with this name already exists!' );
+            $this->abort( 'Command with this name already exists!' );
         }
 
         @mkdir( Helpers::projectPath( 'commands' ), 0755, true );

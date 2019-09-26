@@ -4,6 +4,7 @@ namespace Chriha\ProjectCLI\Commands\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Helpers;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Process\Process;
 
@@ -23,12 +24,13 @@ class CloneCommand extends Command
 
     /**
      * @return mixed
+     * @throws BindingResolutionException
      */
     public function handle() : void
     {
         if ( Helpers::app( 'project.inside' ) )
         {
-            $this->exit( "You are currently in a project" );
+            $this->abort( "You are currently in a project" );
         }
 
         $repository = $this->argument( 'repository' );

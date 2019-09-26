@@ -5,6 +5,7 @@ namespace Chriha\ProjectCLI\Commands\ProjectCLI;
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Services\Docker;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 
@@ -34,18 +35,19 @@ class InitCommand extends Command
      *
      * @param Docker $docker
      * @return mixed
+     * @throws BindingResolutionException
      */
     public function handle( Docker $docker ) : void
     {
         if ( Helpers::app( 'project.inside' ) )
         {
-            $this->exit( "You are currently in a project" );
+            $this->abort( "You are currently in a project" );
         }
 
         if ( $this->input->hasOption( 'type' )
             && ! in_array( $this->option( 'type' ), array_keys( $this->types ) ) )
         {
-            $this->exit( "Unknown type: {$this->option('type')}" );
+            $this->abort( "Unknown type: {$this->option('type')}" );
         }
 
         $repository = $this->types[$this->option( 'type' ) ?? 'default'];
@@ -67,7 +69,7 @@ class InitCommand extends Command
         {
             if ( ! empty( $blocked = $docker->hasOccupiedPorts() ) )
             {
-                Helpers::abort( "Ports are already occupied: " . implode( ', ', $blocked ) );
+                $this->abort( "Ports are already occupied: " . implode( ', ', $blocked ) );
             }
 
             $this->setupLaravel();

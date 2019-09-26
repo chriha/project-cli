@@ -24,7 +24,8 @@ class HostsCommand extends Command
 
     public function handle() : void
     {
-        if ( empty( $this->input->getOptions() ) )
+        if ( ! $this->option( 'disable' ) && ! $this->option( 'enable' )
+            && ! $this->option( 'remove' ) && ! $this->option( 'add' ) )
         {
             $hosts = $this->getHosts();
 
@@ -35,7 +36,7 @@ class HostsCommand extends Command
                 if ( substr( $host, 0, 1 ) == '#' )
                 {
                     $status = '  -';
-                    $host = ltrim( $host, '#' );
+                    $host   = ltrim( $host, '#' );
                 }
 
                 $hosts[$key] = explode( ' ', $host );
@@ -65,7 +66,7 @@ class HostsCommand extends Command
 
             if ( empty( $line ) ) continue;
 
-            $pos  = strpos( $line, 'DO NOT CHANGE THE LINES ABOVE' );
+            $pos = strpos( $line, 'DO NOT CHANGE THE LINES ABOVE' );
 
             if ( ! $isSafe && $pos === false ) continue;
 

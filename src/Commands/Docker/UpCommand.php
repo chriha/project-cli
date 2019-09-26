@@ -27,7 +27,7 @@ class UpCommand extends Command
     {
         if ( ! empty( $blocked = $docker->hasOccupiedPorts() ) )
         {
-            Helpers::abort( "Ports are already occupied: " . implode( ', ', $blocked ) );
+            $this->abort( "Ports are already occupied: " . implode( ', ', $blocked ) );
         }
 
         $process = $docker->process( [ 'up', '-d' ] );
