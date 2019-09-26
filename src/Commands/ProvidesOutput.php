@@ -7,6 +7,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Process\Process;
@@ -223,6 +224,25 @@ trait ProvidesOutput
         $question = new Question( $question, $default );
 
         $question->setAutocompleterValues( $choices );
+
+        return $this->output->askQuestion( $question );
+    }
+
+    /**
+     * Give the user a single choice from an array of answers.
+     *
+     * @param string $question
+     * @param array $choices
+     * @param string|null $default
+     * @param mixed|null $attempts
+     * @param bool|null $multiple
+     * @return string
+     */
+    public function choice( $question, array $choices, $default = null, $attempts = null, $multiple = null )
+    {
+        $question = new ChoiceQuestion( $question, $choices, $default );
+
+        $question->setMaxAttempts( $attempts )->setMultiselect( $multiple );
 
         return $this->output->askQuestion( $question );
     }
