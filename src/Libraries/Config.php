@@ -18,6 +18,10 @@ class Config
     protected $file = '.project.yml';
 
 
+    /**
+     * @param string $path
+     * @return mixed
+     */
     public function get( string $path )
     {
         if ( empty( $this->config ) )
@@ -28,6 +32,11 @@ class Config
         return Arr::get( $this->config, $path );
     }
 
+    /**
+     * @param string $path
+     * @param $value
+     * @return Config
+     */
     public function set( string $path, $value ) : self
     {
         $this->config = Arr::set( $this->config, $path, $value );
@@ -72,7 +81,7 @@ class Config
         $this->save();
     }
 
-    private function save()
+    public function save()
     {
         if ( empty( $this->config ) ) return;
 
