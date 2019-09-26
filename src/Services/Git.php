@@ -2,6 +2,8 @@
 
 namespace Chriha\ProjectCLI\Services;
 
+use PHLAK\SemVer\Version;
+
 class Git
 {
 
@@ -12,11 +14,11 @@ class Git
     protected $config;
 
 
-    public function __construct()
-    {
-        //
-    }
-
+    /**
+     * Current branch
+     *
+     * @return string
+     */
     public function branch() : string
     {
         if ( $this->branch ) return $this->branch;
@@ -24,9 +26,60 @@ class Git
         return $this->branch = trim( shell_exec( "git branch | grep \* | cut -d ' ' -f2" ) );
     }
 
+    /**
+     * Checks if the current branch is the one proved
+     *
+     * @param string $branch
+     * @return bool
+     */
     public function inBranch( string $branch ) : bool
     {
         return $this->branch() == $branch;
+    }
+
+    /**
+     * Returns the latest tag on the current branch
+     *
+     * @return string|null
+     */
+    public function latestTag() : string
+    {
+        return trim( shell_exec(
+            "git describe --tags $(git rev-list --tags --max-count=1) 2> /dev/null"
+        ) );
+    }
+
+    /**
+     * Returns the
+     *
+     * @param string|null $start
+     * @param string $head
+     * @return array
+     */
+    public function commitRange( ?string $start, string $head = 'HEAD' ) : array
+    {
+        $range = ! is_null( $start ) ? "{$start}..{$head}" : '';
+
+        $commits = explode( "\n", shell_exec(
+            "git log {$range} --pretty=\"format:%h___%s___%ce___%b\""
+        ) );
+
+        foreach ( $commits as $key => $commit )
+        {
+            [ $hash, $subject, $committer, $body ] = explode( "___", $commit );
+
+            $commits[$hash] = compact( 'hash', 'subject', 'committer', 'body' );
+
+            unset( $commits[$key] );
+        }
+
+        return $commits;
+    }
+
+    public function tag( Version $version ) : void
+    {
+        shell_exec( "git tag " . $version->prefix() );
+        shell_exec( "git push origin " . $version->prefix() );
     }
 
 }
