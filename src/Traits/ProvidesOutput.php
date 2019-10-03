@@ -1,6 +1,6 @@
 <?php
 
-namespace Chriha\ProjectCLI\Commands;
+namespace Chriha\ProjectCLI\Traits;
 
 use Chriha\ProjectCLI\Helpers;
 use Illuminate\Contracts\Support\Arrayable;
@@ -266,7 +266,7 @@ trait ProvidesOutput
      */
     public function error( $string )
     {
-        $this->line( $string, 'error' );
+        $this->line( $string, 'red' );
     }
 
     /**

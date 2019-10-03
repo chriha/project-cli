@@ -5,7 +5,7 @@ namespace Chriha\ProjectCLI\Libraries\Ssh;
 use Chriha\ProjectCLI\Helpers;
 use Closure;
 use Illuminate\Support\Traits\Macroable;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Process\Process;
 
 class Processor
@@ -13,7 +13,7 @@ class Processor
 
     use Macroable;
 
-    /** @var OutputInterface */
+    /** @var OutputStyle */
     private $output;
 
     /** @var Connection */
@@ -22,7 +22,7 @@ class Processor
     /** @var bool */
     protected $break;
 
-    public function __construct( OutputInterface $output, Connection $connection, bool $break = true )
+    public function __construct( OutputStyle $output, Connection $connection, bool $break = true )
     {
         $this->output     = $output;
         $this->connection = $connection;

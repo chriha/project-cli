@@ -3,6 +3,8 @@
 namespace Chriha\ProjectCLI\Commands;
 
 use Chriha\ProjectCLI\Helpers;
+use Chriha\ProjectCLI\Traits\ProvidesOutput;
+use Chriha\ProjectCLI\Traits\ReceivesInput;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\ArrayInput;

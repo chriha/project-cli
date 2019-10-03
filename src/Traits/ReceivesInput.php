@@ -1,6 +1,6 @@
 <?php
 
-namespace Chriha\ProjectCLI\Commands;
+namespace Chriha\ProjectCLI\Traits;
 
 use Symfony\Component\Console\Input\InputInterface;
 
