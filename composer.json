@@ -15,7 +15,9 @@
     "require": {
         "php": "^7.1|^7.2",
         "ext-curl": "*",
+        "ext-intl": "*",
         "ext-json": "*",
+        "ext-xml": "*",
         "illuminate/container": "^5.8",
         "illuminate/support": "^5.8",
         "phlak/semver": "^2.0",
