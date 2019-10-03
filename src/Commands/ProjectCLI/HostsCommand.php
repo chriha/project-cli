@@ -52,12 +52,21 @@ class HostsCommand extends Command
 
     protected function getHosts() : array
     {
-        $hosts = [];
+        if ( PHP_OS === 'Linux' )
+        {
+            $file = '/etc/hosts';
+        }
+        elseif ( PHP_OS === 'Darwin' )
+        {
+            $file = "/private/etc/hosts";
+        }
+        else
+        {
+            $this->abort( 'Unsupported OS' );
+        }
 
-        // TODO: other systems
-        $file   = "/private/etc/hosts";
         $isSafe = false;
-
+        $hosts  = [];
         $handle = fopen( $file, "r" );
 
         while ( ( $line = fgets( $handle ) ) !== false )
