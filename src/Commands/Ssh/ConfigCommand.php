@@ -73,7 +73,7 @@ class ConfigCommand extends Command
         {
             if ( is_null( $value ) )
             {
-                $value = "\e[33m(not set)\e[39m";
+                $value = "<comment>(not set)</comment>";
             }
 
             $rows[$key] = [ $key, $value ];
