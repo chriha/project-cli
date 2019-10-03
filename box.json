@@ -1,4 +1,14 @@
 {
     "main": "project",
-    "chmod": "0700"
+    "chmod": "0750",
+    "compression": "GZ",
+    "output": "bin/project",
+    "blacklist": [
+        ".editorconfig",
+        "./bin",
+        "./scripts",
+        "box.json",
+        "docker-compose.yml"
+    ],
+    "git-version": "package_version"
 }
