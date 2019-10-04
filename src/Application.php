@@ -4,6 +4,7 @@ namespace Chriha\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Contracts\Plugin;
+use LogicException;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -14,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 class Application extends \Symfony\Component\Console\Application
 {
@@ -114,6 +116,8 @@ class Application extends \Symfony\Component\Console\Application
 
     public function configureApp() : void
     {
+        $this->dispatchErrorEvent();
+
         $home = $_SERVER['HOME'] . DS . '.project';
 
         if ( ! is_dir( $home ) ) mkdir( $home, 700, true );
@@ -133,6 +137,23 @@ class Application extends \Symfony\Component\Console\Application
             $dotEnv = new Dotenv();
             $dotEnv->loadEnv( $envPath );
         }
+    }
+
+    protected function dispatchErrorEvent() : void
+    {
+        $dispatcher = new EventDispatcher();
+
+        $dispatcher->addListener( ConsoleEvents::ERROR, function( ConsoleErrorEvent $event )
+        {
+            $event->getOutput()->writeln( sprintf(
+                'Oops, exception thrown while running command <info>%s</info>. If you think '
+                . PHP_EOL . 'this is a problem with ProjectCLI, please feel free to create an issue at '
+                . PHP_EOL . '<comment>https://github.com/chriha/project-cli/issues</comment>',
+                $event->getCommand()->getName()
+            ) );
+        } );
+
+        $this->setDispatcher( $dispatcher );
     }
 
     public function addProjectCommands() : void

@@ -24,6 +24,7 @@
         "psr/log": "^1.1",
         "symfony/console": "^4.3",
         "symfony/dotenv": "^4.3",
+        "symfony/event-dispatcher": "^4.3",
         "symfony/process": "^4.3",
         "symfony/var-dumper": "^4.3",
         "symfony/yaml": "^4.3"
