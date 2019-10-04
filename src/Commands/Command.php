@@ -5,12 +5,14 @@ namespace Chriha\ProjectCLI\Commands;
 use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Traits\ProvidesOutput;
 use Chriha\ProjectCLI\Traits\ReceivesInput;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -38,6 +40,8 @@ abstract class Command extends SymfonyCommand
     /** @var bool */
     public $inProject = false;
 
+    /** @var LoggerInterface */
+    protected $logger;
 
     public function __construct( string $name = null )
     {
@@ -62,6 +66,8 @@ abstract class Command extends SymfonyCommand
      */
     protected function initialize( InputInterface $input, OutputInterface $output )
     {
+        $this->logger = new ConsoleLogger( $output );
+
         if ( ! $output->getFormatter()->hasStyle( 'red' ) )
         {
             $style = new OutputFormatterStyle( 'red' );
