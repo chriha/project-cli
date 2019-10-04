@@ -161,4 +161,16 @@ class Helpers
         return trim( rtrim( substr( $line, $position + 9 ), ';' ) );
     }
 
+    public static function hostsFile()
+    {
+        if ( PHP_OS === 'Linux' ) return '/etc/hosts';
+
+        if ( PHP_OS !== 'Darwin' )
+        {
+            static::abort( 'Unsupported OS' );
+        }
+
+        return '/private/etc/hosts';
+    }
+
 }
