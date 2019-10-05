@@ -21,6 +21,7 @@
         "ext-xml": "*",
         "illuminate/container": "^5.8",
         "illuminate/support": "^5.8",
+        "nesbot/carbon": "^2.25",
         "phlak/semver": "^2.0",
         "psr/log": "^1.1",
         "symfony/console": "^4.3",
