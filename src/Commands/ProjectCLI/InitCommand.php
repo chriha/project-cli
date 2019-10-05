@@ -59,7 +59,7 @@ class InitCommand extends Command
         if ( ! $this->option( 'type' ) || ! $this->input->hasOption( 'setup' ) ) return;
 
         chdir( $directory );
-        recursive_rmdir( '.git' );
+        Helpers::recursiveRemoveDir( '.git' );
         copy( '.env.example', '.env' );
         touch( 'src' . DS . '.env' );
 
@@ -91,7 +91,7 @@ class InitCommand extends Command
         // move setup into temp
         rename( getcwd() . DS . "src" . DS . $destination, getcwd() . DS . "temp" . DS . "src" );
         // rm src directory
-        recursive_rmdir( getcwd() . DS . "src" );
+        Helpers::recursiveRemoveDir( getcwd() . DS . "src" );
         // mv temp/src into .
         rename( getcwd() . DS . "temp" . DS . "src", getcwd() . DS . "src" );
     }
