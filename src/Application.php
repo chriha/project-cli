@@ -4,7 +4,7 @@ namespace Chriha\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Contracts\Plugin;
-use LogicException;
+use Chriha\ProjectCLI\Libraries\Config\Application as ApplicationConfig;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -118,18 +118,13 @@ class Application extends \Symfony\Component\Console\Application
     {
         $this->dispatchErrorEvent();
 
-        $home = $_SERVER['HOME'] . DS . '.project';
-
-        if ( ! is_dir( $home ) ) mkdir( $home, 700, true );
-
-        Helpers::app()->instance( 'paths.home', $home );
-
         $path      = trim( shell_exec( 'git rev-parse --show-toplevel 2>/dev/null' ) );
         $path      = ( empty( $path ) && ! is_dir( getcwd() . DS . 'src' ) ) ? null : $path;
         $inProject = ! ! $path;
 
         Helpers::app()->instance( 'project.path', $path ?? '' );
         Helpers::app()->instance( 'project.inside', $inProject );
+        Helpers::app()->instance( 'config', new ApplicationConfig );
 
         if ( $inProject && ! ! $path
             && file_exists( ( $envPath = Helpers::projectPath( '.env' ) ) ) )

@@ -1,6 +1,6 @@
 <?php
 
-namespace Chriha\ProjectCLI\Libraries;
+namespace Chriha\ProjectCLI\Libraries\Config;
 
 use Chriha\ProjectCLI\Helpers;
 use Illuminate\Support\Arr;
@@ -8,7 +8,7 @@ use PHLAK\SemVer\Version;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
-class Config
+class Project
 {
 
     /** @var array */
@@ -35,7 +35,7 @@ class Config
     /**
      * @param string $path
      * @param $value
-     * @return Config
+     * @return Project
      */
     public function set( string $path, $value ) : self
     {

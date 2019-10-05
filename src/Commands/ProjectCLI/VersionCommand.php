@@ -3,7 +3,7 @@
 namespace Chriha\ProjectCLI\Commands\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
-use Chriha\ProjectCLI\Libraries\Config;
+use Chriha\ProjectCLI\Libraries\Config\Project;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -28,7 +28,7 @@ class VersionCommand extends Command
         $this->addArgument( 'version', InputArgument::OPTIONAL, 'Specify a new version' );
     }
 
-    public function handle( Config $config ) : void
+    public function handle( Project $config ) : void
     {
         $version = $config->version();
 
