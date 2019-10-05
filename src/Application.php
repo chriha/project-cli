@@ -116,6 +116,8 @@ class Application extends \Symfony\Component\Console\Application
 
     public function configureApp() : void
     {
+        Helpers::app()->instance( 'app', $this );
+
         $this->dispatchErrorEvent();
 
         $path      = trim( shell_exec( 'git rev-parse --show-toplevel 2>/dev/null' ) );
