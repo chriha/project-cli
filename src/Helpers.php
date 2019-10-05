@@ -173,4 +173,50 @@ class Helpers
         return '/private/etc/hosts';
     }
 
+    public static function recursiveRemoveDir( string $dir ) : void
+    {
+        if ( is_dir( $dir ) )
+        {
+            $files = scandir( $dir );
+
+            foreach ( $files as $file )
+            {
+                if ( $file == "." || $file == ".." ) continue;
+
+                static::recursiveRemoveDir( "{$dir}/{$file}" );
+            }
+
+            rmdir( $dir );
+        }
+        elseif ( file_exists( $dir ) )
+        {
+            unlink( $dir );
+        }
+    }
+
+    public static function recursiveCopy( string $src, string $dst ) : void
+    {
+        if ( file_exists( $dst ) )
+        {
+            static::recursiveRemoveDir( $dst );
+        }
+
+        if ( is_dir( $src ) )
+        {
+            mkdir( $dst );
+            $files = scandir( $src );
+
+            foreach ( $files as $file )
+            {
+                if ( $file == '.' || $file == '..' ) continue;
+
+                static::recursiveCopy( "{$src}/{$file}", "{$dst}/{$file}" );
+            }
+        }
+        elseif ( file_exists( $src ) )
+        {
+            copy( $src, $dst );
+        }
+    }
+
 }
