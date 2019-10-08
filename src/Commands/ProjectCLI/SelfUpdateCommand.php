@@ -51,6 +51,7 @@ class SelfUpdateCommand extends Command
         if ( ! $latest->gt( $current ) )
         {
             $this->info( 'You have the latest version: <options=bold>' . $current . '</>' );
+            exit;
         }
         else
         {
