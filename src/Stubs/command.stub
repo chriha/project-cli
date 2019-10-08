@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Project command for ProjectCLI. More info at
+ * https://github.com/chriha/project-cli
+ */
+
 namespace Project\Commands;
 
 use Chriha\ProjectCLI\Commands\Command;

@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Plugin for ProjectCLI. More info at
+ * https://github.com/chriha/project-cli
+ */
+
 namespace ProjectCLI\Plugins\DummyNamespace;
 
 use Chriha\ProjectCLI\Commands\Command;
