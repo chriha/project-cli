@@ -29,7 +29,7 @@ class Application
 
         if ( ! Helpers::app( 'project.inside' ) ) return;
 
-        if ( ! in_array( Helpers::projectPath(), $this->config['projects'] ) )
+        if ( ! in_array( Helpers::projectPath(), $this->config['projects'] ?? [] ) )
         {
             $this->config['projects'][] = Helpers::projectPath();
         }
