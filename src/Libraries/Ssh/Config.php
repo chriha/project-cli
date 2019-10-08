@@ -159,7 +159,7 @@ class Config
 
         if ( file_exists( "{$this->path}.bak.1" ) )
         {
-            rename( "{$this->path}.bak.1", "{$this->path}.bak.2" );
+            @rename( "{$this->path}.bak.1", "{$this->path}.bak.2" );
         }
 
         copy( $this->path, "{$this->path}.bak.1" );
