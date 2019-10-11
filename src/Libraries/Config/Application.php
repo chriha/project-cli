@@ -19,15 +19,17 @@ class Application
 
     public function __construct()
     {
+        define( 'DS', DIRECTORY_SEPARATOR );
+
         $home = $_SERVER['HOME'] . DS . '.project';
 
         if ( ! is_dir( $home ) ) mkdir( $home, 700, true );
 
-        Helpers::app()->instance( 'paths.home', $home );
+        define( 'PROJECT_PATHS_HOME', $home );
 
         $this->loadConfig();
 
-        if ( ! Helpers::app( 'project.inside' ) ) return;
+        if ( ! PROJECT_IS_INSIDE ) return;
 
         if ( ! in_array( Helpers::projectPath(), $this->config['projects'] ?? [] ) )
         {

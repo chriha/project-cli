@@ -81,7 +81,7 @@ abstract class Command extends SymfonyCommand
         Helpers::app()->instance( 'input', $this->input = $input );
         Helpers::app()->instance( 'output', $this->output = new SymfonyStyle( $input, $output ) );
 
-        if ( $this->requiresProject && ! Helpers::app( 'project.inside' ) )
+        if ( $this->requiresProject && ! PROJECT_IS_INSIDE )
         {
             Helpers::abort( "You're not in a project" );
         }

@@ -124,8 +124,9 @@ class Application extends \Symfony\Component\Console\Application
         $path      = ( empty( $path ) && ! is_dir( getcwd() . DS . 'src' ) ) ? null : $path;
         $inProject = ! ! $path;
 
-        Helpers::app()->instance( 'project.path', $path ?? '' );
-        Helpers::app()->instance( 'project.inside', $inProject );
+        define( 'PROJECT_PATHS_PROJECT', $path ?? '' );
+        define( 'PROJECT_IS_INSIDE', $inProject );
+
         Helpers::app()->instance( 'config', new ApplicationConfig );
 
         if ( $inProject && ! ! $path

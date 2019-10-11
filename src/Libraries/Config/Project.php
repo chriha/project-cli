@@ -46,7 +46,7 @@ class Project
 
     private function loadConfig()
     {
-        if ( ! Helpers::app( 'project.inside' ) ) return;
+        if ( ! PROJECT_IS_INSIDE ) return;
 
         $path = Helpers::projectPath( $this->file );
 

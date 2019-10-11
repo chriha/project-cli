@@ -17,7 +17,7 @@ class Docker
 
     public function config() : ?string
     {
-        if ( ! Helpers::app( 'project.inside' ) ) return null;
+        if ( ! PROJECT_IS_INSIDE ) return null;
 
         if ( $this->config ) return $this->config;
 
@@ -34,7 +34,7 @@ class Docker
             return $this->config = Helpers::projectPath( $file );
         }
 
-        if ( ! Helpers::app( 'project.inside' ) ) return null;
+        if ( ! PROJECT_IS_INSIDE ) return null;
 
         return null;
     }

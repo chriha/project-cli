@@ -5,7 +5,6 @@ namespace Chriha\ProjectCLI\Commands\ProjectCLI;
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Services\Docker;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 
@@ -35,11 +34,10 @@ class InitCommand extends Command
      *
      * @param Docker $docker
      * @return mixed
-     * @throws BindingResolutionException
      */
     public function handle( Docker $docker ) : void
     {
-        if ( Helpers::app( 'project.inside' ) )
+        if ( PROJECT_IS_INSIDE )
         {
             $this->abort( "You are currently in a project" );
         }

@@ -22,13 +22,10 @@ class Helpers
     /**
      * @param string $path
      * @return string|null
-     * @throws BindingResolutionException
      */
     public static function projectPath( string $path = '' ) : ?string
     {
-        $root = static::app( 'project.path' );
-
-        return ! $root ? null : $root . DS . ltrim( $path, DS );
+        return ! PROJECT_PATHS_PROJECT ? null : PROJECT_PATHS_PROJECT . DS . ltrim( $path, DS );
     }
 
     /**
@@ -36,13 +33,12 @@ class Helpers
      *
      * @param string $path
      * @return string|null
-     * @throws BindingResolutionException
      */
     public static function home( string $path = '' ) : ?string
     {
-        if ( ! $home = static::app( 'paths.home' ) ) return null;
+        if ( ! PROJECT_PATHS_HOME ) return null;
 
-        return $home . DS . ltrim( $path, DS );
+        return PROJECT_PATHS_HOME . DS . ltrim( $path, DS );
     }
 
     /**
