@@ -24,22 +24,24 @@ class SelfUpdateCommand extends Command
 
     public function handle() : void
     {
-        $oldFileFull = $_SERVER['SCRIPT_NAME'];
+        $fileName     = pathinfo( $_SERVER['SCRIPT_NAME'], PATHINFO_FILENAME );
+        $pathCurrent  = $_SERVER['SCRIPT_NAME'];
+        $pathPrevious = Helpers::home( $fileName . '.previous' );
 
         if ( $this->option( 'rollback' ) )
         {
-            if ( ! file_exists( $oldFileFull . '.previous' ) )
+            if ( ! file_exists( $pathPrevious ) )
             {
                 $this->abort( 'No previous version available' );
             }
 
-            $this->task( 'Rolling back to previous version', function() use ( $oldFileFull )
+            $this->task( 'Rolling back to previous version', function() use ( $pathPrevious, $pathCurrent )
             {
-                rename( $oldFileFull . '.previous', $oldFileFull );
-                chmod( $oldFileFull, 0750 );
+                rename( $pathPrevious, $pathCurrent );
+                chmod( $pathCurrent, 0750 );
             } );
 
-            exit;
+            return;
         }
 
         $client  = new Client();
@@ -51,7 +53,8 @@ class SelfUpdateCommand extends Command
         if ( ! $latest->gt( $current ) )
         {
             $this->info( 'You have the latest version: <options=bold>' . $current . '</>' );
-            exit;
+
+            return;
         }
         else
         {
@@ -67,19 +70,19 @@ class SelfUpdateCommand extends Command
 
         $fileUrl = $release['assets'][0]['browser_download_url'];
 
-        $this->task( 'Backup current version', function() use ( $oldFileFull )
+        $this->task( 'Backup current version', function() use ( $pathCurrent, $pathPrevious )
         {
-            @unlink( $oldFileFull . '.previous' );
-            copy( $oldFileFull, $oldFileFull . '.previous' );
+            @unlink( $pathPrevious );
+            copy( $pathCurrent, $pathPrevious );
         } );
 
-        $this->task( 'Downloading new release', function() use ( $fileUrl, $oldFileFull )
+        $this->task( 'Downloading new release', function() use ( $fileUrl, $pathCurrent )
         {
             $content = file_get_contents( $fileUrl );
 
-            unlink( $oldFileFull );
-            file_put_contents( $oldFileFull, $content );
-            chmod( $oldFileFull, 0750 );
+            unlink( $pathCurrent );
+            file_put_contents( $pathCurrent, $content );
+            chmod( $pathCurrent, 0750 );
         } );
 
         $this->info( 'You are now using <options=bold>' . $latest . '</>' );
