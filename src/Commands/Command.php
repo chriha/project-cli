@@ -2,13 +2,16 @@
 
 namespace Chriha\ProjectCLI\Commands;
 
+use Chriha\ProjectCLI\Console\Input\ArrayInput;
 use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Traits\ProvidesOutput;
 use Chriha\ProjectCLI\Traits\ReceivesInput;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
-use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,6 +45,7 @@ abstract class Command extends SymfonyCommand
 
     /** @var LoggerInterface */
     protected $logger;
+
 
     public function __construct( string $name = null )
     {
@@ -90,25 +94,13 @@ abstract class Command extends SymfonyCommand
     }
 
     /**
-     * @param int|null $index
-     * @return array
-     * @todo: use $dynamicOptions instead
+     * Call another command
+     *
+     * @param $command
+     * @param array $arguments
+     * @return int
+     * @throws BindingResolutionException
      */
-    public function additionalArgs( int $index = null ) : array
-    {
-        $args   = $_SERVER['argv'];
-        $search = $index ?? array_search( $this->getName(), $args, true );
-
-        foreach ( $args as $key => $arg )
-        {
-            if ( $key > $search ) break;
-
-            unset( $args[$key] );
-        }
-
-        return $args;
-    }
-
     public function call( $command, array $arguments = [] ) : int
     {
         $arguments['command'] = $command;
@@ -118,7 +110,13 @@ abstract class Command extends SymfonyCommand
         );
     }
 
-    protected function prepareForDynamicOptions()
+    /**
+     * Prepare the application for dynamic options
+     * by allowing options provided to the command
+     *
+     * @return void
+     */
+    protected function prepareForDynamicOptions() : void
     {
         $this->setDefinition( new class( $this->getDefinition(), $this->dynamicOptions ) extends InputDefinition
         {
@@ -141,8 +139,16 @@ abstract class Command extends SymfonyCommand
                 {
                     return parent::getOption( $name );
                 }
+                elseif ( ! parent::hasOption( '*' ) )
+                {
+                    throw new InvalidArgumentException(
+                        sprintf( 'The "--%s" option does not exist.', $name )
+                    );
+                }
 
-                $this->addOption( new InputOption( $name, null, InputOption::VALUE_OPTIONAL ) );
+                $this->addOption(
+                    new InputOption( $name, null, InputOption::VALUE_OPTIONAL, '', true )
+                );
 
                 $this->dynamicOptions[] = $name;
 
@@ -171,6 +177,28 @@ abstract class Command extends SymfonyCommand
                 return parent::getOptionForShortcut( $shortcut );
             }
         } );
+    }
+
+    /**
+     * Allow dynamic arguments for the command
+     *
+     * @return Command
+     */
+    public function addDynamicArguments() : self
+    {
+        return $this->addArgument( '*', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Arguments for the specified command' );
+    }
+
+    /**
+     * Allow dynamic options for the command
+     *
+     * @return Command
+     */
+    public function addDynamicOptions() : self
+    {
+        $this->hasDynamicOptions = true;
+
+        return $this->addOption( '*', null, InputOption::VALUE_OPTIONAL, 'Options for the specified command' );
     }
 
 }

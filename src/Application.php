@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Console\Input\ArgvInput;
 use Chriha\ProjectCLI\Contracts\Plugin;
 use Chriha\ProjectCLI\Libraries\Config\Application as ApplicationConfig;
 use Symfony\Component\Console\ConsoleEvents;
@@ -26,6 +27,25 @@ class Application extends \Symfony\Component\Console\Application
 
     private $dispatcher;
 
+
+    /**
+     * Runs the current application.
+     *
+     * @param InputInterface|null $input
+     * @param OutputInterface|null $output
+     * @return int 0 if everything went fine, or an error code
+     *
+     * @throws \Throwable
+     */
+    public function run( InputInterface $input = null, OutputInterface $output = null )
+    {
+        if ( null === $input )
+        {
+            $input = new ArgvInput();
+        }
+
+        return parent::run( $input, $output );
+    }
 
     public function doRun( InputInterface $input, OutputInterface $output )
     {

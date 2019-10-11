@@ -3,7 +3,6 @@
 namespace Chriha\ProjectCLI\Commands\Logs;
 
 use Chriha\ProjectCLI\Commands\Command;
-use Chriha\ProjectCLI\Helpers;
 use Symfony\Component\Console\Input\InputOption;
 
 class ClearCommand extends Command

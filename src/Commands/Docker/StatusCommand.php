@@ -3,7 +3,6 @@
 namespace Chriha\ProjectCLI\Commands\Docker;
 
 use Chriha\ProjectCLI\Commands\Command;
-use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Services\Docker;
 
 class StatusCommand extends Command
