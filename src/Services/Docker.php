@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Services;
 
 use Chriha\ProjectCLI\Helpers;
+use Symfony\Component\Process\Exception\LogicException;
 use Symfony\Component\Process\Process;
 
 class Docker
@@ -34,9 +35,7 @@ class Docker
             return $this->config = Helpers::projectPath( $file );
         }
 
-        if ( ! PROJECT_IS_INSIDE ) return null;
-
-        return null;
+        throw new LogicException( 'Unable to find docker-compose file' );
     }
 
     /**
