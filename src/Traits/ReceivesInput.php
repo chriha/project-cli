@@ -2,7 +2,7 @@
 
 namespace Chriha\ProjectCLI\Traits;
 
-use Symfony\Component\Console\Input\InputInterface;
+use Chriha\ProjectCLI\Console\Input\InputInterface;
 
 trait ReceivesInput
 {
@@ -30,6 +30,28 @@ trait ReceivesInput
     protected function option( $key )
     {
         return $this->input->getOption( $key );
+    }
+
+    /**
+     * Check if the option was provided
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasOption( string $name ) : bool
+    {
+        return isset( $this->input->getOptions()[$name] )
+            || in_array( $name, $this->dynamicOptions );
+    }
+
+    /**
+     * Returns the provided parameters for the command
+     *
+     * @return array
+     */
+    public function getParameters() : array
+    {
+        return $this->input->getParameters();
     }
 
 }
