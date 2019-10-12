@@ -16,8 +16,8 @@ class InitCommand extends Command
 
     /** @var array */
     protected $types = [
-        'default' => 'https://github.com/chriha/pro-cli-env-laravel.git',
-        'laravel' => 'https://github.com/chriha/pro-cli-env-laravel.git'
+        'default' => 'https://github.com/chriha/project-cli-env-laravel.git',
+        'laravel' => 'https://github.com/chriha/project-cli-env-laravel.git'
     ];
 
 
