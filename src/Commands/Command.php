@@ -8,6 +8,7 @@ use Chriha\ProjectCLI\Traits\ProvidesOutput;
 use Chriha\ProjectCLI\Traits\ReceivesInput;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -65,12 +66,29 @@ abstract class Command extends SymfonyCommand
      *
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws BindingResolutionException
      * @see InputInterface::bind()
      * @see InputInterface::validate()
      */
     protected function initialize( InputInterface $input, OutputInterface $output )
     {
-        $this->logger = new ConsoleLogger( $output );
+        $verbosityLevelMap = [
+            LogLevel::ALERT   => OutputInterface::VERBOSITY_VERBOSE,
+            LogLevel::WARNING => OutputInterface::VERBOSITY_VERBOSE,
+            LogLevel::INFO    => OutputInterface::VERBOSITY_NORMAL,
+        ];
+
+        $formatLevelMap = [
+            LogLevel::NOTICE  => 'options=bold',
+            LogLevel::ERROR   => 'red',
+            LogLevel::ALERT   => 'red',
+            LogLevel::WARNING => 'comment',
+            LogLevel::DEBUG   => 'comment',
+        ];
+
+        $this->logger = new ConsoleLogger( $output, $verbosityLevelMap, $formatLevelMap );
+
+        Helpers::app()->instance( 'logger', $this->logger );
 
         if ( ! $output->getFormatter()->hasStyle( 'red' ) )
         {
