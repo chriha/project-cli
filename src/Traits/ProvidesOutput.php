@@ -3,6 +3,8 @@
 namespace Chriha\ProjectCLI\Traits;
 
 use Chriha\ProjectCLI\Helpers;
+use Closure;
+use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -18,7 +20,7 @@ trait ProvidesOutput
     /** @var SymfonyStyle */
     public $output;
 
-    public function spinner( string $title, Process $process, \Closure $output = null ) : Process
+    public function spinner( string $title, Process $process, Closure $output = null ) : Process
     {
         $interval = 50000;
         $frames   = [ "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" ];
@@ -328,7 +330,7 @@ trait ProvidesOutput
      * @param  callable|null $task
      * @return bool With the result of the task.
      */
-    protected function task( string $title, \Closure $task = null, $loadingText = 'loading ...' )
+    protected function task( string $title, Closure $task = null, $loadingText = 'loading ...' )
     {
         $this->output->write( "$title: <comment>{$loadingText}</comment>" );
 
@@ -342,7 +344,7 @@ trait ProvidesOutput
             {
                 $result = $task() === false ? false : true;
             }
-            catch ( \Exception $taskException )
+            catch ( Exception $taskException )
             {
                 $result = false;
             }
