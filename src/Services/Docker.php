@@ -44,7 +44,9 @@ class Docker
      */
     public function process( array $commands = [] ) : Process
     {
-        return new Process( array_merge( [ 'docker-compose', '-f', $this->config() ], $commands ) );
+        return new Process(
+            array_merge( [ 'docker-compose', '-f', $this->config() ], $commands )
+        );
     }
 
     public function isRunning( string $service ) : bool
@@ -69,6 +71,22 @@ class Docker
     public function compose() : string
     {
         return "docker-compose -f {$this->config()}";
+    }
+
+    public function services() : array
+    {
+        $services = [];
+        $process  = $this->process( [ 'ps', '--services' ] );
+
+        $process->run( function( $type, $buffer ) use ( &$services )
+        {
+            $services = array_filter( preg_split( "/\n/", $buffer ), function( $value )
+            {
+                return ! empty( $value );
+            } );
+        } );
+
+        return $services;
     }
 
     public function runExec( string $service = 'web' ) : string
@@ -107,6 +125,55 @@ class Docker
         }
 
         return ! empty( $blocked ) ? $blocked : [];
+    }
+
+    public function ps( string $service ) : array
+    {
+        $info    = [];
+        $process = $this->process( [ 'ps', $service ] );
+
+        $process->run( function( $type, $buffer ) use ( &$info )
+        {
+            $output = substr( $buffer, strpos( $buffer, "\n" ) + 1 );
+            $output = trim( substr( $output, strpos( $output, "\n" ) + 1 ) );
+            $info   = preg_split( "/\s{2,}/", $output );
+        } );
+
+        preg_match_all(
+            '/(\d{2,6})->(\d{2,6})/', $info[3] ?? '', $ports
+        );
+
+        $ports = array_map( function( $value )
+        {
+            return str_replace( '->', ':', $value );
+        }, $ports[0] ?? [] );
+
+        $container[] = [
+            'name'    => $info[0],
+            'running' => $info[2] == 'Up' ? '<fg=green>online</>' : '<fg=red>offline</>',
+            'ports'   => implode( ', ', $ports ),
+        ];
+
+        return $container;
+    }
+
+    public function stats( string $service ) : array
+    {
+        $process = new Process( [
+            'docker', 'stats', $service, '--format',
+            '{{.CPUPerc}}__{{.MemPerc}}__{{.MemUsage}}', '--no-stream'
+        ] );
+
+        $process->run( function( $type, $buffer ) use ( &$info )
+        {
+            $info = explode( '__', $buffer );
+        } );
+
+        return [
+            'cpu'    => trim( $info[0] ),
+            'memory' => trim( $info[1] ),
+            'limit'  => trim( $info[2] ),
+        ];
     }
 
 }
