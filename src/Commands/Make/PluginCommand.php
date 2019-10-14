@@ -12,11 +12,13 @@ class PluginCommand extends Command
     /** @var string */
     protected static $defaultName = 'make:plugin';
 
+    /** @var string */
+    protected $description = 'Create a ProjectCLI plugin';
+
 
     public function configure() : void
     {
-        $this->setDescription( 'Create a plugin' )
-            ->addArgument( 'cmd', InputArgument::REQUIRED, 'The name of the command' );
+        $this->addArgument( 'cmd', InputArgument::REQUIRED, 'The name of the command' );
     }
 
     public function handle() : void

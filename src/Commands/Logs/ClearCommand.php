@@ -11,11 +11,13 @@ class ClearCommand extends Command
     /** @var string */
     protected static $defaultName = 'logs:clear';
 
+    /** @var string */
+    protected $description = 'Clear log files';
+
 
     protected function configure() : void
     {
-        $this->setDescription( 'Clear log files' )
-            ->addOption( 'file', 'f', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The file you want to clear' );
+        $this->addOption( 'file', 'f', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The file you want to clear' );
     }
 
     public function handle() : void

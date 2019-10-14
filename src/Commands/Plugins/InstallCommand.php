@@ -10,11 +10,9 @@ class InstallCommand extends Command
     /** @var string */
     protected static $defaultName = 'plugins:install';
 
+    /** @var string */
+    protected $description = 'Install specified plugins';
 
-    protected function configure() : void
-    {
-        $this->setDescription( 'Install specified plugins' );
-    }
 
     public function handle() : void
     {

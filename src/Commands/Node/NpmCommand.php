@@ -11,11 +11,13 @@ class NpmCommand extends Command
     /** @var string */
     protected static $defaultName = 'npm';
 
+    /** @var string */
+    protected $description = 'Run npm commands';
+
 
     public function configure() : void
     {
-        $this->setDescription( 'Run npm commands' )
-            ->addDynamicArguments()->addDynamicOptions();
+        $this->addDynamicArguments()->addDynamicOptions();
     }
 
     public function handle( Docker $docker ) : void

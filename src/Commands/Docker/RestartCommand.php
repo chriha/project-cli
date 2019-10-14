@@ -10,14 +10,11 @@ class RestartCommand extends Command
     /** @var string */
     protected static $defaultName = 'restart';
 
+    /** @var string */
+    protected $description = 'Remove and re-create the containers';
+
     /** @var bool */
     protected $requiresProject = true;
-
-
-    protected function configure() : void
-    {
-        $this->setDescription( 'Remove and re-create the containers' );
-    }
 
     public function handle()
     {

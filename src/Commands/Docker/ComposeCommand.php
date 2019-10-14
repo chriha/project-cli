@@ -11,14 +11,16 @@ class ComposeCommand extends Command
     /** @var string */
     protected static $defaultName = 'docker:compose';
 
+    /** @var string */
+    protected $description = 'Run docker-compose commands';
+
     /** @var bool */
     protected $requiresProject = true;
 
 
     public function configure() : void
     {
-        $this->setDescription( 'Run docker-compose commands' )
-            ->addDynamicArguments()->addDynamicOptions();
+        $this->addDynamicArguments()->addDynamicOptions();
     }
 
     public function handle( Docker $docker ) : void

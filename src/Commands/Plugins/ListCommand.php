@@ -10,11 +10,9 @@ class ListCommand extends Command
     /** @var string */
     protected static $defaultName = 'plugins:list';
 
+    /** @var string */
+    protected $description = 'List all installed plugins';
 
-    protected function configure() : void
-    {
-        $this->setDescription( 'List all installed plugins' );
-    }
 
     public function handle()
     {

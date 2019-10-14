@@ -12,11 +12,13 @@ class LogsCommand extends Command
     /** @var string */
     protected static $defaultName = 'docker:logs';
 
+    /** @var string */
+    protected $description = 'View output from containers';
+
 
     public function configure() : void
     {
-        $this->setDescription( 'View output from containers' )
-            ->addOption( 'follow', 'f', null, 'Follow log output' )
+        $this->addOption( 'follow', 'f', null, 'Follow log output' )
             ->addArgument( 'services', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Services to output' );
     }
 

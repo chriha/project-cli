@@ -13,10 +13,12 @@ class ConfigCommand extends Command
     /** @var string */
     protected static $defaultName = 'ssh:config';
 
+    /** @var string */
+    protected $description = 'Manage the SSH config';
+
 
     public function configure() : void
     {
-        $this->setDescription( 'Manage the SSH config' );
         $this->addArgument( 'host', InputArgument::OPTIONAL, 'Specify the host' );
         $this->addOption( 'set', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Set a key for the specified host' );
         $this->addOption( 'remove', null, InputOption::VALUE_NONE, 'Remove the specified host' );

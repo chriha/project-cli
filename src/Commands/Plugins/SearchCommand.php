@@ -10,11 +10,9 @@ class SearchCommand extends Command
     /** @var string */
     protected static $defaultName = 'plugins:search';
 
+    /** @var string */
+    protected $description = 'Search for plugins';
 
-    protected function configure() : void
-    {
-        $this->setDescription( 'Search for plugins' );
-    }
 
     public function handle() : void
     {

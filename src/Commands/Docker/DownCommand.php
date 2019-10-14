@@ -11,14 +11,11 @@ class DownCommand extends Command
     /** @var string */
     protected static $defaultName = 'down';
 
+    /** @var string */
+    protected $description = 'Stop and remove containers, networks, images, and volumes';
+
     /** @var bool */
     protected $requiresProject = true;
-
-
-    protected function configure() : void
-    {
-        $this->setDescription( 'Stop and remove containers, networks, images, and volumes' );
-    }
 
     public function handle( Docker $docker ) : void
     {

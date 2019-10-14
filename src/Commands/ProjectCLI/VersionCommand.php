@@ -13,13 +13,15 @@ class VersionCommand extends Command
     /** @var string */
     protected static $defaultName = 'version';
 
+    /** @var string */
+    protected $description = 'Show or set application version';
+
     /** @var bool */
     protected $requiresProject = true;
 
 
     public function configure() : void
     {
-        $this->setDescription( 'Show or set application version' );
         $this->addOption( 'major', null, InputOption::VALUE_NONE, 'Increment major version' );
         $this->addOption( 'minor', null, InputOption::VALUE_NONE, 'Increment minor version' );
         $this->addOption( 'patch', null, InputOption::VALUE_NONE, 'Increment patch version' );

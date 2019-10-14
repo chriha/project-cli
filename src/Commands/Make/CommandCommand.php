@@ -13,14 +13,16 @@ class CommandCommand extends Command
     /** @var string */
     protected static $defaultName = 'make:command';
 
+    /** @var string */
+    protected $description = 'Create a command for your project';
+
     /** @var bool */
     protected $requiresProject = true;
 
 
     public function configure() : void
     {
-        $this->setDescription( 'Create a command for your project' )
-            ->addArgument( 'cmd', InputArgument::REQUIRED, 'The name of the command' )
+        $this->addArgument( 'cmd', InputArgument::REQUIRED, 'The name of the command' )
             ->addOption( 'command', null, InputOption::VALUE_REQUIRED );
     }
 

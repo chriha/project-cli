@@ -12,11 +12,13 @@ class CloneCommand extends Command
     /** @var string */
     protected static $defaultName = 'clone';
 
+    /** @var string */
+    protected $description = 'Clone a Git repository and setup the project';
+
 
     public function configure() : void
     {
-        $this->setDescription( 'Clone a Git repository and setup the project' )
-            ->addArgument( 'repository', InputArgument::REQUIRED, 'Repository you want to clone' )
+        $this->addArgument( 'repository', InputArgument::REQUIRED, 'Repository you want to clone' )
             ->addArgument( 'directory', InputArgument::OPTIONAL, 'Project directory' );
     }
 

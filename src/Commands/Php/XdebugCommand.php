@@ -12,6 +12,9 @@ class XdebugCommand extends Command
     /** @var string */
     protected static $defaultName = 'php:xdebug';
 
+    /** @var string */
+    protected $description = 'Enable / Disable Xdebug';
+
     /** @var bool */
     protected $requiresProject = true;
 
@@ -30,8 +33,7 @@ class XdebugCommand extends Command
 
     protected function configure() : void
     {
-        $this->setDescription( 'Enable / Disable Xdebug' )
-            ->addOption( 'enable', null, InputOption::VALUE_OPTIONAL, 'Enable debug' )
+        $this->addOption( 'enable', null, InputOption::VALUE_OPTIONAL, 'Enable debug' )
             ->addOption( 'disable', null, InputOption::VALUE_OPTIONAL, 'Disable debug' );
     }
 

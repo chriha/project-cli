@@ -11,11 +11,13 @@ class NodeCommand extends Command
     /** @var string */
     protected static $defaultName = 'node';
 
+    /** @var string */
+    protected $description = 'Run node commands';
+
 
     protected function configure() : void
     {
-        $this->setDescription( 'Run node commands' )
-            ->addDynamicArguments()->addDynamicOptions();
+        $this->addDynamicArguments()->addDynamicOptions();
     }
 
     public function handle( Docker $docker ) : void

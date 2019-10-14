@@ -11,14 +11,16 @@ class ComposerCommand extends Command
     /** @var string */
     protected static $defaultName = 'composer';
 
+    /** @var string */
+    protected $description = 'Run composer commands inside the web container';
+
     /** @var bool */
     protected $requiresProject = true;
 
 
     public function configure() : void
     {
-        $this->setDescription( 'Run composer commands inside the web container' )
-            ->addDynamicArguments()->addDynamicOptions();
+        $this->addDynamicArguments()->addDynamicOptions();
     }
 
     public function handle( Docker $docker ) : void

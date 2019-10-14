@@ -11,14 +11,16 @@ class TestCommand extends Command
     /** @var string */
     protected static $defaultName = 'test';
 
+    /** @var string */
+    protected $description = 'Run unit tests';
+
     /** @var bool */
     protected $requiresProject = true;
 
 
     public function configure() : void
     {
-        $this->setDescription( 'Run unit tests' )
-            ->addDynamicArguments()->addDynamicOptions();
+        $this->addDynamicArguments()->addDynamicOptions();
     }
 
     public function handle( Docker $docker ) : void

@@ -11,14 +11,16 @@ class ArtisanCommand extends Command
     /** @var string */
     protected static $defaultName = 'artisan';
 
+    /** @var string */
+    protected $description = 'Run artisan commands inside the web container';
+
     /** @var bool */
     protected $requiresProject = true;
 
 
     public function configure() : void
     {
-        $this->setDescription( 'Run artisan commands inside the web container' )
-            ->addDynamicArguments()->addDynamicOptions();
+        $this->addDynamicArguments()->addDynamicOptions();
     }
 
     public function handle( Docker $docker ) : void

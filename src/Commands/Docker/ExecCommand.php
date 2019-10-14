@@ -12,14 +12,16 @@ class ExecCommand extends Command
     /** @var string */
     protected static $defaultName = 'docker:exec';
 
+    /** @var string */
+    protected $description = 'Execute commands in running containers';
+
     /** @var bool */
     protected $requiresProject = true;
 
 
     public function configure() : void
     {
-        $this->setDescription( 'Execute commands in running containers' )
-            ->addArgument( 'service', IA::REQUIRED, 'The service you want to execute the command in' )
+        $this->addArgument( 'service', IA::REQUIRED, 'The service you want to execute the command in' )
             ->addArgument( 'commands', IA::IS_ARRAY, 'The command you want to execute' );
     }
 

@@ -14,6 +14,9 @@ class InitCommand extends Command
     /** @var string */
     protected static $defaultName = 'init';
 
+    /** @var string */
+    protected $description = 'Setup a new project';
+
     /** @var array */
     protected $types = [
         'default' => 'https://github.com/chriha/project-cli-env-laravel.git',
@@ -23,7 +26,6 @@ class InitCommand extends Command
 
     public function configure() : void
     {
-        $this->setDescription( 'Setup a new project' );
         $this->addOption( 'type', 't', InputOption::VALUE_OPTIONAL, 'Type of the project', 'default' );
         $this->addOption( 'directory', 'd', InputOption::VALUE_OPTIONAL, 'Project directory' );
         $this->addOption( 'setup', null, InputOption::VALUE_NONE, 'Setup the project by its type' );

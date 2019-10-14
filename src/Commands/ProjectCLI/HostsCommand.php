@@ -12,13 +12,15 @@ class HostsCommand extends Command
     /** @var string */
     protected static $defaultName = 'hosts';
 
+    /** @var string */
+    protected $description = 'Manage hosts file';
+
     /** @var array */
     protected $hosts = [];
 
 
     public function configure() : void
     {
-        $this->setDescription( 'Manage hosts file' );
         $this->addOption( 'disable', 'd', InputOption::VALUE_REQUIRED, 'Disable host' );
         $this->addOption( 'enable', 'e', InputOption::VALUE_REQUIRED, 'Enable host' );
         $this->addOption( 'remove', 'r', InputOption::VALUE_REQUIRED, 'Remove host' );

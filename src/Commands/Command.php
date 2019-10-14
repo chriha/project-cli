@@ -35,6 +35,9 @@ abstract class Command extends SymfonyCommand
     /** @var array */
     protected $dynamicOptions = [];
 
+    /** @var string */
+    protected $description;
+
     /** @var OutputStyle */
     public $output;
 
@@ -50,6 +53,8 @@ abstract class Command extends SymfonyCommand
 
     public function __construct( string $name = null )
     {
+        $this->setDescription( $this->description );
+
         parent::__construct( $name );
 
         if ( ! $this->hasDynamicOptions ) return;

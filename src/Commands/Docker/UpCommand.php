@@ -12,14 +12,16 @@ class UpCommand extends Command
     /** @var string */
     protected static $defaultName = 'up';
 
+    /** @var string */
+    protected $description = 'Create and start project containers';
+
     /** @var bool */
     protected $requiresProject = true;
 
 
     protected function configure() : void
     {
-        $this->setDescription( 'Create and start project containers' )
-            ->addOption( 'detach', 'd', InputOption::VALUE_OPTIONAL );
+        $this->addOption( 'detach', 'd', InputOption::VALUE_OPTIONAL );
     }
 
     public function handle( Docker $docker ) : void

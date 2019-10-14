@@ -11,14 +11,11 @@ class TopCommand extends Command
     /** @var string */
     protected static $defaultName = 'docker:top';
 
+    /** @var string */
+    protected $description = 'Display a live stream of container(s) resource usage statistics';
+
     /** @var bool */
     protected $requiresProject = true;
-
-
-    protected function configure() : void
-    {
-        $this->setDescription( 'Display a live stream of container(s) resource usage statistics' );
-    }
 
     public function handle( Docker $docker )
     {

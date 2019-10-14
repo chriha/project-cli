@@ -14,10 +14,12 @@ class SelfUpdateCommand extends Command
     /** @var string */
     protected static $defaultName = 'self-update';
 
+    /** @var string */
+    protected $description = 'Update ProjectCLI command';
+
 
     public function configure() : void
     {
-        $this->setDescription( 'Update ProjectCLI command' );
         $this->addOption( 'check', null, InputOption::VALUE_NONE, 'Check for updates' );
         $this->addOption( 'rollback', null, InputOption::VALUE_NONE, 'Rollback to previous version' );
     }

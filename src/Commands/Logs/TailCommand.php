@@ -14,6 +14,9 @@ class TailCommand extends Command
     /** @var string */
     protected static $defaultName = 'logs:tail';
 
+    /** @var string */
+    protected $description = 'Tail log files of the project';
+
     /** @var array */
     protected $reds = [ 'alert', 'emergency', 'error', 'fatal', 'critical', 'failed' ];
 
@@ -29,8 +32,7 @@ class TailCommand extends Command
 
     protected function configure() : void
     {
-        $this->setDescription( 'Tail log files' )
-            ->addOption( 'file', 'f', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The file to tail' );
+        $this->addOption( 'file', 'f', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The file to tail' );
             //->addOption( 'ignore-type', 'i', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The file to tail' );
     }
 
