@@ -85,6 +85,11 @@ class StatusCommand extends Command
 
     protected function showTable( array $data ) : void
     {
+        if ( empty( $data ) )
+        {
+            $this->abort( 'No data available' );
+        }
+
         $headers = [ 'Service', 'Container', 'Status', 'Ports (host:container)' ];
 
         if ( count( $data[0] ) > 4 )

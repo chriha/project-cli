@@ -136,8 +136,13 @@ class Docker
         {
             $output = substr( $buffer, strpos( $buffer, "\n" ) + 1 );
             $output = trim( substr( $output, strpos( $output, "\n" ) + 1 ) );
+
+            if ( empty( $output ) ) return;
+
             $info   = preg_split( "/\s{2,}/", $output );
         } );
+
+        if ( empty( $info ) ) return [];
 
         preg_match_all(
             '/(\d{2,6})->(\d{2,6})/', $info[3] ?? '', $ports
