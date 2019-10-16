@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Commands\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Process\Process;
 
@@ -24,6 +25,7 @@ class CloneCommand extends Command
 
     /**
      * @return mixed
+     * @throws BindingResolutionException
      */
     public function handle() : void
     {
@@ -37,11 +39,18 @@ class CloneCommand extends Command
 
         $this->spinner( 'Cloning repository', new Process( [ 'git', 'clone', '-q', $repository, $directory ] ) );
 
-        if ( ! $this->getApplication()->has( 'install' ) ) return;
+        if ( ! $this->getApplication()->has( 'install' ) && ! $this->getApplication()->has( 'setup' ) ) return;
 
         if ( ! $this->ask( 'Would you like to install the project?', 'no' ) ) return;
 
-        $this->call( 'install' );
+        if ( $this->getApplication()->has( 'install' ) )
+        {
+            $this->call( 'install' );
+        }
+        elseif ( $this->getApplication()->has( 'setup' ) )
+        {
+            $this->call( 'setup' );
+        }
     }
 
 }
