@@ -42,7 +42,7 @@ class StatusCommand extends Command
 
         if ( empty( $services ) )
         {
-            $this->abort( 'Project was not started' );
+            $this->abort( 'No services found!' );
         }
 
         $this->task( 'Checking service status', function() use ( $docker, &$services )
