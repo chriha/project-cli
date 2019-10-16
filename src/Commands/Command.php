@@ -17,6 +17,7 @@ use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Logger\ConsoleLogger;
+use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -121,15 +122,18 @@ abstract class Command extends SymfonyCommand
      *
      * @param $command
      * @param array $arguments
+     * @param bool $showOutput
      * @return int
      * @throws BindingResolutionException
      */
-    public function call( $command, array $arguments = [] ) : int
+    public function call( $command, array $arguments = [], bool $showOutput = true ) : int
     {
         $arguments['command'] = $command;
 
+        $output = $showOutput ? Helpers::app( 'output' ) : new NullOutput;
+
         return $this->getApplication()->find( $command )->run(
-            new ArrayInput( $arguments ), Helpers::app( 'output' )
+            new ArrayInput( $arguments ), $output
         );
     }
 
