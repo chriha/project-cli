@@ -14,12 +14,11 @@ use Symfony\Component\Console\Input\InputOption;
 class DummyClass extends Command
 {
 
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
+    /** @var string */
     protected static $defaultName = 'dummy:command';
+
+    /** @var string */
+    protected $description = 'Dummy description of the command';
 
 
     /**
@@ -29,7 +28,6 @@ class DummyClass extends Command
      */
     public function configure() : void
     {
-        $this->setDescription( 'Command description' );
         //$this->addArgument( 'argument', InputArgument::OPTIONAL, 'Argument description', 'default' );
         //$this->addOption( 'name', 'shortcut', InputOption::VALUE_OPTIONAL, 'Option description' );
     }
