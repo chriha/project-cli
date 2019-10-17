@@ -2,5 +2,5 @@
 
 return [
     'projects' => [],
-    'updated' => null,
+    'latest_version_check_at' => null,
 ];

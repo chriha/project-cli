@@ -11,6 +11,9 @@ class Application
 {
 
     /** @var array */
+    private $default;
+
+    /** @var array */
     protected $config;
 
     /** @var string */
@@ -63,11 +66,12 @@ class Application
 
     private function loadConfig()
     {
-        $path = Helpers::home( $this->file );
+        $path          = Helpers::home( $this->file );
+        $this->default = require_once __DIR__ . '/../../Config/default.php';
 
         if ( ! $path || ! is_file( $path ) )
         {
-            $this->config = require_once __DIR__ . '/../../Config/default.php';
+            $this->config = $this->default;
         }
         else
         {
@@ -79,6 +83,8 @@ class Application
             {
                 Helpers::abort( "Unable to parse project config '{$this->file}'" );
             }
+
+            $this->config = array_merge( $this->default, $this->config );
         }
     }
 
