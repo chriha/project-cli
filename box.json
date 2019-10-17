@@ -1,8 +1,8 @@
 {
-    "main": "project",
+    "main": "bin/project",
     "chmod": "0750",
     "compression": "GZ",
-    "output": "bin/project",
+    "output": "project",
     "blacklist": [
         ".editorconfig",
         "./bin",
