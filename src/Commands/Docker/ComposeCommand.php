@@ -25,7 +25,10 @@ class ComposeCommand extends Command
 
     public function handle( Docker $docker ) : void
     {
-        passthru( "docker-compose -f {$docker->config()} " . implode( ' ', $this->getParameters() ) );
+        $docker->process( $this->getParameters() )->setTty( true )->run( function( $type, $buffer )
+        {
+            $this->output->write( $buffer );
+        } );
     }
 
 }
