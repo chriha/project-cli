@@ -27,11 +27,20 @@ class ArgvInput extends \Symfony\Component\Console\Input\ArgvInput
     /**
      * Returns all the provided parameters
      *
+     * @param array $prepend
+     * @param int $offset
      * @return array
      */
-    public function getParameters() : array
+    public function getParameters( array $prepend = [], int $offset = 0 ) : array
     {
-        return $this->parameters;
+        $params = $this->parameters;
+
+        if ( $offset > 0 )
+        {
+            $params = array_slice( $this->parameters, $offset );
+        }
+
+        return array_merge( $prepend, $params );
     }
 
 }
