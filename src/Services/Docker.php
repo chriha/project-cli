@@ -44,9 +44,9 @@ class Docker
      */
     public function process( array $commands = [] ) : Process
     {
-        return new Process(
+        return ( new Process(
             array_merge( [ 'docker-compose', '-f', $this->config() ], $commands )
-        );
+        ) )->setTimeout( 3600 );
     }
 
     public function isRunning( string $service ) : bool
