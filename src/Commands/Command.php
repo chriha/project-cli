@@ -8,7 +8,6 @@ use Chriha\ProjectCLI\Traits\ProvidesOutput;
 use Chriha\ProjectCLI\Traits\ReceivesInput;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -16,7 +15,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
@@ -78,23 +76,7 @@ abstract class Command extends SymfonyCommand
      */
     protected function initialize( InputInterface $input, OutputInterface $output )
     {
-        $verbosityLevelMap = [
-            LogLevel::ALERT   => OutputInterface::VERBOSITY_VERBOSE,
-            LogLevel::WARNING => OutputInterface::VERBOSITY_VERBOSE,
-            LogLevel::INFO    => OutputInterface::VERBOSITY_NORMAL,
-        ];
-
-        $formatLevelMap = [
-            LogLevel::NOTICE  => 'options=bold',
-            LogLevel::ERROR   => 'red',
-            LogLevel::ALERT   => 'red',
-            LogLevel::WARNING => 'comment',
-            LogLevel::DEBUG   => 'comment',
-        ];
-
-        $this->logger = new ConsoleLogger( $output, $verbosityLevelMap, $formatLevelMap );
-
-        Helpers::app()->instance( 'logger', $this->logger );
+        $this->logger = Helpers::logger();
 
         if ( ! $output->getFormatter()->hasStyle( 'red' ) )
         {

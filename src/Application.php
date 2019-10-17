@@ -6,6 +6,8 @@ use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Console\Input\ArgvInput;
 use Chriha\ProjectCLI\Contracts\Plugin;
 use Chriha\ProjectCLI\Libraries\Config\Application as ApplicationConfig;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\Console\ConsoleEvents;
 use Symfony\Component\Console\Event\ConsoleErrorEvent;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
@@ -13,6 +15,7 @@ use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Exception\NamespaceNotFoundException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Dotenv\Dotenv;
@@ -26,6 +29,25 @@ class Application extends \Symfony\Component\Console\Application
     private $defaultCommand;
 
     private $dispatcher;
+
+    /** @var LoggerInterface */
+    private $logger;
+
+    /** @var array */
+    const LEVEL_VERBOSITY = [
+        LogLevel::ALERT   => OutputInterface::VERBOSITY_VERBOSE,
+        LogLevel::WARNING => OutputInterface::VERBOSITY_VERBOSE,
+        LogLevel::INFO    => OutputInterface::VERBOSITY_NORMAL,
+    ];
+
+    /** @var array */
+    const LEVEL_FORMAT = [
+        LogLevel::NOTICE  => 'options=bold',
+        LogLevel::ERROR   => 'red',
+        LogLevel::ALERT   => 'red',
+        LogLevel::WARNING => 'comment',
+        LogLevel::DEBUG   => 'comment',
+    ];
 
 
     /**
@@ -49,6 +71,10 @@ class Application extends \Symfony\Component\Console\Application
 
     public function doRun( InputInterface $input, OutputInterface $output )
     {
+        $this->logger = new ConsoleLogger( $output, static::LEVEL_VERBOSITY, static::LEVEL_FORMAT );
+
+        Helpers::app()->instance( 'logger', $this->logger );
+
         if ( true === $input->hasParameterOption( [ '--version', '-V' ], true ) )
         {
             $output->writeln( $this->getLongVersion() );

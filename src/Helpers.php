@@ -5,6 +5,7 @@ namespace Chriha\ProjectCLI;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Container\Container;
+use Psr\Log\LoggerInterface;
 
 class Helpers
 {
@@ -213,6 +214,15 @@ class Helpers
         {
             copy( $src, $dst );
         }
+    }
+
+    /**
+     * @return LoggerInterface
+     * @throws BindingResolutionException
+     */
+    public static function logger() : LoggerInterface
+    {
+        return static::app( 'logger' );
     }
 
 }
