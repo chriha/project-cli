@@ -49,6 +49,21 @@ class Docker
         ) )->setTimeout( 3600 );
     }
 
+    /**
+     * @param string $service
+     * @param array $commands
+     * @return Process
+     */
+    public function exec( string $service, array $commands = [] ) : Process
+    {
+        if ( ! $this->isRunning( $service ) )
+        {
+            return $this->process( array_merge( [ 'run', '--rm', $service ], $commands ) );
+        }
+
+        return $this->process( array_merge( [ 'exec', $service ], $commands ) );
+    }
+
     public function isRunning( string $service ) : bool
     {
         if ( isset( $this->services[$service] ) ) return $this->services[$service];
