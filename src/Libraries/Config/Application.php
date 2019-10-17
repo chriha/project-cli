@@ -19,8 +19,6 @@ class Application
 
     public function __construct()
     {
-        define( 'DS', DIRECTORY_SEPARATOR );
-
         $home = $_SERVER['HOME'] . DS . '.project';
 
         if ( ! is_dir( $home ) ) mkdir( $home, 700, true );

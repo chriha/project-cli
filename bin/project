@@ -2,6 +2,7 @@
 <?php
 
 define( 'PROJECT_START', microtime( true ) );
+define( 'DS', DIRECTORY_SEPARATOR );
 
 require __DIR__ . '/../vendor/autoload.php';
 
