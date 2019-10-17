@@ -10,7 +10,7 @@ use Illuminate\Container\Container;
 
 Container::setInstance( $container = new Container );
 
-$application = new Application( 'Project CLI', 'v1.0.0-alpha+6' );
+$application = new Application( 'Project CLI', 'v1.0.0-alpha+7' );
 $application->configureApp();
 $application->addCommands( require __DIR__ . '/src/Config/commands.php' );
 $application->addProjectCommands();
