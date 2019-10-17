@@ -45,13 +45,24 @@ trait ReceivesInput
     }
 
     /**
+     * @param string $name
+     * @return bool
+     */
+    public function hasArgument( string $name ) : bool
+    {
+        return isset( $this->input->getArguments()[$name] );
+    }
+
+    /**
      * Returns the provided parameters for the command
      *
+     * @param array $prepend
+     * @param int $start
      * @return array
      */
-    public function getParameters() : array
+    public function getParameters( array $prepend = [], int $start = 0 ) : array
     {
-        return $this->input->getParameters();
+        return $this->input->getParameters( $prepend, $start );
     }
 
 }
