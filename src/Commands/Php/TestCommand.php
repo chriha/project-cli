@@ -3,13 +3,14 @@
 namespace Chriha\ProjectCLI\Commands\Php;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Services\Docker;
 
 class TestCommand extends Command
 {
 
     /** @var string */
-    protected static $defaultName = 'test';
+    protected static $defaultName = 'php:test';
 
     /** @var string */
     protected $description = 'Run unit tests';

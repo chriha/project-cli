@@ -3,7 +3,7 @@
 namespace Chriha\ProjectCLI\Services;
 
 use Chriha\ProjectCLI\Helpers;
-use Symfony\Component\Process\Exception\LogicException;
+use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Process\Process;
 
 class Docker

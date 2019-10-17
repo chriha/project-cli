@@ -9,7 +9,7 @@ class DumpServerCommand extends Command
 {
 
     /** @var string */
-    protected static $defaultName = 'dump-server';
+    protected static $defaultName = 'laravel:dump-server';
 
     /** @var string */
     protected $description = 'Start the dump server to collect dump information';
