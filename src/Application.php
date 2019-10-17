@@ -290,4 +290,11 @@ class Application extends \Symfony\Component\Console\Application
         $this->addCommands( $classes );
     }
 
+    public function __destruct()
+    {
+        $time = round( ( microtime( true ) - PROJECT_START ) * 1000 );
+
+        $this->logger->debug( 'Overall runtime: ' . $time . 'ms' );
+    }
+
 }
