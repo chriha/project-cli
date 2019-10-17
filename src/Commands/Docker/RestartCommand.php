@@ -22,4 +22,9 @@ class RestartCommand extends Command
         $this->call( 'up' );
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE;
+    }
+
 }

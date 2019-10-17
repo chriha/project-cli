@@ -36,4 +36,9 @@ class LogsCommand extends Command
         $this->call( 'docker:compose', $params );
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE;
+    }
+
 }

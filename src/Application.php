@@ -174,6 +174,23 @@ class Application extends \Symfony\Component\Console\Application
         $this->setDispatcher( $dispatcher );
     }
 
+    /**
+     * Adds an array of command objects.
+     *
+     * If a Command is not enabled it will not be added.
+     *
+     * @param \Symfony\Component\Console\Command\Command[] $commands An array of commands
+     */
+    public function addCommands( array $commands )
+    {
+        foreach ( $commands as $command )
+        {
+            if ( method_exists( $command, 'isActive' ) && ! $command::isActive() ) continue;
+
+            $this->add( $command );
+        }
+    }
+
     public function addProjectCommands() : void
     {
         if ( empty( $path = Helpers::projectPath() ) ) return;

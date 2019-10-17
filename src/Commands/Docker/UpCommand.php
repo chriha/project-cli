@@ -36,4 +36,9 @@ class UpCommand extends Command
         $this->spinner( 'Starting project', $process );
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE;
+    }
+
 }

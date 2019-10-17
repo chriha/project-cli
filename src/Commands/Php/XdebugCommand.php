@@ -107,4 +107,9 @@ class XdebugCommand extends Command
         $this->ini = shell_exec( $docker->compose() . ' ' . $docker->runExec() . ' php -i' );
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE;
+    }
+
 }

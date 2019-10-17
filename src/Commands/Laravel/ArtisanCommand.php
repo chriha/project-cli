@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Commands\Laravel;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Services\Docker;
 
 class ArtisanCommand extends Command
@@ -31,6 +32,12 @@ class ArtisanCommand extends Command
             {
                 $this->output->write( $buffer );
             } );
+    }
+
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE
+            && file_exists( Helpers::projectPath( 'src/artisan' ) );
     }
 
 }

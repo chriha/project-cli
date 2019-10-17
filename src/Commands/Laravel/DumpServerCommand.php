@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Commands\Laravel;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Helpers;
 
 class DumpServerCommand extends Command
 {
@@ -20,6 +21,12 @@ class DumpServerCommand extends Command
     public function handle() : void
     {
         $this->call( 'artisan', [ 'dump-server' ] );
+    }
+
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE
+            && file_exists( Helpers::projectPath( 'src/artisan' ) );
     }
 
 }

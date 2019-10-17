@@ -102,4 +102,9 @@ class StatusCommand extends Command
         $this->table( $headers, $data );
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE;
+    }
+
 }

@@ -54,4 +54,9 @@ class CommandCommand extends Command
         $this->info( 'Command successfully created.' );
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE;
+    }
+
 }

@@ -27,4 +27,9 @@ class ExecCommand extends Command
         $this->call( 'docker:compose', $this->getParameters( [ 'exec' ] ) );
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE;
+    }
+
 }

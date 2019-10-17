@@ -33,4 +33,10 @@ class TestCommand extends Command
             } );
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE
+            && file_exists( Helpers::projectPath( 'src/vendor/bin/phpunit' ) );
+    }
+
 }

@@ -96,4 +96,9 @@ class InitCommand extends Command
         rename( getcwd() . DS . "temp" . DS . "src", getcwd() . DS . "src" );
     }
 
+    public static function isActive() : bool
+    {
+        return ! PROJECT_IS_INSIDE;
+    }
+
 }

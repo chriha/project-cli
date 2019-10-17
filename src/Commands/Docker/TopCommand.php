@@ -22,4 +22,9 @@ class TopCommand extends Command
         passthru( "docker-compose -f {$docker->config()} ps | grep 'Up\|Exit' | awk '{print $1}' | tr \"\\n\" \" \" | xargs docker stats --all --format \"table {{.Name}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}\"" );
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE;
+    }
+
 }

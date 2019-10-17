@@ -22,4 +22,9 @@ class DownCommand extends Command
         $this->spinner( 'Shutting down project', $docker->process( [ 'down' ] ) );
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE;
+    }
+
 }
