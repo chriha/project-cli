@@ -22,9 +22,12 @@ class NodeCommand extends Command
 
     public function handle( Docker $docker ) : void
     {
-        $arguments = implode( ' ', $this->getParameters() );
-
-        passthru( "{$docker->compose()} {$docker->runExec( 'node' )} node {$arguments}" );
+        $docker->exec( 'node', $this->getParameters( [ 'node' ] ) )
+            ->setTty( true )
+            ->run( function( $type, $buffer )
+            {
+                $this->output->write( $buffer );
+            } );
     }
 
 }

@@ -25,8 +25,12 @@ class ComposerCommand extends Command
 
     public function handle( Docker $docker ) : void
     {
-        passthru( "{$docker->compose()} {$docker->runExec()} composer "
-            . implode( ' ', $this->getParameters() ) );
+        $docker->exec( 'web', $this->getParameters( [ 'composer' ] ) )
+            ->setTty( true )
+            ->run( function( $type, $buffer )
+        {
+            $this->output->write( $buffer );
+        } );
     }
 
 }

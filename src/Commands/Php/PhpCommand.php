@@ -25,8 +25,12 @@ class PhpCommand extends Command
 
     public function handle( Docker $docker ) : void
     {
-        passthru( "{$docker->compose()} {$docker->runExec()} php "
-            . implode( " ", $this->getParameters() ) );
+        $docker->exec( 'web', $this->getParameters( [ 'php' ] ) )
+            ->setTty( true )
+            ->run( function( $type, $buffer )
+            {
+                $this->output->write( $buffer );
+            } );
     }
 
 }

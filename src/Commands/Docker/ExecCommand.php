@@ -3,8 +3,6 @@
 namespace Chriha\ProjectCLI\Commands\Docker;
 
 use Chriha\ProjectCLI\Commands\Command;
-use Chriha\ProjectCLI\Services\Docker;
-use Symfony\Component\Console\Input\InputArgument as IA;
 
 class ExecCommand extends Command
 {
@@ -21,14 +19,12 @@ class ExecCommand extends Command
 
     public function configure() : void
     {
-        $this->addArgument( 'service', IA::REQUIRED, 'The service you want to execute the command in' )
-            ->addArgument( 'commands', IA::IS_ARRAY, 'The command you want to execute' );
+        $this->addDynamicArguments()->addDynamicOptions();
     }
 
-    public function handle( Docker $docker ) : void
+    public function handle() : void
     {
-        passthru( "docker-compose -f {$docker->config()} exec {$this->argument('service')} "
-            . implode( ' ', $this->argument( 'commands' ) ) );
+        $this->call( 'docker:compose', $this->getParameters( [ 'exec' ] ) );
     }
 
 }

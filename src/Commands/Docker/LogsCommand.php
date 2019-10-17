@@ -22,12 +22,18 @@ class LogsCommand extends Command
             ->addArgument( 'services', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Services to output' );
     }
 
-    public function handle( Docker $docker ) : void
+    public function handle() : void
     {
-        $follow = $this->option( 'follow' ) ? '-f' : '';
+        $params = [ 'logs' ];
 
-        passthru( "docker-compose -f " . $docker->config() . " logs {$follow} "
-            . implode( ' ', $this->argument( 'services' ) ) );
+        if ( $this->option( 'follow' ) )
+        {
+            $params[] = '-f';
+        }
+
+        $params = array_merge( $params, $this->argument( 'services' ) );
+
+        $this->call( 'docker:compose', $params );
     }
 
 }

@@ -25,8 +25,12 @@ class ArtisanCommand extends Command
 
     public function handle( Docker $docker ) : void
     {
-        passthru( "{$docker->compose()} {$docker->runExec()} php artisan "
-            . implode( ' ', $this->getParameters() ) );
+        $docker->exec( 'web', $this->getParameters( [ 'php', 'artisan' ] ) )
+            ->setTty( true )
+            ->run( function( $type, $buffer )
+            {
+                $this->output->write( $buffer );
+            } );
     }
 
 }

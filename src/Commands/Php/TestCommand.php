@@ -25,8 +25,12 @@ class TestCommand extends Command
 
     public function handle( Docker $docker ) : void
     {
-        passthru( "{$docker->compose()} {$docker->runExec( 'test' )} ./vendor/bin/phpunit "
-            . implode( ' ', $this->getParameters() ) );
+        $docker->exec( 'test', $this->getParameters( [ './vendor/bin/phpunit' ] ) )
+            ->setTty( true )
+            ->run( function( $type, $buffer )
+            {
+                $this->output->write( $buffer );
+            } );
     }
 
 }
