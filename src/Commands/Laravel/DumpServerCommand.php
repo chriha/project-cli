@@ -19,7 +19,7 @@ class DumpServerCommand extends Command
 
     public function handle() : void
     {
-        $this->call( 'artisan', [ 'commands' => [ 'dump-server' ] ] );
+        $this->call( 'artisan', [ 'dump-server' ] );
     }
 
 }
