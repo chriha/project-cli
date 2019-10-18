@@ -236,15 +236,18 @@ trait ProvidesOutput
      * @param string $question
      * @param array $choices
      * @param string|null $default
-     * @param mixed|null $attempts
      * @param bool|null $multiple
+     * @param mixed|null $attempts
+     * @param string|null $errorMessage
      * @return string
      */
-    public function choice( $question, array $choices, $default = null, $attempts = null, $multiple = null )
+    public function choice( $question, array $choices, $default = null, $multiple = null, $attempts = null, ?string $errorMessage = null )
     {
         $question = new ChoiceQuestion( $question, $choices, $default );
 
-        $question->setMaxAttempts( $attempts )->setMultiselect( $multiple );
+        $question->setMaxAttempts( $attempts )
+            ->setMultiselect( $multiple )
+            ->setErrorMessage( $errorMessage );
 
         return $this->output->askQuestion( $question );
     }
