@@ -13,6 +13,7 @@ return [
     new \Chriha\ProjectCLI\Commands\Laravel\DumpServerCommand,
     new \Chriha\ProjectCLI\Commands\Make\CommandCommand,
     new \Chriha\ProjectCLI\Commands\Make\PluginCommand,
+    new \Chriha\ProjectCLI\Commands\Make\ReleaseCommand,
     new \Chriha\ProjectCLI\Commands\Php\ComposerCommand,
     new \Chriha\ProjectCLI\Commands\Php\PhpCommand,
     new \Chriha\ProjectCLI\Commands\Php\TestCommand,

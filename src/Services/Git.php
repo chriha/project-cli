@@ -58,11 +58,14 @@ class Git
      */
     public function commitRange( ?string $start, string $head = 'HEAD' ) : array
     {
-        $range = ! is_null( $start ) ? "{$start}..{$head}" : '';
+        $range = ! is_null( $start ) && ! empty( $start )
+            ? "{$start}..{$head}" : '';
 
         $commits = explode( "\n", shell_exec(
             "git log {$range} --pretty=\"format:%h___%s___%ce___%b\""
         ) );
+
+        if ( empty( $commits ) ) return [];
 
         foreach ( $commits as $key => $commit )
         {
