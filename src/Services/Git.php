@@ -2,7 +2,9 @@
 
 namespace Chriha\ProjectCLI\Services;
 
+use Chriha\ProjectCLI\Helpers;
 use PHLAK\SemVer\Version;
+use Symfony\Component\Process\Process;
 
 class Git
 {
@@ -79,10 +81,16 @@ class Git
         return $commits;
     }
 
-    public function tag( Version $version ) : void
+    public function tag( Version $version, bool $push = true ) : void
     {
-        shell_exec( "git tag " . $version->prefix() );
-        shell_exec( "git push origin " . $version->prefix() );
+        $process = new Process( [ 'git tag ' . $version->prefix() ] );
+
+        if ( ! $push ) return;
+
+        $process->run( function() use ( $version )
+        {
+            ( new Process( [ 'git push origin ' . $version->prefix() ] ) )->run();
+        } );
     }
 
 }
