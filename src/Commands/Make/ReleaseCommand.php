@@ -6,8 +6,6 @@ use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Libraries\Config\Project;
 use Chriha\ProjectCLI\Services\Git;
 use PHLAK\SemVer\Version;
-use PhpSchool\CliMenu\Builder\CliMenuBuilder;
-use PhpSchool\CliMenu\CliMenu;
 
 class ReleaseCommand extends Command
 {
@@ -136,7 +134,10 @@ class ReleaseCommand extends Command
 
         if ( ! $this->confirm( 'Deploying ' . $this->release->prefix() . ' to ' . $environment . '?' ) ) return;
 
-        $this->call( 'deploy', [ $this->release->prefix(), $environment ] );
+        $this->call( 'deploy', [
+            'tag'         => $this->release->prefix(),
+            'environment' => $environment
+        ] );
     }
 
 }
