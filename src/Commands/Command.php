@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Commands;
 
 use Chriha\ProjectCLI\Console\Input\ArrayInput;
+use Chriha\ProjectCLI\Console\Output\ProjectStyle;
 use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Traits\ProvidesOutput;
 use Chriha\ProjectCLI\Traits\ReceivesInput;
@@ -86,7 +87,7 @@ abstract class Command extends SymfonyCommand
     protected function execute( InputInterface $input, OutputInterface $output )
     {
         Helpers::app()->instance( 'input', $this->input = $input );
-        Helpers::app()->instance( 'output', $this->output = new SymfonyStyle( $input, $output ) );
+        Helpers::app()->instance( 'output', $this->output = new ProjectStyle( $input, $output ) );
 
         if ( $this->requiresProject && ! PROJECT_IS_INSIDE )
         {
