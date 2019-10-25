@@ -21,7 +21,7 @@ class UpCommand extends Command
 
     protected function configure() : void
     {
-        $this->addOption( 'detach', 'd', InputOption::VALUE_OPTIONAL );
+        $this->addDynamicArguments()->addDynamicOptions();
     }
 
     public function handle( Docker $docker ) : void
@@ -31,7 +31,7 @@ class UpCommand extends Command
             $this->abort( "Ports are already occupied: " . implode( ', ', $blocked ) );
         }
 
-        $process = $docker->process( [ 'up', '-d' ] );
+        $process = $docker->process( $this->getParameters( [ 'up', '-d' ] ) );
 
         $this->spinner( 'Starting project', $process );
     }
