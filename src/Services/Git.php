@@ -81,6 +81,14 @@ class Git
         return $commits;
     }
 
+    public function isClean() : bool
+    {
+        $process = new Process( 'git status --porcelain' );
+        $process->run();
+
+        return empty( $process->getOutput() );
+    }
+
     public function tag( Version $version, bool $push = true ) : void
     {
         $process = new Process( [ 'git tag ' . $version->prefix() ] );
