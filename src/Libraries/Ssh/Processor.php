@@ -67,7 +67,8 @@ class Processor
             usleep( $interval );
         }
 
-        $output = empty( $process->getOutput() ) ? $process->getErrorOutput() : $process->getOutput();
+        $output = empty( $process->getOutput() )
+            ? $process->getErrorOutput() : $process->getOutput();
         $lines  = explode( "\n", $output );
 
         $this->output->write( "\x0D" );
@@ -90,19 +91,9 @@ class Processor
             . " --rsync-path=\"sudo rsync\" -lr {$source} {$this->connection->getHost()}:{$target}";
 
         /** @var Process $process */
-        $process = new Process( $command );
+        $process = new Process( [ $command ] );
 
         return $this->execute( $title, $process, $callback );
-    }
-
-    public function composerInstall( string $path ) : self
-    {
-        $this->run( 'Install composer packages', [
-            "cd {$path}",
-            "sudo composer install --no-dev --no-scripts --optimize-autoloader"
-        ] );
-
-        return $this;
     }
 
     public function getProcess( $script ) : Process
