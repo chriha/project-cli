@@ -43,9 +43,6 @@ abstract class Command extends SymfonyCommand
     /** @var InputInterface */
     public $input;
 
-    /** @var bool */
-    public $inProject = false;
-
     /** @var LoggerInterface */
     protected $logger;
 
