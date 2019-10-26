@@ -17,7 +17,12 @@ class ClearCommand extends Command
 
     protected function configure() : void
     {
-        $this->addOption( 'file', 'f', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The file you want to clear' );
+        $this->addOption(
+            'file',
+            'f',
+            InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
+            'The file you want to clear'
+        );
     }
 
     public function handle() : void
@@ -29,7 +34,8 @@ class ClearCommand extends Command
 
         foreach ( $this->option( 'file' ) as $file )
         {
-            $this->task( "Emptying <comment>{$file}</comment>", function() use ( $file ) {
+            $this->task( "Emptying <comment>{$file}</comment>", function() use ( $file )
+            {
                 $handle = @fopen( $file, "r+" );
 
                 if ( $handle === false ) return false;

@@ -25,10 +25,11 @@ class ComposeCommand extends Command
 
     public function handle( Docker $docker ) : void
     {
-        $docker->process( $this->getParameters() )->setTty( true )->run( function( $type, $buffer )
-        {
-            $this->output->write( $buffer );
-        } );
+        $docker->process( $this->getParameters() )->setTty( true )
+            ->run( function( $type, $buffer )
+            {
+                $this->output->write( $buffer );
+            } );
     }
 
     public static function isActive() : bool

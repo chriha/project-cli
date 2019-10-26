@@ -33,7 +33,7 @@ class TailCommand extends Command
     protected function configure() : void
     {
         $this->addOption( 'file', 'f', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The file to tail' );
-            //->addOption( 'ignore-type', 'i', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The file to tail' );
+        //->addOption( 'ignore-type', 'i', InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY, 'The file to tail' );
     }
 
     public function handle() : void

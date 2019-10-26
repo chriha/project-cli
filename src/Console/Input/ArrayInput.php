@@ -46,9 +46,6 @@ class ArrayInput extends SymfonyArrayInput
         }
 
         return array_merge( $prepend, $params );
-        if ( ! $offset ) return $params;
-
-        return array_slice( $params, $offset );
     }
 
     /**
@@ -58,10 +55,8 @@ class ArrayInput extends SymfonyArrayInput
     {
         foreach ( $this->parameters as $key => $value )
         {
-            if ( '--' === $key )
-            {
-                return;
-            }
+            if ( '--' === $key ) return;
+
             if ( 0 === strpos( $key, '--' ) )
             {
                 $this->addLongOption( substr( $key, 2 ), $value );

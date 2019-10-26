@@ -28,6 +28,11 @@ class ReleaseCommand extends Command
 
     public function handle( Project $config, Git $git ) : void
     {
+        if ( ! $git->isClean() )
+        {
+            $this->abort( 'You working directory is not clean!' );
+        }
+
         $branch = $git->branch();
 
         if ( ! $git->inBranch( 'master' )
@@ -93,6 +98,10 @@ class ReleaseCommand extends Command
                     $this->abort( 'Abort!' );
                     break;
             }
+
+            $config->version( $this->release );
+            $config->save();
+            $git->commit( 'bump version to ' . $this->release->prefix(), true );
 
             $this->info( 'New release version is: ' . $this->release->prefix() );
         }

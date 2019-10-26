@@ -4,7 +4,6 @@ namespace Chriha\ProjectCLI\Commands\Docker;
 
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Services\Docker;
-use Symfony\Component\Console\Input\InputOption;
 
 class UpCommand extends Command
 {

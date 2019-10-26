@@ -38,23 +38,12 @@ class ProjectStyle extends SymfonyStyle
      */
     public function askQuestion( Question $question )
     {
-        //if ( $this->input->isInteractive() )
-        //{
-        //    $this->autoPrependBlock();
-        //}
-
         if ( ! $this->questionHelper )
         {
             $this->questionHelper = new SymfonyQuestionHelper();
         }
 
         $answer = $this->questionHelper->ask( $this->input, $this, $question );
-
-        //if ( $this->input->isInteractive() )
-        //{
-        //    $this->newLine();
-        //    $this->bufferedOutput->write("\n");
-        //}
 
         return $answer;
     }
@@ -69,6 +58,7 @@ class ProjectStyle extends SymfonyStyle
 
             return;
         }
+
         //Prepend new line for each non LF chars (This means no blank line was output before)
         $this->newLine( 2 - substr_count( $chars, "\n" ) );
     }
