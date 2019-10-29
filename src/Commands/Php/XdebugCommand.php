@@ -22,9 +22,6 @@ class XdebugCommand extends Command
     protected $version = null;
 
     /** @var string|null */
-    protected $hostIp = null;
-
-    /** @var string|null */
     protected $ini = null;
 
     /** @var string|null */
@@ -33,8 +30,8 @@ class XdebugCommand extends Command
 
     protected function configure() : void
     {
-        $this->addOption( 'enable', null, InputOption::VALUE_OPTIONAL, 'Enable debug' )
-            ->addOption( 'disable', null, InputOption::VALUE_OPTIONAL, 'Disable debug' );
+        $this->addOption( 'enable', 'e', InputOption::VALUE_NONE, 'Enable debug' )
+            ->addOption( 'disable', 'd', InputOption::VALUE_NONE, 'Disable debug' );
     }
 
     public function handle( Docker $docker ) : void
@@ -48,7 +45,6 @@ class XdebugCommand extends Command
             $this->abort( 'Unable to get PHP version' );
         }
 
-        $this->hostIp    = gethostbyname( gethostname() );
         $this->xdebugIni = "/etc/php/{$this->version}/mods-available/xdebug.ini";
 
         if ( $this->option( 'enable' ) )
@@ -60,16 +56,41 @@ class XdebugCommand extends Command
             $this->disable( $docker );
         }
 
+        $isEnabled = $this->isXdebugEnabled();
+
         $this->output->writeln( "Status: "
-            . ( $this->isXdebugEnabled() ? "<info>enabled</info>" : "<red>disabled</red>" ) );
+            . ( $isEnabled ? "<info>enabled</info>" : "<red>disabled</red>" ) );
+
+        if ( ! $isEnabled ) return;
+
+        $settings = [
+            'xdebug.idekey', 'xdebug.remote_host', 'xdebug.remote_log', 'xdebug.remote_port'
+        ];
+
+        $variables = explode( "\r\n", $this->ini );
+        $variables = array_filter( $variables, function( $value ) use ( $settings )
+        {
+            if ( strpos( $value, 'xdebug.' ) !== 0 ) return false;
+
+            $setting = explode( ' ', $value );
+
+            return in_array( $setting[0], $settings );
+        } );
+
+        foreach ( $variables as $variable )
+        {
+            $this->output->writeln( $variable );
+        }
     }
 
     protected function enable( Docker $docker ) : void
     {
         if ( $this->isXdebugEnabled() ) return;
 
+        // BUG: 'host.docker.internal' only available on Mac
         shell_exec( $docker->compose() . ' ' . $docker->runExec()
-            . " sed -i '' -e 's/xdebug.remote_host=.*/xdebug.remote_host={$this->hostIp}/g' '{$this->xdebugIni}'" );
+            . " sed -i '' -e 's/xdebug.remote_host=.*/xdebug.remote_host=host\.docker\.internal/g' "
+            . "'{$this->xdebugIni}'" );
 
         shell_exec( $docker->compose() . ' ' . $docker->runExec()
             . " ln -fs '{$this->xdebugIni}' '/etc/php/{$this->version}/cli/conf.d/20-xdebug.ini'" );
@@ -87,12 +108,11 @@ class XdebugCommand extends Command
         if ( ! $this->isXdebugEnabled() ) return;
 
         shell_exec( $docker->compose() . ' ' . $docker->runExec()
-            . " rm -f '{$this->xdebugIni}' '/etc/php/{$this->version}/cli/conf.d/20-xdebug.ini'" );
+            . " rm -f '/etc/php/{$this->version}/cli/conf.d/20-xdebug.ini'" );
         shell_exec( $docker->compose() . ' ' . $docker->runExec()
-            . " rm -f '{$this->xdebugIni}' '/etc/php/{$this->version}/fpm/conf.d/20-xdebug.ini'" );
+            . " rm -f '/etc/php/{$this->version}/fpm/conf.d/20-xdebug.ini'" );
 
-        shell_exec( $docker->compose() . ' ' . $docker->runExec()
-            . " service php{$this->version}-fpm restart &> /dev/null" );
+        $docker->exec( 'web', [ 'service', "php{$this->version}-fpm", 'restart', '&>', '/dev/null' ] );
 
         $this->updateIni( $docker );
     }
