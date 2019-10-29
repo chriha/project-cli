@@ -52,16 +52,19 @@ class Docker
     /**
      * @param string $service
      * @param array $commands
+     * @param bool $tty
      * @return Process
      */
-    public function exec( string $service, array $commands = [] ) : Process
+    public function exec( string $service, array $commands = [], bool $tty = true ) : Process
     {
         if ( ! $this->isRunning( $service ) )
         {
-            return $this->process( array_merge( [ 'run', '--rm', $service ], $commands ) );
+            return $this->process( array_merge( [ 'run', '--rm', $service ], $commands ) )
+                ->setTty( $tty );
         }
 
-        return $this->process( array_merge( [ 'exec', $service ], $commands ) );
+        return $this->process( array_merge( [ 'exec', $service ], $commands ) )
+            ->setTty( $tty );
     }
 
     public function isRunning( string $service ) : bool
