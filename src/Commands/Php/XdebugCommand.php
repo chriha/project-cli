@@ -5,6 +5,7 @@ namespace Chriha\ProjectCLI\Commands\Php;
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Services\Docker;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Process\Process;
 
 class XdebugCommand extends Command
 {
@@ -58,8 +59,8 @@ class XdebugCommand extends Command
 
         $isEnabled = $this->isXdebugEnabled();
 
-        $this->output->writeln( "Status: "
-            . ( $isEnabled ? "<info>enabled</info>" : "<red>disabled</red>" ) );
+        $this->output->writeln( sprintf( 'Xdebug %s',
+            ( $isEnabled ? "<info>enabled</info>" : "<red>disabled</red>" ) ) );
 
         if ( ! $isEnabled ) return;
 
@@ -88,17 +89,28 @@ class XdebugCommand extends Command
         if ( $this->isXdebugEnabled() ) return;
 
         // BUG: 'host.docker.internal' only available on Mac
-        shell_exec( $docker->compose() . ' ' . $docker->runExec()
-            . " sed -i '' -e 's/xdebug.remote_host=.*/xdebug.remote_host=host\.docker\.internal/g' "
-            . "'{$this->xdebugIni}'" );
+        $this->task( 'Update Xdebug remote host', function() use ( $docker )
+        {
+            shell_exec( $docker->compose() . ' ' . $docker->runExec()
+                . " sed -i '' -e 's/xdebug.remote_host=.*/xdebug.remote_host=host\.docker\.internal/g' "
+                . "'{$this->xdebugIni}'" );
+        } );
 
-        shell_exec( $docker->compose() . ' ' . $docker->runExec()
-            . " ln -fs '{$this->xdebugIni}' '/etc/php/{$this->version}/cli/conf.d/20-xdebug.ini'" );
-        shell_exec( $docker->compose() . ' ' . $docker->runExec()
-            . " ln -fs '{$this->xdebugIni}' '/etc/php/{$this->version}/fpm/conf.d/20-xdebug.ini'" );
+        $this->task( 'Link module to CLI and FPM', function() use ( $docker )
+        {
+            $path    = '/etc/php/%s/%s/conf.d/20-xdebug.ini';
+            $pathCli = sprintf( $path, $this->version, 'cli' );
+            $pathFpm = sprintf( $path, $this->version, 'fpm' );
 
-        shell_exec( $docker->compose() . ' ' . $docker->runExec()
-            . " service php{$this->version}-fpm restart &> /dev/null" );
+            $docker->exec( 'web', [ 'ln', '-fs', $this->xdebugIni, $pathCli ] )->run();
+            $docker->exec( 'web', [ 'ln', '-fs', $this->xdebugIni, $pathFpm ] )->run();
+        } );
+
+        $this->task( 'Restarting PHP FPM', function() use ( $docker )
+        {
+            $docker->exec( 'web', [ 'service', "php{$this->version}-fpm", 'restart', '&>', '/dev/null' ] )
+                ->disableOutput()->run();
+        } );
 
         $this->updateIni( $docker );
     }
@@ -107,12 +119,21 @@ class XdebugCommand extends Command
     {
         if ( ! $this->isXdebugEnabled() ) return;
 
-        shell_exec( $docker->compose() . ' ' . $docker->runExec()
-            . " rm -f '/etc/php/{$this->version}/cli/conf.d/20-xdebug.ini'" );
-        shell_exec( $docker->compose() . ' ' . $docker->runExec()
-            . " rm -f '/etc/php/{$this->version}/fpm/conf.d/20-xdebug.ini'" );
+        $this->task( 'Unlink module from CLI and FPM', function() use ( $docker )
+        {
+            $path    = '/etc/php/%s/%s/conf.d/20-xdebug.ini';
+            $pathCli = sprintf( $path, $this->version, 'cli' );
+            $pathFpm = sprintf( $path, $this->version, 'fpm' );
 
-        $docker->exec( 'web', [ 'service', "php{$this->version}-fpm", 'restart', '&>', '/dev/null' ] );
+            $docker->exec( 'web', [ 'rm', '-f', $pathCli ] )->run();
+            $docker->exec( 'web', [ 'rm', '-f', $pathFpm ] )->run();
+        } );
+
+        $this->task( 'Restarting PHP FPM', function() use ( $docker )
+        {
+            $docker->exec( 'web', [ 'service', "php{$this->version}-fpm", 'restart', '&>', '/dev/null' ] )
+                ->disableOutput()->run();
+        } );
 
         $this->updateIni( $docker );
     }
