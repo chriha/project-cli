@@ -154,7 +154,7 @@ class Docker
 
             if ( empty( $output ) ) return;
 
-            $info   = preg_split( "/\s{2,}/", $output );
+            $info = preg_split( "/\s{2,}/", $output );
         } );
 
         if ( empty( $info ) ) return [];

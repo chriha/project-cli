@@ -29,7 +29,7 @@ class Git
     }
 
     /**
-     * Checks if the current branch is the one proved
+     * Checks if the current branch is the one provided
      *
      * @param string $branch
      * @return bool
@@ -52,7 +52,7 @@ class Git
     }
 
     /**
-     * Returns the
+     * Returns the commits for the specified range
      *
      * @param string|null $start
      * @param string $head
@@ -87,6 +87,21 @@ class Git
         $process->run();
 
         return empty( $process->getOutput() );
+    }
+
+    public function commit( string $message, bool $push = false ) : bool
+    {
+        $process = new Process( [ sprintf( 'git commit -am "%s"', $message ) ] );
+
+        return ! ! $process->run( function() use ( $push )
+        {
+            if ( ! $push ) return true;
+
+            $branch = $this->branch();
+            $push   = new Process( [ sprintf( 'git push origin %s', $branch ) ] );
+
+            return $push->run();
+        } );
     }
 
     public function tag( Version $version, bool $push = true ) : void
