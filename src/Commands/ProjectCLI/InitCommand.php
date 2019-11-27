@@ -28,6 +28,7 @@ class InitCommand extends Command
     {
         $this->addOption( 'type', 't', InputOption::VALUE_OPTIONAL, 'Type of the project. Options: '
             . implode( ', ', array_keys( $this->types ) ), 'laravel' );
+        $this->addOption( 'repository', null, InputOption::VALUE_REQUIRED, 'Specify the repository to use as base structure' );
         $this->addOption( 'setup', null, InputOption::VALUE_NONE, 'Setup the project by its type' );
         $this->addArgument( 'directory', InputArgument::REQUIRED, 'Project directory' );
     }
@@ -45,13 +46,7 @@ class InitCommand extends Command
             $this->abort( 'You are currently in a project' );
         }
 
-        if ( $this->input->hasOption( 'type' )
-            && ! in_array( $this->option( 'type' ), array_keys( $this->types ) ) )
-        {
-            $this->abort( "Unknown type: {$this->option('type')}" );
-        }
-
-        $repository = $this->types[$this->option( 'type' ) ?? 'laravel'];
+        $repository = $this->repository();
         $directory  = $this->argument( 'directory' );
 
         if ( is_dir( $directory ) )
@@ -93,14 +88,32 @@ class InitCommand extends Command
             'project', 'composer', 'create-project', 'laravel/laravel', $destination
         ], getcwd() ) );
 
-        $this->call( 'down' );
+        $this->spinner( 'Shutting down containers', new Process( [ 'project', 'down' ], getcwd() ) );
 
         // move setup into temp
         rename( getcwd() . DS . 'src' . DS . $destination, getcwd() . DS . 'temp' . DS . 'src' );
         // rm src directory
         Helpers::recursiveRemoveDir( getcwd() . DS . 'src' );
         // mv temp/src into .
-        rename( getcwd() . DS . "temp" . DS . "src", getcwd() . DS . "src" );
+        rename( getcwd() . DS . 'temp' . DS . 'src', getcwd() . DS . 'src' );
+    }
+
+    protected function repository() : string
+    {
+        if ( $this->option( 'repository' ) )
+        {
+            return $this->option( 'repository' );
+        }
+        elseif ( filter_var( $this->option( 'type' ), FILTER_VALIDATE_URL ) )
+        {
+            return $this->option( 'type' );
+        }
+        elseif ( in_array( $this->option( 'type' ), array_keys( $this->types ) ) )
+        {
+            return $this->types[$this->option( 'type' )];
+        }
+
+        $this->abort( sprintf( 'Unknown type: %s', $this->option( 'type' ) ) );
     }
 
     public static function isActive() : bool
