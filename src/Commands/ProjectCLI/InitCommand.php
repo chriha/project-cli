@@ -5,6 +5,7 @@ namespace Chriha\ProjectCLI\Commands\ProjectCLI;
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Services\Docker;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Process\Process;
 
@@ -27,8 +28,8 @@ class InitCommand extends Command
     public function configure() : void
     {
         $this->addOption( 'type', 't', InputOption::VALUE_OPTIONAL, 'Type of the project', 'default' );
-        $this->addOption( 'directory', 'd', InputOption::VALUE_OPTIONAL, 'Project directory' );
         $this->addOption( 'setup', null, InputOption::VALUE_NONE, 'Setup the project by its type' );
+        $this->addArgument( 'directory', InputArgument::REQUIRED, 'Project directory' );
     }
 
     /**
@@ -51,8 +52,15 @@ class InitCommand extends Command
         }
 
         $repository = $this->types[$this->option( 'type' ) ?? 'default'];
-        $directory  = $this->option( 'directory' ) ?? pathinfo( $repository, PATHINFO_FILENAME );
-        $clone      = new Process( [ 'git', 'clone', '-q', $repository, $directory ] );
+        $repository = $this->types[$this->option( 'type' ) ?? 'laravel'];
+        $directory  = $this->argument( 'directory' );
+
+        if ( is_dir( $directory ) )
+        {
+            $this->abort( sprintf( "Directory '%s' already exists", $directory ) );
+        }
+
+        $clone = new Process( [ 'git', 'clone', '-q', $repository, $directory ] );
 
         $this->spinner( 'Setting up project', $clone );
 
