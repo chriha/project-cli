@@ -20,14 +20,14 @@ class InitCommand extends Command
 
     /** @var array */
     protected $types = [
-        'default' => 'https://github.com/chriha/project-cli-env-laravel.git',
         'laravel' => 'https://github.com/chriha/project-cli-env-laravel.git'
     ];
 
 
     public function configure() : void
     {
-        $this->addOption( 'type', 't', InputOption::VALUE_OPTIONAL, 'Type of the project', 'default' );
+        $this->addOption( 'type', 't', InputOption::VALUE_OPTIONAL, 'Type of the project. Options: '
+            . implode( ', ', array_keys( $this->types ) ), 'laravel' );
         $this->addOption( 'setup', null, InputOption::VALUE_NONE, 'Setup the project by its type' );
         $this->addArgument( 'directory', InputArgument::REQUIRED, 'Project directory' );
     }
@@ -51,7 +51,6 @@ class InitCommand extends Command
             $this->abort( "Unknown type: {$this->option('type')}" );
         }
 
-        $repository = $this->types[$this->option( 'type' ) ?? 'default'];
         $repository = $this->types[$this->option( 'type' ) ?? 'laravel'];
         $directory  = $this->argument( 'directory' );
 
@@ -64,7 +63,7 @@ class InitCommand extends Command
 
         $this->spinner( 'Setting up project', $clone );
 
-        if ( ! $this->option( 'type' ) || ! $this->input->hasOption( 'setup' ) ) return;
+        if ( ! $this->option( 'setup' ) ) return;
 
         chdir( $directory );
         Helpers::recursiveRemoveDir( '.git' );
