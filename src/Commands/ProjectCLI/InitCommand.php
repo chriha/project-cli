@@ -20,6 +20,7 @@ class InitCommand extends Command
 
     /** @var array */
     protected $types = [
+        'php'     => 'https://github.com/chriha/project-cli-env-php.git',
         'laravel' => 'https://github.com/chriha/project-cli-env-laravel.git'
     ];
 
@@ -27,7 +28,7 @@ class InitCommand extends Command
     public function configure() : void
     {
         $this->addOption( 'type', 't', InputOption::VALUE_OPTIONAL, 'Type of the project. Options: '
-            . implode( ', ', array_keys( $this->types ) ), 'laravel' );
+            . implode( ', ', array_keys( $this->types ) ), 'php' );
         $this->addOption( 'repository', null, InputOption::VALUE_REQUIRED, 'Specify the repository to use as base structure' );
         $this->addOption( 'setup', null, InputOption::VALUE_NONE, 'Setup the project by its type' );
         $this->addArgument( 'directory', InputArgument::REQUIRED, 'Project directory' );
@@ -58,10 +59,15 @@ class InitCommand extends Command
 
         $this->spinner( 'Initializing project', $clone );
 
+        $path = getcwd() . DS . $directory;
+
+        Helpers::recursiveRemoveDir( $path . DS . '.git' );
+
+        $this->spinner( 'Initializing git', new Process( [ 'git', 'init' ], $path ) );
+
         if ( ! $this->option( 'setup' ) ) return;
 
-        chdir( $directory );
-        Helpers::recursiveRemoveDir( '.git' );
+        chdir( $path );
         copy( '.env.example', '.env' );
         touch( 'src' . DS . '.env' );
 
