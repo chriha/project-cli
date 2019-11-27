@@ -42,7 +42,7 @@ class InitCommand extends Command
     {
         if ( PROJECT_IS_INSIDE )
         {
-            $this->abort( "You are currently in a project" );
+            $this->abort( 'You are currently in a project' );
         }
 
         if ( $this->input->hasOption( 'type' )
@@ -76,18 +76,18 @@ class InitCommand extends Command
         {
             if ( ! empty( $blocked = $docker->hasOccupiedPorts() ) )
             {
-                $this->abort( "Ports are already occupied: " . implode( ', ', $blocked ) );
+                $this->abort( 'Ports are already occupied: ' . implode( ', ', $blocked ) );
             }
 
             $this->setupLaravel();
         }
 
-        $this->info( "Project '{$directory}' successfully set up" );
+        $this->info( sprintf( "Project '%s' successfully set up", $directory ) );
     }
 
     private function setupLaravel() : void
     {
-        $destination = '_setup';
+        $destination = 'temp';
 
         $this->spinner( 'Setting up Laravel', new Process( [
             'project', 'composer', 'create-project', 'laravel/laravel', $destination
@@ -96,9 +96,9 @@ class InitCommand extends Command
         $this->call( 'down' );
 
         // move setup into temp
-        rename( getcwd() . DS . "src" . DS . $destination, getcwd() . DS . "temp" . DS . "src" );
+        rename( getcwd() . DS . 'src' . DS . $destination, getcwd() . DS . 'temp' . DS . 'src' );
         // rm src directory
-        Helpers::recursiveRemoveDir( getcwd() . DS . "src" );
+        Helpers::recursiveRemoveDir( getcwd() . DS . 'src' );
         // mv temp/src into .
         rename( getcwd() . DS . "temp" . DS . "src", getcwd() . DS . "src" );
     }

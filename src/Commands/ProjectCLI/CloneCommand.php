@@ -19,7 +19,7 @@ class CloneCommand extends Command
 
     public function configure() : void
     {
-        $this->addArgument( 'repository', InputArgument::REQUIRED, 'Repository you want to clone' )
+        $this->addArgument( 'repository', InputArgument::REQUIRED, 'The repository you want to clone' )
             ->addArgument( 'directory', InputArgument::OPTIONAL, 'Project directory' );
     }
 
@@ -31,7 +31,7 @@ class CloneCommand extends Command
     {
         if ( PROJECT_IS_INSIDE )
         {
-            $this->abort( "You are currently in a project" );
+            $this->abort( 'You are currently in a project' );
         }
 
         $repository = $this->argument( 'repository' );
