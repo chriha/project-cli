@@ -61,7 +61,7 @@ class InitCommand extends Command
 
         $clone = new Process( [ 'git', 'clone', '-q', $repository, $directory ] );
 
-        $this->spinner( 'Setting up project', $clone );
+        $this->spinner( 'Initializing project', $clone );
 
         if ( ! $this->option( 'setup' ) ) return;
 
