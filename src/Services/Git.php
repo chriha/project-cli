@@ -2,7 +2,6 @@
 
 namespace Chriha\ProjectCLI\Services;
 
-use Chriha\ProjectCLI\Helpers;
 use PHLAK\SemVer\Version;
 use Symfony\Component\Process\Process;
 
@@ -23,9 +22,11 @@ class Git
      */
     public function branch() : string
     {
-        if ( $this->branch ) return $this->branch;
+        if ($this->branch) {
+            return $this->branch;
+        }
 
-        return $this->branch = trim( shell_exec( "git branch | grep \* | cut -d ' ' -f2" ) );
+        return $this->branch = trim(shell_exec("git branch | grep \* | cut -d ' ' -f2"));
     }
 
     /**
@@ -34,7 +35,7 @@ class Git
      * @param string $branch
      * @return bool
      */
-    public function inBranch( string $branch ) : bool
+    public function inBranch(string $branch) : bool
     {
         return $this->branch() == $branch;
     }
@@ -46,9 +47,11 @@ class Git
      */
     public function latestTag() : string
     {
-        return trim( shell_exec(
-            "git describe --tags $(git rev-list --tags --max-count=1) 2> /dev/null"
-        ) );
+        return trim(
+            shell_exec(
+                "git describe --tags $(git rev-list --tags --max-count=1) 2> /dev/null"
+            )
+        );
     }
 
     /**
@@ -58,24 +61,28 @@ class Git
      * @param string $head
      * @return array
      */
-    public function commitRange( ?string $start, string $head = 'HEAD' ) : array
+    public function commitRange(?string $start, string $head = 'HEAD') : array
     {
-        $range = ! is_null( $start ) && ! empty( $start )
+        $range = ! is_null($start) && ! empty($start)
             ? "{$start}..{$head}" : '';
 
-        $commits = explode( "\n", shell_exec(
-            "git log {$range} --pretty=\"format:%h___%s___%ce___%b\""
-        ) );
+        $commits = explode(
+            "\n",
+            shell_exec(
+                "git log {$range} --pretty=\"format:%h___%s___%ce___%b\""
+            )
+        );
 
-        if ( empty( $commits ) ) return [];
+        if (empty($commits)) {
+            return [];
+        }
 
-        foreach ( $commits as $key => $commit )
-        {
-            [ $hash, $subject, $committer, $body ] = explode( "___", $commit );
+        foreach ($commits as $key => $commit) {
+            [$hash, $subject, $committer, $body] = explode("___", $commit);
 
-            $commits[$hash] = compact( 'hash', 'subject', 'committer', 'body' );
+            $commits[$hash] = compact('hash', 'subject', 'committer', 'body');
 
-            unset( $commits[$key] );
+            unset($commits[$key]);
         }
 
         return $commits;
@@ -83,37 +90,45 @@ class Git
 
     public function isClean() : bool
     {
-        $process = new Process( 'git status --porcelain' );
+        $process = new Process(['git', 'status', '--porcelain']);
         $process->run();
 
-        return empty( $process->getOutput() );
+        return empty($process->getOutput());
     }
 
-    public function commit( string $message, bool $push = false ) : bool
+    public function commit(string $message, bool $push = false) : bool
     {
-        $process = new Process( [ sprintf( 'git commit -am "%s"', $message ) ] );
+        $process = new Process([sprintf('git commit -am "%s"', $message)]);
 
-        return ! ! $process->run( function() use ( $push )
-        {
-            if ( ! $push ) return true;
+        return ! ! $process->run(
+            function () use ($push)
+            {
+                if ( ! $push) {
+                    return true;
+                }
 
-            $branch = $this->branch();
-            $push   = new Process( [ sprintf( 'git push origin %s', $branch ) ] );
+                $branch = $this->branch();
+                $push   = new Process([sprintf('git push origin %s', $branch)]);
 
-            return $push->run();
-        } );
+                return $push->run();
+            }
+        );
     }
 
-    public function tag( Version $version, bool $push = true ) : void
+    public function tag(Version $version, bool $push = true) : void
     {
-        $process = new Process( [ 'git tag ' . $version->prefix() ] );
+        $process = new Process(['git tag ' . $version->prefix()]);
 
-        if ( ! $push ) return;
+        if ( ! $push) {
+            return;
+        }
 
-        $process->run( function() use ( $version )
-        {
-            ( new Process( [ 'git push origin ' . $version->prefix() ] ) )->run();
-        } );
+        $process->run(
+            function () use ($version)
+            {
+                (new Process(['git push origin ' . $version->prefix()]))->run();
+            }
+        );
     }
 
 }

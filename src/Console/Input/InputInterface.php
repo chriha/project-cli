@@ -14,6 +14,6 @@ interface InputInterface extends SymfonyInputInterface
      * @param int $offset
      * @return array
      */
-    public function getParameters( array $prepend = [], int $offset = 0 ) : array;
+    public function getParameters(array $prepend = [], int $offset = 0) : array;
 
 }

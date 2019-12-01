@@ -15,18 +15,18 @@ class Helpers
      * @return Container|mixed
      * @throws BindingResolutionException
      */
-    public static function app( $name = null )
+    public static function app($name = null)
     {
-        return $name ? Container::getInstance()->make( $name ) : Container::getInstance();
+        return $name ? Container::getInstance()->make($name) : Container::getInstance();
     }
 
     /**
      * @param string $path
      * @return string|null
      */
-    public static function projectPath( string $path = '' ) : ?string
+    public static function projectPath(string $path = '') : ?string
     {
-        return ! PROJECT_PATHS_PROJECT ? null : PROJECT_PATHS_PROJECT . DS . ltrim( $path, DS );
+        return ! PROJECT_PATHS_PROJECT ? null : PROJECT_PATHS_PROJECT . DS . ltrim($path, DS);
     }
 
     /**
@@ -35,29 +35,31 @@ class Helpers
      * @param string $path
      * @return string|null
      */
-    public static function home( string $path = '' ) : ?string
+    public static function home(string $path = '') : ?string
     {
-        if ( ! PROJECT_PATHS_HOME ) return null;
+        if ( ! PROJECT_PATHS_HOME) {
+            return null;
+        }
 
-        return PROJECT_PATHS_HOME . DS . ltrim( $path, DS );
+        return PROJECT_PATHS_HOME . DS . ltrim($path, DS);
     }
 
     /**
      * @param string $text
      * @throws BindingResolutionException
      */
-    public static function line( $text = '' )
+    public static function line($text = '')
     {
-        static::app( 'output' )->writeln( $text );
+        static::app('output')->writeln($text);
     }
 
     /**
      * @param $text
      * @throws BindingResolutionException
      */
-    public static function danger( $text )
+    public static function danger($text)
     {
-        static::app( 'output' )->writeln( '<fg=red>' . $text . '</>' );
+        static::app('output')->writeln('<fg=red>' . $text . '</>');
     }
 
     /**
@@ -67,10 +69,10 @@ class Helpers
      * @return void
      * @throws BindingResolutionException
      */
-    public static function abort( $text )
+    public static function abort($text)
     {
-        static::danger( $text );
-        exit( 1 );
+        static::danger($text);
+        exit(1);
     }
 
     /**
@@ -79,22 +81,21 @@ class Helpers
      * @param string $date
      * @return string
      */
-    public static function timeAgo( $date )
+    public static function timeAgo($date)
     {
-        return Carbon::parse( $date )->diffForHumans();
+        return Carbon::parse($date)->diffForHumans();
     }
 
     /**
      * @param string $string
      * @return string
      */
-    public static function mbStrReverse( string $string ) : string
+    public static function mbStrReverse(string $string) : string
     {
         $r = '';
 
-        for ( $i = mb_strlen( $string ); $i >= 0; $i-- )
-        {
-            $r .= mb_substr( $string, $i, 1 );
+        for ($i = mb_strlen($string); $i >= 0; $i--) {
+            $r .= mb_substr($string, $i, 1);
         }
 
         return $r;
@@ -106,9 +107,9 @@ class Helpers
      * @param string $command
      * @return bool
      */
-    public static function commandExists( string $command ) : bool
+    public static function commandExists(string $command) : bool
     {
-        return !! `which {$command}`;
+        return ! ! `which {$command}`;
     }
 
     /**
@@ -118,25 +119,25 @@ class Helpers
      * @param string $file
      * @return string|null
      */
-    public static function searchInFile( string $search, string $file ) : ?string
+    public static function searchInFile(string $search, string $file) : ?string
     {
-        $handle = @fopen( $file, "r" );
+        $handle = @fopen($file, "r");
 
-        if ( ! $handle ) return null;
+        if ( ! $handle) {
+            return null;
+        }
 
-        while ( ! feof( $handle ) )
-        {
-            $buffer = fgets( $handle );
+        while ( ! feof($handle)) {
+            $buffer = fgets($handle);
 
-            if ( strpos( $buffer, $search ) !== false )
-            {
-                fclose( $handle );
+            if (strpos($buffer, $search) !== false) {
+                fclose($handle);
 
-                return trim( $buffer );
+                return trim($buffer);
             }
         }
 
-        fclose( $handle );
+        fclose($handle);
 
         return null;
     }
@@ -147,72 +148,70 @@ class Helpers
      * @param string $file
      * @return string|null
      */
-    public static function findNamespace( string $file ) : ?string
+    public static function findNamespace(string $file) : ?string
     {
-        $line = static::searchInFile( 'namespace', $file );
+        $line = static::searchInFile('namespace', $file);
 
-        if ( ! $line ) return null;
+        if ( ! $line) {
+            return null;
+        }
 
-        $position = strpos( $line, 'namespace' );
+        $position = strpos($line, 'namespace');
 
-        return trim( rtrim( substr( $line, $position + 9 ), ';' ) );
+        return trim(rtrim(substr($line, $position + 9), ';'));
     }
 
     public static function hostsFile()
     {
-        if ( PHP_OS === 'Linux' ) return '/etc/hosts';
+        if (PHP_OS === 'Linux') {
+            return '/etc/hosts';
+        }
 
-        if ( PHP_OS !== 'Darwin' )
-        {
-            static::abort( 'Unsupported OS' );
+        if (PHP_OS !== 'Darwin') {
+            static::abort('Unsupported OS');
         }
 
         return '/private/etc/hosts';
     }
 
-    public static function recursiveRemoveDir( string $dir ) : void
+    public static function recursiveRemoveDir(string $dir) : void
     {
-        if ( is_dir( $dir ) )
-        {
-            $files = scandir( $dir );
+        if (is_dir($dir)) {
+            $files = scandir($dir);
 
-            foreach ( $files as $file )
-            {
-                if ( $file == "." || $file == ".." ) continue;
+            foreach ($files as $file) {
+                if ($file == "." || $file == "..") {
+                    continue;
+                }
 
-                static::recursiveRemoveDir( "{$dir}/{$file}" );
+                static::recursiveRemoveDir("{$dir}/{$file}");
             }
 
-            rmdir( $dir );
-        }
-        elseif ( file_exists( $dir ) )
-        {
-            unlink( $dir );
+            rmdir($dir);
+        } elseif (file_exists($dir)) {
+            unlink($dir);
         }
     }
 
-    public static function recursiveCopy( string $src, string $dst ) : void
+    public static function recursiveCopy(string $src, string $dst) : void
     {
-        if ( file_exists( $dst ) )
-        {
-            static::recursiveRemoveDir( $dst );
+        if (file_exists($dst)) {
+            static::recursiveRemoveDir($dst);
         }
 
-        if ( is_dir( $src ) )
-        {
-            mkdir( $dst );
-            $files = scandir( $src );
+        if (is_dir($src)) {
+            mkdir($dst);
+            $files = scandir($src);
 
-            foreach ( $files as $file )
-            {
-                if ( $file == '.' || $file == '..' ) continue;
+            foreach ($files as $file) {
+                if ($file == '.' || $file == '..') {
+                    continue;
+                }
 
-                static::recursiveCopy( "{$src}/{$file}", "{$dst}/{$file}" );
+                static::recursiveCopy("{$src}/{$file}", "{$dst}/{$file}");
             }
-        }
-        elseif ( file_exists( $src ) )
-        {
-            copy( $src, $dst );
+        } elseif (file_exists($src)) {
+            copy($src, $dst);
         }
     }
 
@@ -222,7 +221,7 @@ class Helpers
      */
     public static function logger() : LoggerInterface
     {
-        return static::app( 'logger' );
+        return static::app('logger');
     }
 
 }

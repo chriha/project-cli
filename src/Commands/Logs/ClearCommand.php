@@ -27,24 +27,27 @@ class ClearCommand extends Command
 
     public function handle() : void
     {
-        if ( empty( $this->option( 'file' ) ) )
-        {
-            $this->abort( 'No file specified.' );
+        if (empty($this->option('file'))) {
+            $this->abort('No file specified.');
         }
 
-        foreach ( $this->option( 'file' ) as $file )
-        {
-            $this->task( "Emptying <comment>{$file}</comment>", function() use ( $file )
-            {
-                $handle = @fopen( $file, "r+" );
+        foreach ($this->option('file') as $file) {
+            $this->task(
+                "Emptying <comment>{$file}</comment>",
+                function () use ($file)
+                {
+                    $handle = @fopen($file, "r+");
 
-                if ( $handle === false ) return false;
+                    if ($handle === false) {
+                        return false;
+                    }
 
-                ftruncate( $handle, 0 );
-                fclose( $handle );
+                    ftruncate($handle, 0);
+                    fclose($handle);
 
-                return true;
-            } );
+                    return true;
+                }
+            );
         }
     }
 

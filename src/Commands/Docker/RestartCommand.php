@@ -18,8 +18,8 @@ class RestartCommand extends Command
 
     public function handle()
     {
-        $this->call( 'down' );
-        $this->call( 'up' );
+        $this->call('down');
+        $this->call('up');
     }
 
     public static function isActive() : bool

@@ -17,9 +17,9 @@ class DownCommand extends Command
     /** @var bool */
     protected $requiresProject = true;
 
-    public function handle( Docker $docker ) : void
+    public function handle(Docker $docker) : void
     {
-        $this->spinner( 'Shutting down project', $docker->process( [ 'down' ] ) );
+        $this->spinner('Shutting down project', $docker->process(['down']));
     }
 
     public static function isActive() : bool

@@ -18,43 +18,39 @@ class PluginCommand extends Command
 
     public function configure() : void
     {
-        $this->addArgument( 'cmd', InputArgument::REQUIRED, 'The name of the command' );
+        $this->addArgument('cmd', InputArgument::REQUIRED, 'The name of the command');
     }
 
     public function handle() : void
     {
         $stub = __DIR__ . DS . '..' . DS . '..' . DS . 'Stubs' . DS . 'plugin.stub';
 
-        $cmd   = $this->argument( 'cmd' );
-        $last  = strrpos( $cmd, '/' );
-        $path  = substr( $cmd, 0, $last );
-        $class = substr( $cmd, $last );
+        $cmd   = $this->argument('cmd');
+        $last  = strrpos($cmd, '/');
+        $path  = substr($cmd, 0, $last);
+        $class = substr($cmd, $last);
         $dir   = "plugins" . DS . $path;
-        $file  = Helpers::home( $dir . DS . $class . '.php' );
+        $file  = Helpers::home($dir . DS . $class . '.php');
 
-        if ( file_exists( $file ) )
-        {
-            $this->abort( 'Plugin with this name already exists!' );
+        if (file_exists($file)) {
+            $this->abort('Plugin with this name already exists!');
         }
 
-        @mkdir( Helpers::home( $dir ), 0755, true );
+        @mkdir(Helpers::home($dir), 0755, true);
 
-        $content = file_get_contents( $stub );
-        $content = str_replace( 'DummyClass', ltrim( $class, '/' ), $content );
+        $content = file_get_contents($stub);
+        $content = str_replace('DummyClass', ltrim($class, '/'), $content);
 
-        if ( strpos( $cmd, DS ) !== false )
-        {
-            $namespace = implode( '\\', array_slice( explode( "/", $cmd ), 0, -1 ) );
-            $content   = str_replace( '\\DummyNamespace', "\\{$namespace}", $content );
-        }
-        else
-        {
-            $content   = str_replace( '\\DummyNamespace', '', $content );
+        if (strpos($cmd, DS) !== false) {
+            $namespace = implode('\\', array_slice(explode("/", $cmd), 0, -1));
+            $content   = str_replace('\\DummyNamespace', "\\{$namespace}", $content);
+        } else {
+            $content = str_replace('\\DummyNamespace', '', $content);
         }
 
-        file_put_contents( $file, $content );
+        file_put_contents($file, $content);
 
-        $this->info( 'Plugin successfully created.' );
+        $this->info('Plugin successfully created.');
     }
 
 }

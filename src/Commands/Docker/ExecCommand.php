@@ -24,7 +24,7 @@ class ExecCommand extends Command
 
     public function handle() : void
     {
-        $this->call( 'docker:compose', $this->getParameters( [ 'exec' ] ) );
+        $this->call('docker:compose', $this->getParameters(['exec']));
     }
 
     public static function isActive() : bool

@@ -11,7 +11,7 @@ class Connection
     /** @var string */
     private $host;
 
-    public function __construct( string $env, string $host )
+    public function __construct(string $env, string $host)
     {
         $this->env  = $env;
         $this->host = $host;
@@ -19,7 +19,7 @@ class Connection
 
     public function isLocal() : bool
     {
-        return in_array( $this->host, [ 'local', 'localhost', '127.0.0.1' ] );
+        return in_array($this->host, ['local', 'localhost', '127.0.0.1']);
     }
 
     public function getEnvironment() : string
@@ -39,12 +39,11 @@ class Connection
 
     public function getRsyncCommand() : string
     {
-        $proxy   = ( new Config )->get( $this->getHost(), 'ProxyCommand' );
+        $proxy   = (new Config)->get($this->getHost(), 'ProxyCommand');
         $command = "rsync ";
 
         // add proxy command for jump hosts
-        if ( $proxy )
-        {
+        if ($proxy) {
             $command .= "-e \"ssh -o ProxyCommand='{$proxy}'\"";
         }
 

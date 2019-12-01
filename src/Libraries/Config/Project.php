@@ -22,14 +22,13 @@ class Project
      * @param string $path
      * @return mixed
      */
-    public function get( string $path )
+    public function get(string $path)
     {
-        if ( empty( $this->config ) )
-        {
+        if (empty($this->config)) {
             $this->loadConfig();
         }
 
-        return Arr::get( $this->config, $path );
+        return Arr::get($this->config, $path);
     }
 
     /**
@@ -37,43 +36,40 @@ class Project
      * @param $value
      * @return Project
      */
-    public function set( string $path, $value ) : self
+    public function set(string $path, $value) : self
     {
-        $this->config = Arr::set( $this->config, $path, $value );
+        $this->config = Arr::set($this->config, $path, $value);
 
         return $this;
     }
 
     private function loadConfig()
     {
-        if ( ! PROJECT_IS_INSIDE ) return;
-
-        $path = Helpers::projectPath( $this->file );
-
-        if ( ! $path || ! file_exists( $path ) )
-        {
-            Helpers::abort( "Unable to find project config '{$this->file}'" );
+        if ( ! PROJECT_IS_INSIDE) {
+            return;
         }
 
-        try
-        {
-            $this->config = Yaml::parse( file_get_contents( $path ) );
+        $path = Helpers::projectPath($this->file);
+
+        if ( ! $path || ! file_exists($path)) {
+            Helpers::abort("Unable to find project config '{$this->file}'");
         }
-        catch ( ParseException $e )
-        {
-            Helpers::abort( "Unable to parse project config '{$this->file}'" );
+
+        try {
+            $this->config = Yaml::parse(file_get_contents($path));
+        } catch (ParseException $e) {
+            Helpers::abort("Unable to parse project config '{$this->file}'");
         }
     }
 
-    public function version( Version $version = null ) : Version
+    public function version(Version $version = null) : Version
     {
-        if ( $version )
-        {
-            $this->set( 'version', $version );
+        if ($version) {
+            $this->set('version', $version);
         }
 
-        return ( $version = $this->get( 'version' ) )
-            ? new Version( $version ) : new Version;
+        return ($version = $this->get('version'))
+            ? new Version($version) : new Version;
     }
 
     public function __destruct()
@@ -83,17 +79,19 @@ class Project
 
     public function save()
     {
-        if ( empty( $this->config ) ) return;
+        if (empty($this->config)) {
+            return;
+        }
 
         $config = $this->config;
 
         $config['version'] = $this->version()->prefix();
 
-        ksort( $config );
+        ksort($config);
 
-        $parsed = Yaml::dump( $config );
+        $parsed = Yaml::dump($config);
 
-        file_put_contents( Helpers::projectPath( $this->file ), $parsed );
+        file_put_contents(Helpers::projectPath($this->file), $parsed);
     }
 
 }

@@ -22,45 +22,42 @@ class ProjectStyle extends SymfonyStyle
     private $bufferedOutput;
 
 
-    public function __construct( InputInterface $input, OutputInterface $output )
+    public function __construct(InputInterface $input, OutputInterface $output)
     {
         $this->input          = $input;
         $this->bufferedOutput = new BufferedOutput(
             $output->getVerbosity(), false, clone $output->getFormatter()
         );
 
-        parent::__construct( $input, $output );
+        parent::__construct($input, $output);
     }
 
     /**
      * @param Question $question
      * @return mixed
      */
-    public function askQuestion( Question $question )
+    public function askQuestion(Question $question)
     {
-        if ( ! $this->questionHelper )
-        {
+        if ( ! $this->questionHelper) {
             $this->questionHelper = new SymfonyQuestionHelper();
         }
 
-        $answer = $this->questionHelper->ask( $this->input, $this, $question );
-
-        return $answer;
+        return $this->questionHelper->ask($this->input, $this, $question);
     }
 
     private function autoPrependBlock() : void
     {
-        $chars = substr( str_replace( PHP_EOL, "\n", $this->bufferedOutput->fetch() ), -2 );
+        $chars = substr(str_replace(PHP_EOL, "\n", $this->bufferedOutput->fetch()), -2);
 
-        if ( ! isset( $chars[0] ) )
-        {
-            $this->newLine(); //empty history, so we should start with a new line.
+        if ( ! isset($chars[0])) {
+            // empty history, so we should start with a new line.
+            $this->newLine();
 
             return;
         }
 
-        //Prepend new line for each non LF chars (This means no blank line was output before)
-        $this->newLine( 2 - substr_count( $chars, "\n" ) );
+        // Prepend new line for each non LF chars (This means no blank line was output before)
+        $this->newLine(2 - substr_count($chars, "\n"));
     }
 
 }

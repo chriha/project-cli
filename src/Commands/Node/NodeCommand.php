@@ -20,14 +20,16 @@ class NodeCommand extends Command
         $this->addDynamicArguments()->addDynamicOptions();
     }
 
-    public function handle( Docker $docker ) : void
+    public function handle(Docker $docker) : void
     {
-        $docker->exec( 'node', $this->getParameters( [ 'node' ] ) )
-            ->setTty( true )
-            ->run( function( $type, $buffer )
-            {
-                $this->output->write( $buffer );
-            } );
+        $docker->exec('node', $this->getParameters(['node']))
+            ->setTty(true)
+            ->run(
+                function ($type, $buffer)
+                {
+                    $this->output->write($buffer);
+                }
+            );
     }
 
 }

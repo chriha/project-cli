@@ -22,36 +22,34 @@ class CommandCommand extends Command
 
     public function configure() : void
     {
-        $this->addArgument( 'cmd', InputArgument::REQUIRED, 'The name of the command' )
-            ->addOption( 'command', null, InputOption::VALUE_REQUIRED );
+        $this->addArgument('cmd', InputArgument::REQUIRED, 'The name of the command')
+            ->addOption('command', null, InputOption::VALUE_REQUIRED);
     }
 
     public function handle() : void
     {
         $stub  = __DIR__ . DS . '..' . DS . '..' . DS . 'Stubs' . DS . 'command.stub';
-        $cmd   = $this->argument( 'cmd' );
-        $last  = strrpos( $cmd, '/' );
-        $class = substr( $cmd, $last );
-        $file  = Helpers::projectPath( 'commands' . DS . $cmd . '.php' );
+        $cmd   = $this->argument('cmd');
+        $last  = strrpos($cmd, '/');
+        $class = substr($cmd, $last);
+        $file  = Helpers::projectPath('commands' . DS . $cmd . '.php');
 
-        if ( file_exists( $file ) )
-        {
-            $this->abort( 'Command with this name already exists!' );
+        if (file_exists($file)) {
+            $this->abort('Command with this name already exists!');
         }
 
-        @mkdir( Helpers::projectPath( 'commands' ), 0755, true );
+        @mkdir(Helpers::projectPath('commands'), 0755, true);
 
-        $content = file_get_contents( $stub );
-        $content = str_replace( 'DummyClass', $class, $content );
+        $content = file_get_contents($stub);
+        $content = str_replace('DummyClass', $class, $content);
 
-        if ( $this->option( 'command' ) )
-        {
-            $content = str_replace( 'dummy:command', $this->option( 'command' ), $content );
+        if ($this->option('command')) {
+            $content = str_replace('dummy:command', $this->option('command'), $content);
         }
 
-        file_put_contents( $file, $content );
+        file_put_contents($file, $content);
 
-        $this->info( 'Command successfully created.' );
+        $this->info('Command successfully created.');
     }
 
     public static function isActive() : bool

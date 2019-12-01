@@ -24,20 +24,22 @@ class TestCommand extends Command
         $this->addDynamicArguments()->addDynamicOptions();
     }
 
-    public function handle( Docker $docker ) : void
+    public function handle(Docker $docker) : void
     {
-        $docker->exec( 'test', $this->getParameters( [ './vendor/bin/phpunit' ] ) )
-            ->setTty( true )
-            ->run( function( $type, $buffer )
-            {
-                $this->output->write( $buffer );
-            } );
+        $docker->exec('test', $this->getParameters(['./vendor/bin/phpunit']))
+            ->setTty(true)
+            ->run(
+                function ($type, $buffer)
+                {
+                    $this->output->write($buffer);
+                }
+            );
     }
 
     public static function isActive() : bool
     {
         return PROJECT_IS_INSIDE
-            && file_exists( Helpers::projectPath( 'src/vendor/bin/phpunit' ) );
+            && file_exists(Helpers::projectPath('src/vendor/bin/phpunit'));
     }
 
 }

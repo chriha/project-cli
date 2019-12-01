@@ -20,47 +20,42 @@ trait ProvidesOutput
     /** @var SymfonyStyle */
     public $output;
 
-    public function spinner( string $title, Process $process, Closure $output = null ) : Process
+    public function spinner(string $title, Process $process, Closure $output = null) : Process
     {
         $interval = 50000;
-        $frames   = [ "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" ];
-        $key      = reset( $frames );
+        $frames   = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+        $key      = reset($frames);
 
-        $process->start( $output );
+        $process->start($output);
 
-        while ( $process->isRunning() )
-        {
-            if ( $this->output->isDecorated() )
-            {
+        while ($process->isRunning()) {
+            if ($this->output->isDecorated()) {
                 // Determines if we can use escape sequences
                 // Move the cursor to the beginning of the line
-                $this->output->write( "\x0D" );
+                $this->output->write("\x0D");
                 // Erase the line
-                $this->output->write( "\x1B[2K" );
-            }
-            else
-            {
-                $this->output->writeln( '' ); // Make sure we first close the previous line
+                $this->output->write("\x1B[2K");
+            } else {
+                $this->output->writeln(''); // Make sure we first close the previous line
             }
 
-            $this->output->write( "{$key} $title" );
+            $this->output->write("{$key} $title");
 
-            $key = ( $key = next( $frames ) ) === false ? reset( $frames ) : $key;
-            usleep( $interval );
+            $key = ($key = next($frames)) === false ? reset($frames) : $key;
+            usleep($interval);
         }
 
-        $this->output->write( "\x0D" );
-        $this->output->write( "\x1B[2K" );
+        $this->output->write("\x0D");
+        $this->output->write("\x1B[2K");
         $this->output->writeln(
-            ( $process->isSuccessful() ? '<info>✔</info>' : '<error>failed:</error>' ) . " {$title}"
+            ($process->isSuccessful() ? '<info>✔</info>' : '<error>failed:</error>') . " {$title}"
         );
 
-        if ( ! $process->isSuccessful() )
-        {
-            $output = ! empty( $process->getErrorOutput() )
+        if ( ! $process->isSuccessful()) {
+            $output = ! empty($process->getErrorOutput())
                 ? $process->getErrorOutput() : $process->getOutput();
 
-            Helpers::abort( $output );
+            Helpers::abort($output);
         }
 
         return $process;
@@ -75,20 +70,22 @@ trait ProvidesOutput
      * @param array $columnStyles
      * @return void
      */
-    public function table( array $headers, array $rows, $tableStyle = 'default', array $columnStyles = [] )
-    {
-        $table = new Table( $this->output );
+    public function table(
+        array $headers,
+        array $rows,
+        $tableStyle = 'default',
+        array $columnStyles = []
+    ) {
+        $table = new Table($this->output);
 
-        if ( $rows instanceof Arrayable )
-        {
+        if ($rows instanceof Arrayable) {
             $rows = $rows->toArray();
         }
 
-        $table->setHeaders( (array)$headers )->setRows( $rows )->setStyle( $tableStyle );
+        $table->setHeaders((array)$headers)->setRows($rows)->setStyle($tableStyle);
 
-        foreach ( $columnStyles as $columnIndex => $columnStyle )
-        {
-            $table->setColumnStyle( $columnIndex, $columnStyle );
+        foreach ($columnStyles as $columnIndex => $columnStyle) {
+            $table->setColumnStyle($columnIndex, $columnStyle);
         }
 
         $table->render();
@@ -97,10 +94,10 @@ trait ProvidesOutput
     /**
      * @param string|null $message
      */
-    public function abort( string $message ) : void
+    public function abort(string $message) : void
     {
-        $this->error( $message );
-        exit( 1 );
+        $this->error($message);
+        exit(1);
     }
 
     /**
@@ -109,18 +106,18 @@ trait ProvidesOutput
      * @param null $validator
      * @return mixed
      */
-    public function ask( string $question, $default = null, $validator = null )
+    public function ask(string $question, $default = null, $validator = null)
     {
-        return $this->output->ask( $question, $default, $validator );
+        return $this->output->ask($question, $default, $validator);
     }
 
     /**
      * @param string $string
      * @return void
      */
-    public function info( string $string ) : void
+    public function info(string $string) : void
     {
-        $this->line( $string, 'info' );
+        $this->line($string, 'info');
     }
 
     /**
@@ -130,16 +127,16 @@ trait ProvidesOutput
      * @param string $style
      * @return void
      */
-    public function line( $string, $style = null )
+    public function line($string, $style = null)
     {
         $styled = $style ? "<$style>$string</$style>" : $string;
 
-        $this->output->writeln( $styled );
+        $this->output->writeln($styled);
     }
 
-    public function example( string $command ) : void
+    public function example(string $command) : void
     {
-        $this->line( "  $ {$command}" . PHP_EOL );
+        $this->line("  $ {$command}" . PHP_EOL);
     }
 
     /**
@@ -148,16 +145,15 @@ trait ProvidesOutput
      * @param string $string
      * @return void
      */
-    public function warn( $string )
+    public function warn($string)
     {
-        if ( ! $this->output->getFormatter()->hasStyle( 'warning' ) )
-        {
-            $style = new OutputFormatterStyle( 'yellow' );
+        if ( ! $this->output->getFormatter()->hasStyle('warning')) {
+            $style = new OutputFormatterStyle('yellow');
 
-            $this->output->getFormatter()->setStyle( 'warning', $style );
+            $this->output->getFormatter()->setStyle('warning', $style);
         }
 
-        $this->line( $string, 'warning' );
+        $this->line($string, 'warning');
     }
 
     /**
@@ -167,9 +163,9 @@ trait ProvidesOutput
      * @param bool $default
      * @return bool
      */
-    public function confirm( string $question, bool $default = true )
+    public function confirm(string $question, bool $default = true)
     {
-        return $this->output->confirm( $question, $default );
+        return $this->output->confirm($question, $default);
     }
 
     /**
@@ -178,13 +174,13 @@ trait ProvidesOutput
      * @param string $string
      * @return void
      */
-    public function alert( $string )
+    public function alert($string)
     {
-        $length = Str::length( strip_tags( $string ) ) + 12;
+        $length = Str::length(strip_tags($string)) + 12;
 
-        $this->comment( str_repeat( '*', $length ) );
-        $this->comment( '*     ' . $string . '     *' );
-        $this->comment( str_repeat( '*', $length ) );
+        $this->comment(str_repeat('*', $length));
+        $this->comment('*     ' . $string . '     *');
+        $this->comment(str_repeat('*', $length));
 
         $this->output->newLine();
     }
@@ -195,9 +191,9 @@ trait ProvidesOutput
      * @param string $string
      * @return void
      */
-    public function comment( $string )
+    public function comment($string)
     {
-        $this->line( $string, 'comment' );
+        $this->line($string, 'comment');
     }
 
     /**
@@ -208,9 +204,9 @@ trait ProvidesOutput
      * @param string|null $default
      * @return mixed
      */
-    public function anticipate( $question, array $choices, $default = null )
+    public function anticipate($question, array $choices, $default = null)
     {
-        return $this->askWithCompletion( $question, $choices, $default );
+        return $this->askWithCompletion($question, $choices, $default);
     }
 
     /**
@@ -221,13 +217,13 @@ trait ProvidesOutput
      * @param string|null $default
      * @return mixed
      */
-    public function askWithCompletion( $question, array $choices, $default = null )
+    public function askWithCompletion($question, array $choices, $default = null)
     {
-        $question = new Question( $question, $default );
+        $question = new Question($question, $default);
 
-        $question->setAutocompleterValues( $choices );
+        $question->setAutocompleterValues($choices);
 
-        return $this->output->askQuestion( $question );
+        return $this->output->askQuestion($question);
     }
 
     /**
@@ -241,15 +237,21 @@ trait ProvidesOutput
      * @param string|null $errorMessage
      * @return string
      */
-    public function choice( $question, array $choices, $default = null, $multiple = null, $attempts = null, ?string $errorMessage = null )
-    {
-        $question = new ChoiceQuestion( $question, $choices, $default );
+    public function choice(
+        $question,
+        array $choices,
+        $default = null,
+        $multiple = null,
+        $attempts = null,
+        ?string $errorMessage = null
+    ) {
+        $question = new ChoiceQuestion($question, $choices, $default);
 
-        $question->setMaxAttempts( $attempts )
-            ->setMultiselect( $multiple )
-            ->setErrorMessage( $errorMessage );
+        $question->setMaxAttempts($attempts)
+            ->setMultiselect($multiple)
+            ->setErrorMessage($errorMessage);
 
-        return $this->output->askQuestion( $question );
+        return $this->output->askQuestion($question);
     }
 
     /**
@@ -258,9 +260,9 @@ trait ProvidesOutput
      * @param string $string
      * @return void
      */
-    public function question( $string )
+    public function question($string)
     {
-        $this->line( $string, 'question' );
+        $this->line($string, 'question');
     }
 
     /**
@@ -269,9 +271,9 @@ trait ProvidesOutput
      * @param string $string
      * @return void
      */
-    public function error( $string )
+    public function error($string)
     {
-        $this->line( $string, 'red' );
+        $this->line($string, 'red');
     }
 
     /**
@@ -279,9 +281,9 @@ trait ProvidesOutput
      *
      * @param $text
      */
-    public function step( $text )
+    public function step($text)
     {
-        $this->line( '<fg=blue>==></> ' . $text );
+        $this->line('<fg=blue>==></> ' . $text);
     }
 
     /**
@@ -290,9 +292,9 @@ trait ProvidesOutput
      * @param $question
      * @return mixed
      */
-    public function secret( $question )
+    public function secret($question)
     {
-        return $this->output->askHidden( $question );
+        return $this->output->askHidden($question);
     }
 
     /**
@@ -303,25 +305,27 @@ trait ProvidesOutput
      * @param string $line
      * @return void
      */
-    protected function displayOutput( $type, $host, $line )
+    protected function displayOutput($type, $host, $line)
     {
-        $this->output->write( "\x0D" );
-        $this->output->write( "\x1B[2K" );
-        $lines = explode( "\n", $line );
+        $this->output->write("\x0D");
+        $this->output->write("\x1B[2K");
+        $lines = explode("\n", $line);
 
-        foreach ( $lines as $line )
-        {
-            if ( strlen( trim( $line ) ) === 0 ) continue;
-
-            if ( $type == Process::OUT )
-            {
-                $this->output->write( '<comment>[' . $host . ']</comment>: '
-                    . trim( $line ) . PHP_EOL );
+        foreach ($lines as $line) {
+            if (strlen(trim($line)) === 0) {
+                continue;
             }
-            else
-            {
-                $this->output->write( '<comment>[' . $host . ']</comment>: <fg=red>'
-                    . trim( $line ) . '</>' . PHP_EOL );
+
+            if ($type == Process::OUT) {
+                $this->output->write(
+                    '<comment>[' . $host . ']</comment>: '
+                    . trim($line) . PHP_EOL
+                );
+            } else {
+                $this->output->write(
+                    '<comment>[' . $host . ']</comment>: <fg=red>'
+                    . trim($line) . '</>' . PHP_EOL
+                );
             }
         }
     }
@@ -333,45 +337,35 @@ trait ProvidesOutput
      * @param  callable|null $task
      * @return bool With the result of the task.
      */
-    protected function task( string $title, Closure $task = null, $loadingText = 'loading ...' )
+    protected function task(string $title, Closure $task = null, $loadingText = 'loading ...')
     {
-        $this->output->write( "$title: <comment>{$loadingText}</comment>" );
+        $this->output->write("$title: <comment>{$loadingText}</comment>");
 
-        if ( $task === null )
-        {
+        if ($task === null) {
             $result = true;
-        }
-        else
-        {
-            try
-            {
+        } else {
+            try {
                 $result = $task() === false ? false : true;
-            }
-            catch ( Exception $taskException )
-            {
+            } catch (Exception $taskException) {
                 $result = false;
             }
         }
 
-        if ( $this->output->isDecorated() )
-        {
+        if ($this->output->isDecorated()) {
             // Determines if we can use escape sequences
             // Move the cursor to the beginning of the line
-            $this->output->write( "\x0D" );
+            $this->output->write("\x0D");
             // Erase the line
-            $this->output->write( "\x1B[2K" );
-        }
-        else
-        {
-            $this->output->writeln( '' ); // Make sure we first close the previous line
+            $this->output->write("\x1B[2K");
+        } else {
+            $this->output->writeln(''); // Make sure we first close the previous line
         }
 
         $this->output->writeln(
-            "$title: " . ( $result ? '<info>✔</info>' : '<error>failed</error>' )
+            "$title: " . ($result ? '<info>✔</info>' : '<error>failed</error>')
         );
 
-        if ( isset( $taskException ) )
-        {
+        if (isset($taskException)) {
             throw $taskException;
         }
 

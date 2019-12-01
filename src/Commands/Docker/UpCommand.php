@@ -23,16 +23,15 @@ class UpCommand extends Command
         $this->addDynamicArguments()->addDynamicOptions();
     }
 
-    public function handle( Docker $docker ) : void
+    public function handle(Docker $docker) : void
     {
-        if ( ! empty( $blocked = $docker->hasOccupiedPorts() ) )
-        {
-            $this->abort( "Ports are already occupied: " . implode( ', ', $blocked ) );
+        if ( ! empty($blocked = $docker->hasOccupiedPorts())) {
+            $this->abort("Ports are already occupied: " . implode(', ', $blocked));
         }
 
-        $process = $docker->process( $this->getParameters( [ 'up', '-d' ] ) );
+        $process = $docker->process($this->getParameters(['up', '-d']));
 
-        $this->spinner( 'Starting project', $process );
+        $this->spinner('Starting project', $process);
     }
 
     public static function isActive() : bool

@@ -21,10 +21,15 @@ class HostsCommand extends Command
 
     public function configure() : void
     {
-        $this->addOption( 'disable', 'd', InputOption::VALUE_REQUIRED, 'Disable host' );
-        $this->addOption( 'enable', 'e', InputOption::VALUE_REQUIRED, 'Enable host' );
-        $this->addOption( 'remove', 'r', InputOption::VALUE_REQUIRED, 'Remove host' );
-        $this->addOption( 'set', 's', InputOption::VALUE_REQUIRED, 'Set a host, comma separated (eg 127.0.0.1,www.example.com)' );
+        $this->addOption('disable', 'd', InputOption::VALUE_REQUIRED, 'Disable host');
+        $this->addOption('enable', 'e', InputOption::VALUE_REQUIRED, 'Enable host');
+        $this->addOption('remove', 'r', InputOption::VALUE_REQUIRED, 'Remove host');
+        $this->addOption(
+            'set',
+            's',
+            InputOption::VALUE_REQUIRED,
+            'Set a host, comma separated (eg 127.0.0.1,www.example.com)'
+        );
     }
 
     public function handle() : void
@@ -32,43 +37,38 @@ class HostsCommand extends Command
         $this->getHosts();
         $save = true;
 
-        if ( ( $host = $this->option( 'disable' ) ) && $this->checkHost( $host ) )
-        {
+        if (($host = $this->option('disable')) && $this->checkHost($host)) {
             $this->hosts[$host]['enabled'] = false;
-        }
-        elseif ( ( $host = $this->option( 'enable' ) ) && $this->checkHost( $host ) )
-        {
+        } elseif (($host = $this->option('enable')) && $this->checkHost($host)) {
             $this->hosts[$host]['enabled'] = true;
-        }
-        elseif ( ( $host = $this->option( 'remove' ) ) && $this->checkHost( $host ) )
-        {
-            unset( $this->hosts[$host] );
-        }
-        elseif ( $set = $this->option( 'set' ) )
-        {
-            [ $ip, $host ] = explode( ',', $set );
+        } elseif (($host = $this->option('remove')) && $this->checkHost($host)) {
+            unset($this->hosts[$host]);
+        } elseif ($set = $this->option('set')) {
+            [$ip, $host] = explode(',', $set);
 
             $this->hosts[$host] = [
                 'enabled' => true,
                 'ip'      => $ip,
                 'host'    => $host,
             ];
-        }
-        else
-        {
+        } else {
             $save = false;
         }
 
-        if ( $save ) $this->save();
+        if ($save) {
+            $this->save();
+        }
 
         $this->list();
     }
 
     protected function checkHost( string $host ) : bool
     {
-        if ( isset( $this->hosts[$host] ) ) return true;
+        if (isset($this->hosts[$host])) {
+            return true;
+        }
 
-        $this->abort( 'Unknown host' );
+        $this->abort('Unknown host');
     }
 
     protected function getHosts() : array
@@ -76,100 +76,105 @@ class HostsCommand extends Command
         $file   = Helpers::hostsFile();
         $isSafe = false;
         $hosts  = [];
-        $handle = fopen( $file, "r" );
+        $handle = fopen($file, "r");
 
-        while ( ( $line = fgets( $handle ) ) !== false )
-        {
-            $line = trim( $line );
+        while (($line = fgets($handle)) !== false) {
+            $line = trim($line);
 
-            if ( empty( $line ) ) continue;
+            if (empty($line)) {
+                continue;
+            }
 
-            $pos = strpos( $line, 'DO NOT CHANGE THE LINES ABOVE' );
+            $pos = strpos($line, 'DO NOT CHANGE THE LINES ABOVE');
 
-            if ( ! $isSafe && $pos === false ) continue;
+            if ( ! $isSafe && $pos === false) {
+                continue;
+            }
 
-            if ( ! $isSafe && ( $isSafe = true ) ) continue;
+            if ( ! $isSafe && ($isSafe = true)) {
+                continue;
+            }
 
-            [ $ip, $host ] = explode( ' ', $line );
+            [$ip, $host] = explode(' ', $line);
 
-            if ( empty( $host ) ) continue;
+            if (empty($host)) {
+                continue;
+            }
 
             $hosts[$host] = [
-                'enabled' => substr( $ip, 0, 1 ) !== '#',
-                'ip'      => ltrim( $ip, '#' ),
+                'enabled' => substr($ip, 0, 1) !== '#',
+                'ip'      => ltrim($ip, '#'),
                 'host'    => $host
             ];
         }
 
-        fclose( $handle );
+        fclose($handle);
 
         return $this->hosts = $hosts;
     }
 
     protected function list() : void
     {
-        if ( empty( $this->hosts ) ) return;
+        if (empty($this->hosts)) {
+            return;
+        }
 
         $list = [];
 
-        foreach ( $this->hosts as $key => $host )
-        {
-            if ( ! $host['enabled'] )
-            {
+        foreach ($this->hosts as $key => $host) {
+            if ( ! $host['enabled']) {
                 $list[$key] = [
                     '<fg=black>  -</>',
-                    sprintf( '<fg=black>%s</>', $host['ip'] ),
-                    sprintf( '<fg=black>%s</>', $host['host'] )
+                    sprintf('<fg=black>%s</>', $host['ip']),
+                    sprintf('<fg=black>%s</>', $host['host'])
                 ];
-            }
-            else
-            {
-                $list[$key] = [ '  ✓', $host['ip'], $host['host'] ];
+            } else {
+                $list[$key] = ['  ✓', $host['ip'], $host['host']];
             }
         }
 
-        $this->table( [ 'Status', 'IP', 'Host' ], $list );
+        $this->table(['Status', 'IP', 'Host'], $list);
     }
 
     protected function save() : void
     {
-        if ( posix_getuid() !== 0 )
-        {
-            $this->abort( 'Superuser privileges required to change the hosts file!' );
+        if (posix_getuid() !== 0) {
+            $this->abort('Superuser privileges required to change the hosts file!');
         }
 
         $file   = Helpers::hostsFile();
-        $handle = fopen( $file, "r" );
+        $handle = fopen($file, "r");
         $lines  = [];
 
-        while ( ( $line = fgets( $handle ) ) !== false )
-        {
-            $line = trim( $line );
+        while (($line = fgets($handle)) !== false) {
+            $line = trim($line);
 
-            if ( empty( $line ) ) continue;
+            if (empty($line)) {
+                continue;
+            }
 
-            $pos = strpos( $line, 'DO NOT CHANGE THE LINES ABOVE' );
+            $pos = strpos($line, 'DO NOT CHANGE THE LINES ABOVE');
 
             $lines[] = $line;
 
-            if ( $pos !== false ) break;
+            if ($pos !== false) {
+                break;
+            }
         }
 
-        fclose( $handle );
+        fclose($handle);
 
-        if ( empty( $lines ) )
-        {
-            $this->abort( 'The hosts file seems to be broken' );
+        if (empty($lines)) {
+            $this->abort('The hosts file seems to be broken');
         }
 
-        foreach ( $this->hosts as $host )
-        {
-            $lines[] = ( $host['enabled'] ? '' : '#' )
-                . sprintf( '%s %s', $host['ip'], $host['host'] );
+        foreach ($this->hosts as $host) {
+            $lines[] = ($host['enabled'] ? '' : '#')
+                . sprintf('%s %s', $host['ip'], $host['host']);
         }
 
-        copy( $file, $file . '.bak.1' );
-        file_put_contents( $file, implode( "\n", $lines ) );
+        copy($file, $file . '.bak.1');
+        file_put_contents($file, implode("\n", $lines));
     }
 
 }

@@ -23,14 +23,16 @@ class PhpCommand extends Command
         $this->addDynamicArguments()->addDynamicOptions();
     }
 
-    public function handle( Docker $docker ) : void
+    public function handle(Docker $docker) : void
     {
-        $docker->exec( 'web', $this->getParameters( [ 'php' ] ) )
-            ->setTty( true )
-            ->run( function( $type, $buffer )
-            {
-                $this->output->write( $buffer );
-            } );
+        $docker->exec('web', $this->getParameters(['php']))
+            ->setTty(true)
+            ->run(
+                function ($type, $buffer)
+                {
+                    $this->output->write($buffer);
+                }
+            );
     }
 
 }

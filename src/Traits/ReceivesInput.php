@@ -16,9 +16,9 @@ trait ReceivesInput
      * @param string $key
      * @return mixed
      */
-    protected function argument( $key )
+    protected function argument($key)
     {
-        return $this->input->getArgument( $key );
+        return $this->input->getArgument($key);
     }
 
     /**
@@ -27,9 +27,9 @@ trait ReceivesInput
      * @param string $key
      * @return mixed
      */
-    protected function option( $key )
+    protected function option($key)
     {
-        return $this->input->getOption( $key );
+        return $this->input->getOption($key);
     }
 
     /**
@@ -38,19 +38,19 @@ trait ReceivesInput
      * @param string $name
      * @return bool
      */
-    public function hasOption( string $name ) : bool
+    public function hasOption(string $name) : bool
     {
-        return isset( $this->input->getOptions()[$name] )
-            || in_array( $name, $this->dynamicOptions );
+        return isset($this->input->getOptions()[$name])
+            || in_array($name, $this->dynamicOptions);
     }
 
     /**
      * @param string $name
      * @return bool
      */
-    public function hasArgument( string $name ) : bool
+    public function hasArgument(string $name) : bool
     {
-        return isset( $this->input->getArguments()[$name] );
+        return isset($this->input->getArguments()[$name]);
     }
 
     /**
@@ -60,9 +60,9 @@ trait ReceivesInput
      * @param int $start
      * @return array
      */
-    public function getParameters( array $prepend = [], int $start = 0 ) : array
+    public function getParameters(array $prepend = [], int $start = 0) : array
     {
-        return $this->input->getParameters( $prepend, $start );
+        return $this->input->getParameters($prepend, $start);
     }
 
 }

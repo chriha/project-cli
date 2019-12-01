@@ -17,9 +17,11 @@ class TopCommand extends Command
     /** @var bool */
     protected $requiresProject = true;
 
-    public function handle( Docker $docker )
+    public function handle(Docker $docker)
     {
-        passthru( "docker-compose -f {$docker->config()} ps | grep 'Up\|Exit' | awk '{print $1}' | tr \"\\n\" \" \" | xargs docker stats --all --format \"table {{.Name}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}\"" );
+        passthru(
+            "docker-compose -f {$docker->config()} ps | grep 'Up\|Exit' | awk '{print $1}' | tr \"\\n\" \" \" | xargs docker stats --all --format \"table {{.Name}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}\""
+        );
     }
 
     public static function isActive() : bool

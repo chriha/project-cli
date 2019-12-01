@@ -14,9 +14,9 @@ class ArrayInput extends SymfonyArrayInput
 
     protected $params = [];
 
-    public function __construct( array $parameters, InputDefinition $definition = null )
+    public function __construct(array $parameters, InputDefinition $definition = null)
     {
-        parent::__construct( $this->params = $parameters, $definition );
+        parent::__construct($this->params = $parameters, $definition);
     }
 
     /**
@@ -26,26 +26,25 @@ class ArrayInput extends SymfonyArrayInput
      * @param int $offset
      * @return array
      */
-    public function getParameters( array $prepend = [], int $offset = 0 ) : array
+    public function getParameters(array $prepend = [], int $offset = 0) : array
     {
         $params = [];
 
-        foreach ( $this->params as $key => $value )
-        {
-            if ( $key === 'command' ) continue;
+        foreach ($this->params as $key => $value) {
+            if ($key === 'command') {
+                continue;
+            }
 
-            if ( is_string( $key ) )
-            {
+            if (is_string($key)) {
                 $params[] = $key;
             }
 
-            if ( is_string( $value ) )
-            {
+            if (is_string($value)) {
                 $params[] = $value;
             }
         }
 
-        return array_merge( $prepend, $params );
+        return array_merge($prepend, $params);
     }
 
     /**
@@ -53,21 +52,17 @@ class ArrayInput extends SymfonyArrayInput
      */
     protected function parse()
     {
-        foreach ( $this->parameters as $key => $value )
-        {
-            if ( '--' === $key ) return;
+        foreach ($this->parameters as $key => $value) {
+            if ('--' === $key) {
+                return;
+            }
 
-            if ( 0 === strpos( $key, '--' ) )
-            {
-                $this->addLongOption( substr( $key, 2 ), $value );
-            }
-            elseif ( 0 === strpos( $key, '-' ) )
-            {
-                $this->addShortOption( substr( $key, 1 ), $value );
-            }
-            else
-            {
-                $this->addArgument( $key, $value );
+            if (0 === strpos($key, '--')) {
+                $this->addLongOption(substr($key, 2), $value);
+            } elseif (0 === strpos($key, '-')) {
+                $this->addShortOption(substr($key, 1), $value);
+            } else {
+                $this->addArgument($key, $value);
             }
         }
     }
@@ -80,14 +75,15 @@ class ArrayInput extends SymfonyArrayInput
      *
      * @throws InvalidOptionException When option given doesn't exist
      */
-    private function addShortOption( $shortcut, $value )
+    private function addShortOption($shortcut, $value)
     {
-        if ( ! $this->definition->hasShortcut( $shortcut ) )
-        {
-            throw new InvalidOptionException( sprintf( 'The "-%s" option does not exist.', $shortcut ) );
+        if ( ! $this->definition->hasShortcut($shortcut)) {
+            throw new InvalidOptionException(
+                sprintf('The "-%s" option does not exist.', $shortcut)
+            );
         }
 
-        $this->addLongOption( $this->definition->getOptionForShortcut( $shortcut )->getName(), $value );
+        $this->addLongOption($this->definition->getOptionForShortcut($shortcut)->getName(), $value);
     }
 
     /**
@@ -99,24 +95,22 @@ class ArrayInput extends SymfonyArrayInput
      * @throws InvalidOptionException When option given doesn't exist
      * @throws InvalidOptionException When a required value is missing
      */
-    private function addLongOption( $name, $value )
+    private function addLongOption($name, $value)
     {
-        if ( ! $this->definition->hasOption( $name ) )
-        {
-            throw new InvalidOptionException( sprintf( 'The "--%s" option does not exist.', $name ) );
+        if ( ! $this->definition->hasOption($name)) {
+            throw new InvalidOptionException(sprintf('The "--%s" option does not exist.', $name));
         }
 
-        $option = $this->definition->getOption( $name );
+        $option = $this->definition->getOption($name);
 
-        if ( null === $value )
-        {
-            if ( $option->isValueRequired() )
-            {
-                throw new InvalidOptionException( sprintf( 'The "--%s" option requires a value.', $name ) );
+        if (null === $value) {
+            if ($option->isValueRequired()) {
+                throw new InvalidOptionException(
+                    sprintf('The "--%s" option requires a value.', $name)
+                );
             }
 
-            if ( ! $option->isValueOptional() )
-            {
+            if ( ! $option->isValueOptional()) {
                 $value = true;
             }
         }
@@ -132,11 +126,10 @@ class ArrayInput extends SymfonyArrayInput
      *
      * @throws InvalidArgumentException When argument given doesn't exist
      */
-    private function addArgument( $name, $value )
+    private function addArgument($name, $value)
     {
-        if ( ! $this->definition->hasArgument( $name ) )
-        {
-            throw new InvalidArgumentException( sprintf( 'The "%s" argument does not exist.', $name ) );
+        if ( ! $this->definition->hasArgument($name)) {
+            throw new InvalidArgumentException(sprintf('The "%s" argument does not exist.', $name));
         }
 
         $this->arguments[$name] = $value;

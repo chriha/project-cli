@@ -23,14 +23,16 @@ class ComposerCommand extends Command
         $this->addDynamicArguments()->addDynamicOptions();
     }
 
-    public function handle( Docker $docker ) : void
+    public function handle(Docker $docker) : void
     {
-        $docker->exec( 'web', $this->getParameters( [ 'composer' ] ) )
-            ->setTty( true )
-            ->run( function( $type, $buffer )
-        {
-            $this->output->write( $buffer );
-        } );
+        $docker->exec('web', $this->getParameters(['composer']))
+            ->setTty(true)
+            ->run(
+                function ($type, $buffer)
+                {
+                    $this->output->write($buffer);
+                }
+            );
     }
 
     public static function isActive() : bool

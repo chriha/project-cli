@@ -20,8 +20,10 @@ class InitCommand extends Command
 
     /** @var array */
     protected $types = [
+        'django'  => 'https://github.com/chriha/project-cli-env-django.git',
+        'laravel' => 'https://github.com/chriha/project-cli-env-laravel.git',
+        'node'    => 'https://github.com/chriha/project-cli-env-node.git',
         'php'     => 'https://github.com/chriha/project-cli-env-php.git',
-        'laravel' => 'https://github.com/chriha/project-cli-env-laravel.git'
     ];
 
 

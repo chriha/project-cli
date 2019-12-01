@@ -20,13 +20,13 @@ class DumpServerCommand extends Command
 
     public function handle() : void
     {
-        $this->call( 'artisan', [ 'dump-server' ] );
+        $this->call('artisan', ['dump-server']);
     }
 
     public static function isActive() : bool
     {
         return PROJECT_IS_INSIDE
-            && file_exists( Helpers::projectPath( 'src/artisan' ) );
+            && file_exists(Helpers::projectPath('src/artisan'));
     }
 
 }

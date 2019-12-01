@@ -28,8 +28,8 @@ class DummyClass extends Command
      */
     public function configure() : void
     {
-        //$this->addArgument( 'argument', InputArgument::OPTIONAL, 'Argument description', 'default' );
-        //$this->addOption( 'name', 'shortcut', InputOption::VALUE_OPTIONAL, 'Option description' );
+        //$this->addArgument('argument', InputArgument::OPTIONAL, 'Argument description', 'default');
+        //$this->addOption('name', 'shortcut', InputOption::VALUE_OPTIONAL, 'Option description');
     }
 
     /**

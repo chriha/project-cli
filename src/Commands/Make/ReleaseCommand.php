@@ -26,54 +26,41 @@ class ReleaseCommand extends Command
     protected $commits = [];
 
 
-    public function handle( Project $config, Git $git ) : void
+    public function handle(Project $config, Git $git) : void
     {
-        if ( ! $git->isClean() )
-        {
-            $this->abort( 'You working directory is not clean!' );
+        if ( ! $git->isClean()) {
+            $this->abort('You working directory is not clean!');
         }
 
         $branch = $git->branch();
 
-        if ( ! $git->inBranch( 'master' )
-            && ! $this->confirm( 'You are not in master. Are you sure you want to proceed?' ) )
-        {
-            $this->abort( 'Aborted!' );
-        }
-        elseif ( empty( $branch ) )
-        {
-            $this->abort( 'Not in a branch. Did you initialize Git?' );
+        if ( ! $git->inBranch('master')
+            && ! $this->confirm('You are not in master. Are you sure you want to proceed?')) {
+            $this->abort('Aborted!');
+        } elseif (empty($branch)) {
+            $this->abort('Not in a branch. Did you initialize Git?');
         }
 
-        if ( ! $config->get( 'version' )
-            && $this->confirm( 'You haven\'t created a version yet. Create now?' ) )
-        {
+        if ( ! $config->get('version')
+            && $this->confirm('You haven\'t created a version yet. Create now?')) {
             $this->release = $config->version();
-        }
-        elseif ( ! $config->get( 'version' ) )
-        {
-            $this->abort( 'Abort!' );
-        }
-        else
-        {
+        } elseif ( ! $config->get('version')) {
+            $this->abort('Abort!');
+        } else {
             $this->release = $config->version();
         }
 
         $gitTag = $git->latestTag();
 
-        if ( empty( $gitTag ) )
-        {
-            $this->warn( "No previous tags found." );
+        if (empty($gitTag)) {
+            $this->warn("No previous tags found.");
 
             $latest = null;
-        }
-        else
-        {
-            $latest = new Version( $gitTag );
+        } else {
+            $latest = new Version($gitTag);
         }
 
-        if ( ! $this->confirm( 'Is ' . $this->release->prefix() . ' the release version?' ) )
-        {
+        if ( ! $this->confirm('Is ' . $this->release->prefix() . ' the release version?')) {
             $choices = [
                 'Bump patch (backwards compatible bug fixes)',
                 'Bump minor (new functionality in a backwards compatible manner)',
@@ -81,10 +68,12 @@ class ReleaseCommand extends Command
                 'Abort'
             ];
 
-            $answer = array_search( $this->choice( 'What would you like to do?', $choices, 0 ), $choices );
+            $answer = array_search(
+                $this->choice('What would you like to do?', $choices, 0),
+                $choices
+            );
 
-            switch ( $answer )
-            {
+            switch ($answer) {
                 case 0:
                     $this->release->incrementPatch();
                     break;
@@ -95,20 +84,19 @@ class ReleaseCommand extends Command
                     $this->release->incrementMajor();
                     break;
                 default:
-                    $this->abort( 'Abort!' );
+                    $this->abort('Abort!');
                     break;
             }
 
-            $config->version( $this->release );
+            $config->version($this->release);
             $config->save();
-            $git->commit( 'bump version to ' . $this->release->prefix(), true );
+            $git->commit('bump version to ' . $this->release->prefix(), true);
 
-            $this->info( 'New release version is: ' . $this->release->prefix() );
+            $this->info('New release version is: ' . $this->release->prefix());
         }
 
-        if ( ! is_null( $latest ) && $latest->gte( $this->release ) )
-        {
-            $this->abort( 'Latest tag is higher than release version!' );
+        if ( ! is_null($latest) && $latest->gte($this->release)) {
+            $this->abort('Latest tag is higher than release version!');
         }
 
         //if ( $this->confirm( 'Would you like to see the commits in this release and add notes / a changelog?', false ) )
@@ -129,24 +117,38 @@ class ReleaseCommand extends Command
         //    }
         //}
 
-        $this->task( 'Creating tag', function() use ( $git )
-        {
-            $git->tag( $this->release );
-        } );
+        $this->task(
+            'Creating tag',
+            function () use ($git)
+            {
+                $git->tag($this->release);
+            }
+        );
 
-        if ( ! $this->getApplication()->has( 'deploy' ) ) return;
+        if ( ! $this->getApplication()->has('deploy')) {
+            return;
+        }
 
-        if ( ! $this->confirm( 'Would you like to deploy this release now?' ) ) return;
+        if ( ! $this->confirm('Would you like to deploy this release now?')) {
+            return;
+        }
 
-        $environments = $config->get( 'environments' ) ?? [ 'stage', 'production', 'test' ];
-        $environment  = $this->choice( 'Choose an environment', $environments, 0 );
+        $environments = $config->get('environments') ?? ['stage', 'production', 'test'];
+        $environment  = $this->choice('Choose an environment', $environments, 0);
 
-        if ( ! $this->confirm( 'Deploying ' . $this->release->prefix() . ' to ' . $environment . '?' ) ) return;
+        if ( ! $this->confirm(
+            'Deploying ' . $this->release->prefix() . ' to ' . $environment . '?'
+        )) {
+            return;
+        }
 
-        $this->call( 'deploy', [
-            'tag'         => $this->release->prefix(),
-            'environment' => $environment
-        ] );
+        $this->call(
+            'deploy',
+            [
+                'tag' => $this->release->prefix(),
+                'environment' => $environment
+            ]
+        );
     }
 
 }

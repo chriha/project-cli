@@ -19,7 +19,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\OutputStyle;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class Command extends SymfonyCommand
 {
@@ -48,13 +47,15 @@ abstract class Command extends SymfonyCommand
     protected $logger;
 
 
-    public function __construct( string $name = null )
+    public function __construct(string $name = null)
     {
-        $this->setDescription( $this->description );
+        $this->setDescription($this->description);
 
-        parent::__construct( $name );
+        parent::__construct($name);
 
-        if ( ! $this->hasDynamicOptions ) return;
+        if ( ! $this->hasDynamicOptions) {
+            return;
+        }
 
         $this->prepareForDynamicOptions();
     }
@@ -72,29 +73,27 @@ abstract class Command extends SymfonyCommand
      * @see InputInterface::bind()
      * @see InputInterface::validate()
      */
-    protected function initialize( InputInterface $input, OutputInterface $output )
+    protected function initialize(InputInterface $input, OutputInterface $output)
     {
         $this->logger = Helpers::logger();
 
-        if ( ! $output->getFormatter()->hasStyle( 'red' ) )
-        {
-            $style = new OutputFormatterStyle( 'red' );
+        if ( ! $output->getFormatter()->hasStyle('red')) {
+            $style = new OutputFormatterStyle('red');
 
-            $output->getFormatter()->setStyle( 'red', $style );
+            $output->getFormatter()->setStyle('red', $style);
         }
     }
 
-    protected function execute( InputInterface $input, OutputInterface $output )
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Helpers::app()->instance( 'input', $this->input = $input );
-        Helpers::app()->instance( 'output', $this->output = new ProjectStyle( $input, $output ) );
+        Helpers::app()->instance('input', $this->input = $input);
+        Helpers::app()->instance('output', $this->output = new ProjectStyle($input, $output));
 
-        if ( $this->requiresProject && ! PROJECT_IS_INSIDE )
-        {
-            Helpers::abort( "You're not in a project" );
+        if ($this->requiresProject && ! PROJECT_IS_INSIDE) {
+            Helpers::abort("You're not in a project");
         }
 
-        return Helpers::app()->call( [ $this, 'handle' ] );
+        return Helpers::app()->call([$this, 'handle']);
     }
 
     /**
@@ -106,14 +105,15 @@ abstract class Command extends SymfonyCommand
      * @return int
      * @throws BindingResolutionException
      */
-    public function call( $command, array $arguments = [], bool $showOutput = true ) : int
+    public function call($command, array $arguments = [], bool $showOutput = true) : int
     {
         $arguments['command'] = $command;
 
-        $output = $showOutput ? Helpers::app( 'output' ) : new NullOutput;
+        $output = $showOutput ? Helpers::app('output') : new NullOutput;
 
-        return $this->getApplication()->find( $command )->run(
-            new ArrayInput( $arguments ), $output
+        return $this->getApplication()->find($command)->run(
+            new ArrayInput($arguments),
+            $output
         );
     }
 
@@ -125,65 +125,64 @@ abstract class Command extends SymfonyCommand
      */
     protected function prepareForDynamicOptions() : void
     {
-        $this->setDefinition( new class( $this->getDefinition(), $this->dynamicOptions ) extends InputDefinition
-        {
+        $this->setDefinition(
+            new class($this->getDefinition(), $this->dynamicOptions) extends InputDefinition {
 
-            protected $dynamicOptions = [];
+                protected $dynamicOptions = [];
 
-            public function __construct( InputDefinition $definition, array &$dynamicOptions )
-            {
-                parent::__construct();
-
-                $this->setArguments( $definition->getArguments() );
-                $this->setOptions( $definition->getOptions() );
-
-                $this->dynamicOptions =& $dynamicOptions;
-            }
-
-            public function getOption( $name )
-            {
-                if ( parent::hasOption( $name ) )
+                public function __construct(InputDefinition $definition, array &$dynamicOptions)
                 {
-                    return parent::getOption( $name );
+                    parent::__construct();
+
+                    $this->setArguments($definition->getArguments());
+                    $this->setOptions($definition->getOptions());
+
+                    $this->dynamicOptions =& $dynamicOptions;
                 }
-                elseif ( ! parent::hasOption( '*' ) )
+
+                public function getOption($name)
                 {
-                    throw new InvalidArgumentException(
-                        sprintf( 'The "--%s" option does not exist.', $name )
+                    if (parent::hasOption($name)) {
+                        return parent::getOption($name);
+                    } elseif ( ! parent::hasOption('*')) {
+                        throw new InvalidArgumentException(
+                            sprintf('The "--%s" option does not exist.', $name)
+                        );
+                    }
+
+                    $this->addOption(
+                        new InputOption($name, null, InputOption::VALUE_OPTIONAL, '', true)
                     );
+
+                    $this->dynamicOptions[] = $name;
+
+                    return parent::getOption($name);
                 }
 
-                $this->addOption(
-                    new InputOption( $name, null, InputOption::VALUE_OPTIONAL, '', true )
-                );
-
-                $this->dynamicOptions[] = $name;
-
-                return parent::getOption( $name );
-            }
-
-            public function hasOption( $name ) : bool
-            {
-                return true;
-            }
-
-            public function hasShortcut( $shortcut ) : bool
-            {
-                return true;
-            }
-
-            public function getOptionForShortcut( $shortcut )
-            {
-                if ( parent::hasShortcut( $shortcut ) )
+                public function hasOption($name) : bool
                 {
-                    return parent::getOptionForShortcut( $shortcut );
+                    return true;
                 }
 
-                $this->addOption( new InputOption( "-{$shortcut}", $shortcut, InputOption::VALUE_OPTIONAL ) );
+                public function hasShortcut($shortcut) : bool
+                {
+                    return true;
+                }
 
-                return parent::getOptionForShortcut( $shortcut );
+                public function getOptionForShortcut($shortcut)
+                {
+                    if (parent::hasShortcut($shortcut)) {
+                        return parent::getOptionForShortcut($shortcut);
+                    }
+
+                    $this->addOption(
+                        new InputOption("-{$shortcut}", $shortcut, InputOption::VALUE_OPTIONAL)
+                    );
+
+                    return parent::getOptionForShortcut($shortcut);
+                }
             }
-        } );
+        );
     }
 
     /**
@@ -193,7 +192,11 @@ abstract class Command extends SymfonyCommand
      */
     public function addDynamicArguments() : self
     {
-        return $this->addArgument( '*', InputArgument::IS_ARRAY | InputArgument::OPTIONAL, 'Arguments for the specified command' );
+        return $this->addArgument(
+            '*',
+            InputArgument::IS_ARRAY | InputArgument::OPTIONAL,
+            'Arguments for the specified command'
+        );
     }
 
     /**
@@ -205,7 +208,17 @@ abstract class Command extends SymfonyCommand
     {
         $this->hasDynamicOptions = true;
 
-        return $this->addOption( '*', null, InputOption::VALUE_OPTIONAL, 'Options for the specified command' );
+        return $this->addOption(
+            '*',
+            null,
+            InputOption::VALUE_OPTIONAL,
+            'Options for the specified command'
+        );
+    }
+
+    public static function isActive() : bool
+    {
+        return true;
     }
 
 }

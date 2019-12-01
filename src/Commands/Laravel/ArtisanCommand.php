@@ -24,20 +24,22 @@ class ArtisanCommand extends Command
         $this->addDynamicArguments()->addDynamicOptions();
     }
 
-    public function handle( Docker $docker ) : void
+    public function handle(Docker $docker) : void
     {
-        $docker->exec( 'web', $this->getParameters( [ 'php', 'artisan' ] ) )
-            ->setTty( true )
-            ->run( function( $type, $buffer )
-            {
-                $this->output->write( $buffer );
-            } );
+        $docker->exec('web', $this->getParameters(['php', 'artisan']))
+            ->setTty(true)
+            ->run(
+                function ($type, $buffer)
+                {
+                    $this->output->write($buffer);
+                }
+            );
     }
 
     public static function isActive() : bool
     {
         return PROJECT_IS_INSIDE
-            && file_exists( Helpers::projectPath( 'src/artisan' ) );
+            && file_exists(Helpers::projectPath('src/artisan'));
     }
 
 }

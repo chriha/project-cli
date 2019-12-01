@@ -18,9 +18,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Throwable;
 
 class Application extends \Symfony\Component\Console\Application
 {
@@ -58,72 +58,71 @@ class Application extends \Symfony\Component\Console\Application
      * @param OutputInterface|null $output
      * @return int 0 if everything went fine, or an error code
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function run( InputInterface $input = null, OutputInterface $output = null )
+    public function run(InputInterface $input = null, OutputInterface $output = null)
     {
-        if ( null === $input )
-        {
+        if (null === $input) {
             $input = new ArgvInput();
         }
 
-        return parent::run( $input, $output );
+        return parent::run($input, $output);
     }
 
-    public function doRun( InputInterface $input, OutputInterface $output )
+    public function doRun(InputInterface $input, OutputInterface $output)
     {
-        $this->logger = new ConsoleLogger( $output, static::LEVEL_VERBOSITY, static::LEVEL_FORMAT );
+        $this->logger = new ConsoleLogger($output, static::LEVEL_VERBOSITY, static::LEVEL_FORMAT);
 
-        Helpers::app()->instance( 'logger', $this->logger );
+        Helpers::app()->instance('logger', $this->logger);
 
-        if ( true === $input->hasParameterOption( [ '--version', '-V' ], true ) )
-        {
-            $output->writeln( $this->getLongVersion() );
+        if (true === $input->hasParameterOption(['--version', '-V'], true)) {
+            $output->writeln($this->getLongVersion());
 
             return 0;
         }
 
-        try
-        {
+        try {
             // Makes ArgvInput::getFirstArgument() able to distinguish an option from an argument.
-            $input->bind( $this->getDefinition() );
-        }
-        catch ( ExceptionInterface $e )
-        {
+            $input->bind($this->getDefinition());
+        } catch (ExceptionInterface $e) {
             // Errors must be ignored, full binding/validation happens later when the command is known.
         }
 
-        $name = $this->getCommandName( $input ) ?? 'list';
+        $name = $this->getCommandName($input) ?? 'list';
 
-        if ( ! $name )
-        {
+        if ( ! $name) {
             $name       = $this->defaultCommand;
             $definition = $this->getDefinition();
-            $definition->setArguments( array_merge(
-                $definition->getArguments(),
-                [
-                    'command' => new InputArgument( 'command', InputArgument::OPTIONAL, $definition->getArgument( 'command' )->getDescription(), $name ),
-                ]
-            ) );
+            $definition->setArguments(
+                array_merge(
+                    $definition->getArguments(),
+                    [
+                        'command' => new InputArgument(
+                            'command',
+                            InputArgument::OPTIONAL,
+                            $definition->getArgument(
+                                'command'
+                            )->getDescription(),
+                            $name
+                        ),
+                    ]
+                )
+            );
         }
 
-        try
-        {
+        try {
             $this->runningCommand = null;
             // the command name MUST be the first element of the input
-            $command = $this->find( $name );
-        }
-        catch ( \Throwable $e )
-        {
-            if ( ! ( $e instanceof CommandNotFoundException && ! $e instanceof NamespaceNotFoundException ) || 1 !== \count( $alternatives = $e->getAlternatives() ) || ! $input->isInteractive() )
-            {
-                if ( null !== $this->dispatcher )
-                {
-                    $event = new ConsoleErrorEvent( $input, $output, $e );
-                    $this->dispatcher->dispatch( $event, ConsoleEvents::ERROR );
+            $command = $this->find($name);
+        } catch (Throwable $e) {
+            if ( ! ($e instanceof CommandNotFoundException && ! $e instanceof NamespaceNotFoundException) || 1 !== \count(
+                    $alternatives = $e->getAlternatives()
+                ) || ! $input->isInteractive()) {
+                if (null !== $this->dispatcher) {
+                    $event = new ConsoleErrorEvent($input, $output, $e);
+                    $this->dispatcher->dispatch($event, ConsoleEvents::ERROR);
 
-                    if ( 0 === $event->getExitCode() )
-                    {
+                    if (0 === $event->getExitCode()) {
                         return 0;
                     }
 
@@ -135,15 +134,16 @@ class Application extends \Symfony\Component\Console\Application
 
             $alternative = $alternatives[0];
 
-            $style = new ProjectStyle( $input, $output );
-            $style->block( sprintf( "\nCommand \"%s\" is not defined.\n", $name ), null, 'error' );
+            $style = new ProjectStyle($input, $output);
+            $style->block(sprintf("\nCommand \"%s\" is not defined.\n", $name), null, 'error');
 
-            if ( ! $style->confirm( sprintf( 'Do you want to run "%s" instead? ', $alternative ), false ) )
-            {
-                if ( null !== $this->dispatcher )
-                {
-                    $event = new ConsoleErrorEvent( $input, $output, $e );
-                    $this->dispatcher->dispatch( $event, ConsoleEvents::ERROR );
+            if ( ! $style->confirm(
+                sprintf('Do you want to run "%s" instead? ', $alternative),
+                false
+            )) {
+                if (null !== $this->dispatcher) {
+                    $event = new ConsoleErrorEvent($input, $output, $e);
+                    $this->dispatcher->dispatch($event, ConsoleEvents::ERROR);
 
                     return $event->getExitCode();
                 }
@@ -151,11 +151,11 @@ class Application extends \Symfony\Component\Console\Application
                 return 1;
             }
 
-            $command = $this->find( $alternative );
+            $command = $this->find($alternative);
         }
 
         $this->runningCommand = $command;
-        $exitCode             = $this->doRunCommand( $command, $input, $output );
+        $exitCode             = $this->doRunCommand($command, $input, $output);
         $this->runningCommand = null;
 
         return $exitCode;
@@ -163,24 +163,23 @@ class Application extends \Symfony\Component\Console\Application
 
     public function configureApp() : void
     {
-        Helpers::app()->instance( 'app', $this );
+        Helpers::app()->instance('app', $this);
 
         $this->dispatchErrorEvent();
 
-        $path      = trim( shell_exec( 'git rev-parse --show-toplevel 2>/dev/null' ) );
-        $path      = ( empty( $path ) && ! is_dir( getcwd() . DS . 'src' ) ) ? null : $path;
+        $path      = trim(shell_exec('git rev-parse --show-toplevel 2>/dev/null'));
+        $path      = (empty($path) && ! is_dir(getcwd() . DS . 'src')) ? null : $path;
         $inProject = ! ! $path;
 
-        define( 'PROJECT_PATHS_PROJECT', $path ?? '' );
-        define( 'PROJECT_IS_INSIDE', $inProject );
+        define('PROJECT_PATHS_PROJECT', $path ?? '');
+        define('PROJECT_IS_INSIDE', $inProject);
 
-        Helpers::app()->instance( 'config', new ApplicationConfig );
+        Helpers::app()->instance('config', new ApplicationConfig);
 
-        if ( $inProject && ! ! $path
-            && file_exists( ( $envPath = Helpers::projectPath( '.env' ) ) ) )
-        {
+        if ($inProject && ! ! $path
+            && file_exists(($envPath = Helpers::projectPath('.env')))) {
             $dotEnv = new Dotenv();
-            $dotEnv->loadEnv( $envPath );
+            $dotEnv->loadEnv($envPath);
         }
     }
 
@@ -188,17 +187,22 @@ class Application extends \Symfony\Component\Console\Application
     {
         $dispatcher = new EventDispatcher();
 
-        $dispatcher->addListener( ConsoleEvents::ERROR, function( ConsoleErrorEvent $event )
-        {
-            $event->getOutput()->writeln( sprintf(
-                'Oops, exception thrown while running command <info>%s</info>. If you think '
-                . PHP_EOL . 'this is a problem with ProjectCLI, please feel free to create an issue at '
-                . PHP_EOL . '<comment>https://github.com/chriha/project-cli/issues</comment>',
-                $event->getCommand()->getName()
-            ) );
-        } );
+        $dispatcher->addListener(
+            ConsoleEvents::ERROR,
+            function (ConsoleErrorEvent $event)
+            {
+                $event->getOutput()->writeln(
+                    sprintf(
+                        'Oops, exception thrown while running command <info>%s</info>. If you think '
+                        . PHP_EOL . 'this is a problem with ProjectCLI, please feel free to create an issue at '
+                        . PHP_EOL . '<comment>https://github.com/chriha/project-cli/issues</comment>',
+                        $event->getCommand()->getName()
+                    )
+                );
+            }
+        );
 
-        $this->setDispatcher( $dispatcher );
+        $this->setDispatcher($dispatcher);
     }
 
     /**
@@ -208,94 +212,119 @@ class Application extends \Symfony\Component\Console\Application
      *
      * @param \Symfony\Component\Console\Command\Command[] $commands An array of commands
      */
-    public function addCommands( array $commands )
+    public function addCommands(array $commands)
     {
-        foreach ( $commands as $command )
-        {
-            if ( method_exists( $command, 'isActive' ) && ! $command::isActive() ) continue;
+        /** @var Command $command */
+        foreach ($commands as $command) {
+            if (method_exists($command, 'isActive') && ! $command::isActive()) {
+                continue;
+            }
 
-            $this->add( $command );
+            $this->add($command);
         }
     }
 
     public function addProjectCommands() : void
     {
-        if ( empty( $path = Helpers::projectPath() ) ) return;
+        if (empty($path = Helpers::projectPath())) {
+            return;
+        }
 
-        if ( ! is_dir( "{$path}/commands" ) ) return;
+        if ( ! is_dir("{$path}/commands")) {
+            return;
+        }
 
-        if ( ! ( $handle = opendir( "{$path}/commands" ) ) ) return;
+        if ( ! ($handle = opendir("{$path}/commands"))) {
+            return;
+        }
 
         $classes = [];
 
-        while ( false !== ( $file = readdir( $handle ) ) )
-        {
-            if ( $file == "." || $file == ".." ) continue;
+        while (false !== ($file = readdir($handle))) {
+            if ($file == "." || $file == "..") {
+                continue;
+            }
 
-            require_once( $path . DS . 'commands' . DS . $file );
+            require_once($path . DS . 'commands' . DS . $file);
 
             /** @var Command $class */
-            $class = "\Project\Commands\\" . rtrim( $file, '.php' );
+            $class = "\Project\Commands\\" . rtrim($file, '.php');
 
             // TODO: throw exception
-            if ( ! class_exists( $class ) ) continue;
+            if ( ! class_exists($class)) {
+                continue;
+            }
 
             $classes[] = new $class;
         }
 
-        closedir( $handle );
+        closedir($handle);
 
-        $this->addCommands( $classes );
+        $this->addCommands($classes);
     }
 
     public function addPluginCommands() : void
     {
-        if ( empty( $path = Helpers::home( 'plugins' ) ) ) return;
+        if (empty($path = Helpers::home('plugins'))) {
+            return;
+        }
 
-        if ( ! is_dir( $path ) ) return;
+        if ( ! is_dir($path)) {
+            return;
+        }
 
-        if ( ! ( $dirHandle = opendir( $path ) ) ) return;
+        if ( ! ($dirHandle = opendir($path))) {
+            return;
+        }
 
         $classes = [];
 
-        while ( false !== ( $dir = readdir( $dirHandle ) ) )
-        {
-            if ( $dir == "." || $dir == ".." ) continue;
+        while (false !== ($dir = readdir($dirHandle))) {
+            if ($dir == "." || $dir == "..") {
+                continue;
+            }
 
-            if ( ! is_dir( $path . DS . $dir ) ) continue;
+            if ( ! is_dir($path . DS . $dir)) {
+                continue;
+            }
 
-            if ( ! ( $fileHandle = opendir( $path . DS . $dir ) ) ) return;
+            if ( ! ($fileHandle = opendir($path . DS . $dir))) {
+                return;
+            }
 
-            while ( false !== ( $file = readdir( $fileHandle ) ) )
-            {
-                if ( $file == "." || $file == ".." ) continue;
+            while (false !== ($file = readdir($fileHandle))) {
+                if ($file == "." || $file == "..") {
+                    continue;
+                }
 
                 $filePath  = $path . DS . $dir . DS . $file;
-                $namespace = Helpers::findNamespace( $filePath );
+                $namespace = Helpers::findNamespace($filePath);
                 /** @var Plugin $class */
-                $class = "\\{$namespace}\\" . rtrim( $file, '.php' );
+                $class = "\\{$namespace}\\" . rtrim($file, '.php');
 
-                require_once( $filePath );
+                require_once($filePath);
 
                 // TODO: throw exception
-                if ( ! class_exists( $class ) ) continue;
+                if ( ! class_exists($class)) {
+                    continue;
+                }
 
                 $classes[] = new $class;
             }
 
-            closedir( $fileHandle );
+            closedir($fileHandle);
         }
 
-        closedir( $dirHandle );
+        closedir($dirHandle);
 
-        $this->addCommands( $classes );
+        $this->addCommands($classes);
     }
 
     public function __destruct()
     {
-        $time = round( ( microtime( true ) - PROJECT_START ) * 1000 );
+        $time = round((microtime(true) - PROJECT_START) * 1000);
 
-        $this->logger->debug( 'Overall runtime: ' . $time . 'ms' );
+        $this->logger->debug('Overall runtime: ' . $time . 'ms');
     }
 
 }

@@ -3,7 +3,6 @@
 namespace Chriha\ProjectCLI\Commands\Docker;
 
 use Chriha\ProjectCLI\Commands\Command;
-use Chriha\ProjectCLI\Services\Docker;
 use Symfony\Component\Console\Input\InputArgument;
 
 class LogsCommand extends Command
@@ -18,22 +17,25 @@ class LogsCommand extends Command
 
     public function configure() : void
     {
-        $this->addOption( 'follow', 'f', null, 'Follow log output' )
-            ->addArgument( 'services', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'Services to output' );
+        $this->addOption('follow', 'f', null, 'Follow log output')
+            ->addArgument(
+                'services',
+                InputArgument::OPTIONAL | InputArgument::IS_ARRAY,
+                'Services to output'
+            );
     }
 
     public function handle() : void
     {
-        $params = [ 'logs' ];
+        $params = ['logs'];
 
-        if ( $this->option( 'follow' ) )
-        {
+        if ($this->option('follow')) {
             $params[] = '-f';
         }
 
-        $params = array_merge( $params, $this->argument( 'services' ) );
+        $params = array_merge($params, $this->argument('services'));
 
-        $this->call( 'docker:compose', $params );
+        $this->call('docker:compose', $params);
     }
 
     public static function isActive() : bool

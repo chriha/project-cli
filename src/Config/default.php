@@ -1,6 +1,6 @@
 <?php
 
 return [
-    'projects' => [],
+    'projects'                => [],
     'latest_version_check_at' => null,
 ];
