@@ -45,6 +45,11 @@ class Docker
         throw new LogicException('Unable to find docker-compose file');
     }
 
+    public function run(array $commands, string $cwd = null) : Process
+    {
+        return (new Process(array_merge(['docker', 'run', '--tty'], $commands), $cwd));
+    }
+
     /**
      * @param array $commands
      * @return Process

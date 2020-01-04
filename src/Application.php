@@ -35,6 +35,9 @@ class Application extends \Symfony\Component\Console\Application
     private $logger;
 
     /** @var array */
+    private $plugins;
+
+    /** @var array */
     const LEVEL_VERBOSITY = [
         LogLevel::ALERT   => OutputInterface::VERBOSITY_VERBOSE,
         LogLevel::WARNING => OutputInterface::VERBOSITY_VERBOSE,
@@ -265,11 +268,7 @@ class Application extends \Symfony\Component\Console\Application
 
     public function addPluginCommands() : void
     {
-        if (empty($path = Helpers::home('plugins'))) {
-            return;
-        }
-
-        if ( ! is_dir($path)) {
+        if (empty($path = Helpers::home('plugins')) || ! is_dir($path)) {
             return;
         }
 
@@ -277,47 +276,52 @@ class Application extends \Symfony\Component\Console\Application
             return;
         }
 
-        $classes = [];
+        $this->plugins = [];
+        $commands      = null;
 
-        while (false !== ($dir = readdir($dirHandle))) {
-            if ($dir == "." || $dir == "..") {
+        // looping through ~/.project/plugins/...
+        while (false !== ($namespace = readdir($dirHandle))) {
+            if ( ! ($namespaceHandle = $this->subdirectoryHandle($path . DS . $namespace))) {
                 continue;
             }
 
-            if ( ! is_dir($path . DS . $dir)) {
-                continue;
-            }
+            // looping through ~/.project/plugins/NAMESPACE/...
+            while (false !== ($pluginName = readdir($namespaceHandle))) {
+                $pluginPath = $path . DS . $namespace . DS . $pluginName;
 
-            if ( ! ($fileHandle = opendir($path . DS . $dir))) {
-                return;
-            }
-
-            while (false !== ($file = readdir($fileHandle))) {
-                if ($file == "." || $file == "..") {
+                if ( ! ($fileHandle = $this->subdirectoryHandle($pluginPath))) {
                     continue;
                 }
 
-                $filePath  = $path . DS . $dir . DS . $file;
-                $namespace = Helpers::findNamespace($filePath);
-                /** @var Plugin $class */
-                $class = "\\{$namespace}\\" . rtrim($file, '.php');
+                $composerFile = $pluginPath . DS . 'composer.json';
+                $pluginFile   = $pluginPath . DS . 'plugin.php';
+                $config       = json_decode(file_get_contents($composerFile), true);
 
-                require_once($filePath);
+                if ( ! isset($config['name'])) {
+                    Helpers::danger('Missing plugin name (' . $pluginName . ')');
+                }
 
-                // TODO: throw exception
-                if ( ! class_exists($class)) {
+                $plugin = require_once $pluginFile;
+
+                if (is_null($plugin['commands']) || empty($plugin['commands'])) {
                     continue;
                 }
 
-                $classes[] = new $class;
+                foreach ($plugin['commands'] as $command) {
+                    if ( ! (new $command) instanceof Plugin) {
+                        continue;
+                    }
+
+                    $this->plugins[] = new $command();
+                }
             }
 
-            closedir($fileHandle);
+            closedir($namespaceHandle);
         }
 
         closedir($dirHandle);
 
-        $this->addCommands($classes);
+        $this->addCommands($this->plugins);
     }
 
     public function __destruct()
@@ -325,6 +329,19 @@ class Application extends \Symfony\Component\Console\Application
         $time = round((microtime(true) - PROJECT_START) * 1000);
 
         $this->logger->debug('Overall runtime: ' . $time . 'ms');
+    }
+
+    /**
+     * @param string|null $dir
+     * @return bool
+     */
+    private function subdirectoryHandle(?string $dir)
+    {
+        if (is_null($dir) || substr($dir, -1) === '.' || ! is_dir($dir)) {
+            return false;
+        }
+
+        return opendir($dir);
     }
 
 }

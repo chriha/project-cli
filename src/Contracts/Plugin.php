@@ -19,26 +19,4 @@ interface Plugin
      */
     public function handle() : void;
 
-    /**
-     * @return string
-     */
-    public static function pluginName() : string;
-
-    /**
-     * @return string
-     */
-    public static function pluginDescription() : string;
-
-    /**
-     * Returns the URL of the repository
-     *
-     * @return string
-     */
-    public static function pluginSource() : string;
-
-    /**
-     * @return string
-     */
-    public static function pluginVersion() : string;
-
 }

@@ -131,4 +131,11 @@ class Git
         );
     }
 
+    public function clone(string $repository, ?string $target = null) : bool
+    {
+        $process = new Process(['git', 'clone', $repository, $target ?? null]);
+
+        return 0 === $process->run();
+    }
+
 }
