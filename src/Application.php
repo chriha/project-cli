@@ -329,6 +329,9 @@ class Application extends \Symfony\Component\Console\Application
         $time = round((microtime(true) - PROJECT_START) * 1000);
 
         $this->logger->debug('Overall runtime: ' . $time . 'ms');
+        $this->logger->debug(
+            'Memory allocated: ' . round(memory_get_usage(true) / 1000000, 2) . 'MB'
+        );
     }
 
     /**
