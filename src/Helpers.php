@@ -6,6 +6,7 @@ use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Carbon;
 use Illuminate\Container\Container;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Process\Process;
 
 class Helpers
 {
@@ -170,6 +171,10 @@ class Helpers
         return trim(rtrim(substr($line, $position + 9), ';'));
     }
 
+    /**
+     * @return string
+     * @throws BindingResolutionException
+     */
     public static function hostsFile()
     {
         if (PHP_OS === 'Linux') {
@@ -183,11 +188,20 @@ class Helpers
         return '/private/etc/hosts';
     }
 
+    /**
+     * @param string $dir
+     * @return bool
+     */
     public static function rmdir(string $dir) : bool
     {
-        return ! ! `rm -rf {$dir}`;
+        $process = new Process(['rm', '-rf', $dir]);
+
+        return 0 === $process->run();
     }
 
+    /**
+     * @param string $dir
+     */
     public static function recursiveRemoveDir(string $dir) : void
     {
         if (is_dir($dir)) {
@@ -207,6 +221,10 @@ class Helpers
         }
     }
 
+    /**
+     * @param string $src
+     * @param string $dst
+     */
     public static function recursiveCopy(string $src, string $dst) : void
     {
         if (file_exists($dst)) {
