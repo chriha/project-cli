@@ -121,6 +121,15 @@ trait ProvidesOutput
     }
 
     /**
+     * @param string $string
+     * @return void
+     */
+    public function blue(string $string) : void
+    {
+        $this->output->writeln("<fg=blue>{$string}</>");
+    }
+
+    /**
      * Write a string as standard output.
      *
      * @param string $string
