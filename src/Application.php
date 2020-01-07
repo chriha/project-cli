@@ -41,14 +41,14 @@ class Application extends \Symfony\Component\Console\Application
     private $plugins;
 
     /** @var array */
-    const LEVEL_VERBOSITY = [
+    public const LEVEL_VERBOSITY = [
         LogLevel::ALERT   => OutputInterface::VERBOSITY_VERBOSE,
         LogLevel::WARNING => OutputInterface::VERBOSITY_VERBOSE,
         LogLevel::INFO    => OutputInterface::VERBOSITY_NORMAL,
     ];
 
     /** @var array */
-    const LEVEL_FORMAT = [
+    public const LEVEL_FORMAT = [
         LogLevel::NOTICE  => 'options=bold',
         LogLevel::ERROR   => 'red',
         LogLevel::ALERT   => 'red',
@@ -180,7 +180,7 @@ class Application extends \Symfony\Component\Console\Application
         define('PROJECT_PATHS_PROJECT', $path ?? '');
         define('PROJECT_IS_INSIDE', $inProject);
 
-        Helpers::app()->instance('config', new ApplicationConfig);
+        Helpers::app()->instance('config', new ApplicationConfig());
 
         if ($inProject && ! ! $path
             && file_exists(($envPath = Helpers::projectPath('.env')))) {
@@ -261,7 +261,7 @@ class Application extends \Symfony\Component\Console\Application
                 continue;
             }
 
-            $classes[] = new $class;
+            $classes[] = new $class();
         }
 
         closedir($handle);
@@ -319,7 +319,7 @@ class Application extends \Symfony\Component\Console\Application
                     );
 
                     foreach ($config['commands'] as $command) {
-                        if ( ! (new $command) instanceof PluginContract) {
+                        if ( ! (new $command()) instanceof PluginContract) {
                             continue;
                         }
 
