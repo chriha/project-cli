@@ -5,8 +5,10 @@ namespace Chriha\ProjectCLI;
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Console\Input\ArgvInput;
 use Chriha\ProjectCLI\Console\Output\ProjectStyle;
-use Chriha\ProjectCLI\Contracts\Plugin;
+use Chriha\ProjectCLI\Contracts\Plugin as PluginContract;
 use Chriha\ProjectCLI\Libraries\Config\Application as ApplicationConfig;
+use Chriha\ProjectCLI\Services\Plugins\Plugin;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\ConsoleEvents;
@@ -20,6 +22,7 @@ use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Yaml\Yaml;
 use Throwable;
 
 class Application extends \Symfony\Component\Console\Application
@@ -268,7 +271,7 @@ class Application extends \Symfony\Component\Console\Application
 
     public function addPluginCommands() : void
     {
-        if (empty($path = Helpers::home('plugins')) || ! is_dir($path)) {
+        if (empty($path = Helpers::pluginsPath()) || ! is_dir($path)) {
             return;
         }
 
@@ -287,41 +290,54 @@ class Application extends \Symfony\Component\Console\Application
 
             // looping through ~/.project/plugins/NAMESPACE/...
             while (false !== ($pluginName = readdir($namespaceHandle))) {
-                $pluginPath = $path . DS . $namespace . DS . $pluginName;
+                try {
+                    $pluginPath = $path . DS . $namespace . DS . $pluginName;
 
-                if ( ! ($fileHandle = $this->subdirectoryHandle($pluginPath))) {
-                    continue;
-                }
-
-                $composerFile = $pluginPath . DS . 'composer.json';
-                $pluginFile   = $pluginPath . DS . 'plugin.php';
-                $config       = json_decode(file_get_contents($composerFile), true);
-
-                if ( ! isset($config['name'])) {
-                    Helpers::danger('Missing plugin name (' . $pluginName . ')');
-                }
-
-                $plugin = require_once $pluginFile;
-
-                if (is_null($plugin['commands']) || empty($plugin['commands'])) {
-                    continue;
-                }
-
-                foreach ($plugin['commands'] as $command) {
-                    if ( ! (new $command) instanceof Plugin) {
+                    if ( ! ($fileHandle = $this->subdirectoryHandle($pluginPath))) {
                         continue;
                     }
 
-                    $this->plugins[] = new $command();
+                    $pluginFile = $pluginPath . DS . 'plugin.php';
+                    $configFile = $pluginPath . DS . '.project.yml';
+                    $config     = Yaml::parseFile($configFile);
+
+                    if ( ! isset($config['name'])) {
+                        continue;
+                    }
+
+                    require_once $pluginFile;
+
+                    if (is_null($config['commands'] ?? null) || empty($config['commands'])) {
+                        continue;
+                    }
+
+                    $this->plugins[$config['name']] = new Plugin(
+                        [
+                            'name'     => $config['name'],
+                            'commands' => $config['commands'],
+                        ]
+                    );
+
+                    foreach ($config['commands'] as $command) {
+                        if ( ! (new $command) instanceof PluginContract) {
+                            continue;
+                        }
+
+                        $commands[] = new $command();
+                    }
+                } catch (Exception $e) {
+                    // ignore plugin
                 }
             }
 
             closedir($namespaceHandle);
         }
 
+        Helpers::app()->instance('plugins', $this->plugins);
+
         closedir($dirHandle);
 
-        $this->addCommands($this->plugins);
+        $this->addCommands($commands);
     }
 
     public function __destruct()

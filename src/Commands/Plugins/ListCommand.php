@@ -3,6 +3,8 @@
 namespace Chriha\ProjectCLI\Commands\Plugins;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Helpers;
+use Chriha\ProjectCLI\Services\Plugins\Plugin;
 
 class ListCommand extends Command
 {
@@ -16,7 +18,15 @@ class ListCommand extends Command
 
     public function handle()
     {
-        //
+        $plugins = Helpers::app('plugins');
+
+        /** @var Plugin $plugin */
+        foreach ($plugins as $plugin) {
+            $this->output->writeln(
+                "<fg=blue>::</> <options=bold>{$plugin->name}</> "
+                . "[{$plugin->tag()}]"
+            );
+        }
     }
 
 }

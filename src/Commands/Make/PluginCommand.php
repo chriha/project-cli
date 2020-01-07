@@ -6,6 +6,7 @@ use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Services\Docker;
 use Chriha\ProjectCLI\Services\Git;
+use Symfony\Component\Yaml\Yaml;
 
 class PluginCommand extends Command
 {
@@ -42,16 +43,15 @@ class PluginCommand extends Command
 
         Helpers::recursiveRemoveDir($path . DS . '.git');
 
-        $composer = file_get_contents($path . DS . 'composer.json');
-        $composer = str_replace('__PLUGIN_NAME__', $name, $composer);
-        $composer = str_replace('__NAMESPACE__', $namespace, $composer);
-        $composer = str_replace(
-            "{$namespace}/{$name}",
-            strtolower("{$namespace}/{$name}"),
-            $composer
-        );
+        $configPath    = $path . DS . 'project.yml';
+        $configContent = file_get_contents($configPath);
+        $configContent = str_replace('__PLUGIN_NAME__', $name, $configContent);
+        $configContent = str_replace('__NAMESPACE__', $namespace, $configContent);
 
-        file_put_contents($path . DS . 'composer.json', $composer);
+        $config         = Yaml::parse($configContent);
+        $config['name'] = strtolower(sprintf('%s/%s', $name, $namespace));
+
+        file_put_contents($configPath, Yaml::dump($config));
 
         $plugin = file_get_contents($path . DS . 'plugin.php');
         $plugin = str_replace('__PLUGIN_NAME__', $name, $plugin);
@@ -64,11 +64,6 @@ class PluginCommand extends Command
         $class = str_replace('__NAMESPACE__', $namespace, $class);
 
         file_put_contents($path . DS . 'src/Commands/DummyCommand.php', $class);
-
-        $this->spinner(
-            'Installing composer dependencies ...',
-            $docker->run(['--rm', '-v', "{$path}:/app", 'composer', 'install'], $path)
-        );
 
         $this->info('Plugin successfully created!');
         $this->warn($path);

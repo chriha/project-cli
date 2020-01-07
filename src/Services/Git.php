@@ -138,4 +138,18 @@ class Git
         return 0 === $process->run();
     }
 
+    public static function tagByPath(string $path) : ?string
+    {
+        $process = new Process(
+            'git describe --exact-match --tags $(git log -n1 --pretty="%h")',
+            $path
+        );
+
+        $process->run();
+
+        $tag = trim($process->getOutput());
+
+        return empty($tag) ? null : $tag;
+    }
+
 }
