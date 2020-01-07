@@ -31,5 +31,4 @@ return [
     new \Chriha\ProjectCLI\Commands\ProjectCLI\SelfUpdateCommand(),
     new \Chriha\ProjectCLI\Commands\ProjectCLI\VersionCommand(),
     new \Chriha\ProjectCLI\Commands\Ssh\ConfigCommand(),
-    new \Chriha\ProjectCLI\Commands\Support\SupportCommand(),
 ];
