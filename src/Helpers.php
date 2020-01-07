@@ -30,6 +30,15 @@ class Helpers
     }
 
     /**
+     * @param string $path
+     * @return string|null
+     */
+    public static function pluginsPath(string $path = '') : ?string
+    {
+        return self::home('plugins' . DS . $path);
+    }
+
+    /**
      * Return the home directory of ProjectCLI
      *
      * @param string $path
