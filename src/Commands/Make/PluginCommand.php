@@ -24,24 +24,26 @@ class PluginCommand extends Command
     public function handle(Git $git, Docker $docker) : void
     {
         if ( ! $namespace = trim($this->ask('Specify a namespace'))) {
-            Helpers::abort('Please specify a namespace');
+            $this->abort('Please specify a namespace');
         }
 
         if ( ! $name = trim($this->ask('Specify a plugin name'))) {
-            Helpers::abort('Please specify a plugin name');
+            $this->abort('Please specify a plugin name.');
         }
 
-        $dir = strtolower('plugins' . DS . $namespace . DS . $name);
+        $dir = Helpers::pluginsPath(strtolower($namespace . DS . $name));
 
         if (is_dir($dir)) {
-            Helpers::abort('Plugin directory "%s" already exists');
+            $this->abort(
+                sprintf('Plugin directory "%s" already exists.', $namespace . DS . $name)
+            );
         }
 
         if ( ! $git->clone($this->repository, $path = Helpers::home($dir))) {
-            Helpers::abort('Plugin could not be created');
+            $this->abort('Plugin could not be created.');
         }
 
-        Helpers::recursiveRemoveDir($path . DS . '.git');
+        Helpers::rmdir($path . DS . '.git');
 
         $configPath    = $path . DS . 'project.yml';
         $configContent = file_get_contents($configPath);
