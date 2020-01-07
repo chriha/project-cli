@@ -20,14 +20,20 @@ class Registry
         try {
             $result = $client->request('GET', self::$url . '/' . urlencode($name));
         } catch (ConnectException $e) {
-            Helpers::abort('Unable to connect to registry. Please try again later');
+            Helpers::abort('Unable to connect to registry. Please try again later.');
             exit;
         } catch (\Exception $e) {
             Helpers::abort('Plugin could not be found');
             exit;
         }
 
-        return new Plugin(json_decode($result->getBody()->getContents(), true));
+        $info = json_decode($result->getBody()->getContents(), true)['data'] ?? null;
+
+        if ( !$info) {
+            Helpers::abort('Unable to get plugin info. Please try again later.');
+        }
+
+        return new Plugin($info);
     }
 
     public static function search(string $query) : ?Collection
