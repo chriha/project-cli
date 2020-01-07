@@ -45,15 +45,10 @@ class Plugin
         /** @var OutputStyle $output */
         $output = Helpers::app('output');
 
-        if ($this->isInstalled()) {
-            $output->write('<info>✓</info> ');
-        } else {
-            $output->write('- ');
-        }
-
         $output->writeln(
-            $this->info['name']
-            . $this->info['short_description'] ? ' (' . $this->info['short_description'] . ')' : ''
+            '<fg=blue>::</> <options=bold>' . $this->info['name'] . '</>'
+            . ' [' . $this->info['version'] . ']'
+            . ($this->isInstalled() ? ' <fg=green>(installed)</>' : '')
         );
     }
 

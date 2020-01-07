@@ -138,6 +138,13 @@ class Git
         return 0 === $process->run();
     }
 
+    public static function checkout(string $branch, ?string $path = null) : bool
+    {
+        $process = new Process(['git', 'checkout', $branch], $path);
+
+        return 0 === $process->run();
+    }
+
     public static function tagByPath(string $path) : ?string
     {
         $process = new Process(

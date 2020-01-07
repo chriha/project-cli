@@ -26,13 +26,27 @@ class InstallCommand extends Command
     public function handle(Git $git) : void
     {
         $plugins = Helpers::app('plugins') ?? [];
-        $plugin  = $this->argument('name');
+        $name    = $this->argument('name');
 
-        if (isset($plugins[$plugin])) {
-            $this->abort(sprintf('Plugin <options=bold>%s</> already installed', $plugin));
+        if (isset($plugins[$name])) {
+            $this->abort(sprintf('Plugin <options=bold>%s</> already installed', $name));
         }
 
-        dump(Registry::get($plugin));
+        $plugin = Registry::get($name);
+        $path   = Helpers::pluginsPath($plugin->name);
+
+        if (!$git->clone($plugin->source, $path)) {
+            $this->abort('Unable to download plugin.');
+        }
+
+        if( !$git->checkout($plugin->version, $path)) {
+            $this->error('Unable to find plugin version. Reverting ...');
+            Helpers::rmdir($path);
+            exit;
+        }
+
+        $this->info('Plugin successfully installed!');
+        $plugin->asListItem();
     }
 
 }
