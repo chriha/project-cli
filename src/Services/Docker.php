@@ -58,7 +58,7 @@ class Docker
     {
         return (new Process(
             array_merge(['docker-compose', '-f', $this->config()], $commands)
-        ))->setTimeout(3600);
+        ))->setTimeout(null);
     }
 
     /**
