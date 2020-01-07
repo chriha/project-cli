@@ -48,7 +48,7 @@ trait ProvidesOutput
         $this->output->write("\x0D");
         $this->output->write("\x1B[2K");
         $this->output->writeln(
-            ($process->isSuccessful() ? '<info>✔</info>' : '<error>failed:</error>') . " {$title}"
+            ($process->isSuccessful() ? '<info>✓</info>' : '<error>✗</error>') . " {$title}"
         );
 
         if ( ! $process->isSuccessful()) {
