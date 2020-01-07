@@ -183,6 +183,11 @@ class Helpers
         return '/private/etc/hosts';
     }
 
+    public static function rmdir(string $dir) : bool
+    {
+        return ! ! `rm -rf {$dir}`;
+    }
+
     public static function recursiveRemoveDir(string $dir) : void
     {
         if (is_dir($dir)) {
