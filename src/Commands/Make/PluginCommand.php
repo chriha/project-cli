@@ -31,7 +31,7 @@ class PluginCommand extends Command
             Helpers::abort('Please specify a plugin name');
         }
 
-        $dir = 'plugins' . DS . $namespace . DS . $name;
+        $dir = strtolower('plugins' . DS . $namespace . DS . $name);
 
         if (is_dir($dir)) {
             Helpers::abort('Plugin directory "%s" already exists');
