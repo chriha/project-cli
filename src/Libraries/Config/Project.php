@@ -43,6 +43,13 @@ class Project
         return $this;
     }
 
+    public function hasConfig() : bool
+    {
+        $path = Helpers::projectPath($this->file);
+
+        return $path && file_exists($path);
+    }
+
     private function loadConfig()
     {
         if ( ! PROJECT_IS_INSIDE) {
@@ -51,7 +58,7 @@ class Project
 
         $path = Helpers::projectPath($this->file);
 
-        if ( ! $path || ! file_exists($path)) {
+        if ( ! $this->hasConfig()) {
             Helpers::abort("Unable to find project config '{$this->file}'");
         }
 
