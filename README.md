@@ -45,7 +45,7 @@ To manually update **ProjectCLI**, just use the `project self-update` command.
 
 
 ### Uninstall
-```bash
+```shell
 rm -rf $HOME/.project /usr/local/bin/project
 ```
 
@@ -97,13 +97,13 @@ project help logs:tail
 
 ### Xdebug
 Enable and disable Xdebug with a single command
-```
+```shell
 project help php:xdebug
 ```
 
 ### Hosts File
 List, enable, disable, add, remove and check hosts for existence
-```
+```shell
 project help hosts
 ```
 Whenever you change the hosts file (eg. enable, disable, add, rm), you have to run the command with
@@ -116,5 +116,5 @@ project help docker:compose
 ```
 Using bash inside a container / service
 ```shell
-project docker:exec SERVICE bash
+project docker:exec [DOCKER_SERVICE] bash
 ```
