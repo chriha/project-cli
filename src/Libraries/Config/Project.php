@@ -15,7 +15,7 @@ class Project
     protected $config;
 
     /** @var string */
-    protected $file = '.project.yml';
+    protected $file = 'project.yml';
 
 
     /**

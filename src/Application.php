@@ -298,7 +298,7 @@ class Application extends \Symfony\Component\Console\Application
                     }
 
                     $pluginFile = $pluginPath . DS . 'plugin.php';
-                    $configFile = $pluginPath . DS . '.project.yml';
+                    $configFile = $pluginPath . DS . 'project.yml';
                     $config     = Yaml::parseFile($configFile);
 
                     if ( ! isset($config['name'])) {
