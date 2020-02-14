@@ -76,7 +76,7 @@ class Project
         }
 
         return ($version = $this->get('version'))
-            ? new Version($version) : new Version;
+            ? new Version($version) : new Version();
     }
 
     public function __destruct()
