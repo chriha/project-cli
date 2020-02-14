@@ -51,7 +51,7 @@ class PluginCommand extends Command
         $configContent = str_replace('__NAMESPACE__', $namespace, $configContent);
 
         $config         = Yaml::parse($configContent);
-        $config['name'] = strtolower(sprintf('%s/%s', $name, $namespace));
+        $config['name'] = strtolower(sprintf('%s/%s', $namespace, $name));
 
         file_put_contents($configPath, Yaml::dump($config));
 
