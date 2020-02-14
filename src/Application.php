@@ -337,12 +337,37 @@ class Application extends \Symfony\Component\Console\Application
 
         closedir($dirHandle);
 
+        if (PROJECT_IS_INSIDE) {
+            $this->checkForRequiredPlugins();
+        }
+
         $this->addCommands($commands);
+    }
+
+    protected function checkForRequiredPlugins() : void
+    {
+        $config = new Project();
+
+        if ( ! $config->hasConfig() || empty($plugins = $config->get('require'))) {
+            return;
+        }
+
+        foreach ($plugins as $name) {
+            if (isset($this->plugins[$name])) {
+                continue;
+            }
+
+            $this->missing[] = $name;
+        }
     }
 
     public function __destruct()
     {
         $time = round((microtime(true) - PROJECT_START) * 1000);
+
+        if ( ! $this->logger) {
+            return;
+        }
 
         $this->logger->debug('Overall runtime: ' . $time . 'ms');
         $this->logger->debug(
