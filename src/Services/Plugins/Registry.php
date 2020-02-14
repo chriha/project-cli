@@ -19,7 +19,7 @@ class Registry
 
         try {
             $result = $client->request('GET', self::$url . '/' . urlencode($name));
-        } catch (ConnectException $e) {
+        } catch (ConnectException | RequestException $e) {
             Helpers::abort('Unable to connect to registry. Please try again later.');
             exit;
         } catch (\Exception $e) {
@@ -43,7 +43,7 @@ class Registry
 
         try {
             $result = $client->request('GET', self::$url . $query);
-        } catch (ConnectException $e) {
+        } catch (ConnectException | RequestException $e) {
             Helpers::abort('Unable to connect to registry. Please try again later.');
             exit;
         }
