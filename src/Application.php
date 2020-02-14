@@ -7,8 +7,10 @@ use Chriha\ProjectCLI\Console\Input\ArgvInput;
 use Chriha\ProjectCLI\Console\Output\ProjectStyle;
 use Chriha\ProjectCLI\Contracts\Plugin as PluginContract;
 use Chriha\ProjectCLI\Libraries\Config\Application as ApplicationConfig;
+use Chriha\ProjectCLI\Libraries\Config\Project;
 use Chriha\ProjectCLI\Services\Plugins\Plugin;
 use Exception;
+use Illuminate\Support\Str;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\ConsoleEvents;
@@ -55,6 +57,9 @@ class Application extends \Symfony\Component\Console\Application
         LogLevel::WARNING => 'comment',
         LogLevel::DEBUG   => 'comment',
     ];
+
+    /** @var array */
+    private $missing = [];
 
 
     /**
@@ -163,6 +168,22 @@ class Application extends \Symfony\Component\Console\Application
         $this->runningCommand = $command;
         $exitCode             = $this->doRunCommand($command, $input, $output);
         $this->runningCommand = null;
+
+        if ( ! empty($this->missing)) {
+            $output->writeln('');
+            $text   = 'The project requires plugins';
+            $length = Str::length(strip_tags($text)) + 24;
+
+            $output->writeln('<comment>' . str_repeat('*', $length) . '</>');
+            $output->writeln('<comment>' . '*           ' . $text . '           *' . '</>');
+            $output->writeln('<comment>' . str_repeat('*', $length) . '</>');
+
+            foreach ($this->missing as $plugin) {
+                $output->writeln('- ' . $plugin);
+            }
+
+            $output->writeln('');
+        }
 
         return $exitCode;
     }
