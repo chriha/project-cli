@@ -3,8 +3,10 @@
 namespace Chriha\ProjectCLI\Services\Plugins;
 
 use Chriha\ProjectCLI\Helpers;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Support\Collection;
 
 class Registry
@@ -22,7 +24,7 @@ class Registry
         } catch (ConnectException | RequestException $e) {
             Helpers::abort('Unable to connect to registry. Please try again later.');
             exit;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Helpers::abort('Plugin could not be found');
             exit;
         }
