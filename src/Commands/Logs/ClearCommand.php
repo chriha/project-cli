@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Commands\Logs;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Libraries\Logging\Tail;
 use Symfony\Component\Console\Input\InputOption;
 
 class ClearCommand extends Command
@@ -21,19 +22,37 @@ class ClearCommand extends Command
             'file',
             'f',
             InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
-            'The file you want to clear'
+            'The files you want to clear'
         );
     }
 
     public function handle() : void
     {
-        if (empty($this->option('file'))) {
-            $this->abort('No file specified.');
+        $files = $this->option('file');
+
+        if ( ! $files || empty($files)) {
+            if (!$this->confirm('You are about to clear all log files. Continue?')) {
+                $this->abort('Aborted');
+            }
+
+            $files = [];
+
+            $this->task(
+                'Searching for log files',
+                function () use (&$files)
+                {
+                    $files = Tail::logFilesInDirectory();
+                }
+            );
         }
 
-        foreach ($this->option('file') as $file) {
+        if (empty($files)) {
+            $this->abort('No files specified or found.');
+        }
+
+        foreach ($files as $file) {
             $this->task(
-                "Emptying <comment>{$file}</comment>",
+                "Clearing <comment>{$file}</comment>",
                 function () use ($file)
                 {
                     $handle = @fopen($file, "r+");
