@@ -76,12 +76,18 @@ class Helpers
      * Display a danger message and exit.
      *
      * @param string $text
+     * @param null $exception
      * @return void
      * @throws BindingResolutionException
      */
-    public static function abort($text)
+    public static function abort($text, $exception = null)
     {
         static::danger($text);
+
+        if ($exception) {
+            static::logger()->debug($exception);
+        }
+
         exit(1);
     }
 
