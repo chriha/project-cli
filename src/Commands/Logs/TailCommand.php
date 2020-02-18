@@ -46,9 +46,8 @@ class TailCommand extends Command
 
     public function handle() : void
     {
-        $styleRed = new OutputFormatterStyle('red');
+        $styleRed  = new OutputFormatterStyle('red');
         $styleBlue = new OutputFormatterStyle('blue');
-        $detached = false;//$this->option( 'detached' );
 
         $this->output->getFormatter()->setStyle('error', $styleRed);
         $this->output->getFormatter()->setStyle('default', $styleBlue);
@@ -84,23 +83,12 @@ class TailCommand extends Command
 
             $this->output->writeln("Listening to <comment>{$file}</comment> ...");
 
-            if ($detached) {
-                continue;
-            }
-
             $this->logFileInfo($file);
             $tail->addFile($file);
         }
 
         if (empty($files)) {
             $this->abort('No file to tail');
-        }
-
-        //  TODO: tbd
-        if ($detached) {
-            var_dump(implode(' --file=', $this->option('file')));
-            exit;
-            shell_exec(sprintf('%s > /dev/null 2>&1 &', "logs:tail {$files}"));
         }
 
         $tail->listen(
@@ -112,7 +100,6 @@ class TailCommand extends Command
                     if (substr($line, 0, 1) !== '[') {
                         continue;
                     }
-                    //if ( substr( $line, 0, 1 ) !== '[' && substr( $line, 0, 1 ) === '#' ) continue;
 
                     $line = trim($line);
 
