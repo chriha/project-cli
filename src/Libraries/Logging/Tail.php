@@ -218,8 +218,6 @@ class Tail
             throw new Exception("Could not find file: $filename.");
         }
 
-        $filename = realpath($filename);
-
         if ( ! in_array($filename, $this->fileList)) {
             $this->fileList[] = $filename;
         }
@@ -258,7 +256,7 @@ class Tail
                 continue;
             }
 
-            $files[] = $file;
+            $files[$file] = substr($file, strlen(getcwd())+1);
         }
 
         return $files;
