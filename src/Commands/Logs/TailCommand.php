@@ -29,6 +29,9 @@ class TailCommand extends Command
     /** @var bool */
     private $informedAboutLogSize = false;
 
+    /** @var string */
+    private $lastFile;
+
 
     protected function configure() : void
     {
@@ -136,6 +139,11 @@ class TailCommand extends Command
                         $parts[3] = "<info>{$parts[3]}</info>";
                     }
 
+                    if ($this->lastFile != $file) {
+                        $this->output->writeln(PHP_EOL . "<comment>{$file}</comment>");
+                    }
+
+                    $this->lastFile = $file;
                     $this->output->writeln(
                         "<default>{$parts[1]}</default> {$parts[2]} {$parts[3]} {$parts[4]}"
                     );
