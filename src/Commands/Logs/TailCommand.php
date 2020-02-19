@@ -127,7 +127,7 @@ class TailCommand extends Command
                     }
 
                     if ($this->lastFile != $file) {
-                        $this->output->writeln(PHP_EOL . "<comment>{$file}</comment>");
+                        $this->output->writeln(PHP_EOL . "=> <comment>{$file}</comment>");
                     }
 
                     $this->lastFile = $file;
