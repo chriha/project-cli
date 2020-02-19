@@ -17,7 +17,7 @@ class Application
     protected $config;
 
     /** @var string */
-    protected $file = '.config.yml';
+    protected $file = 'config.yml';
 
 
     public function __construct()
