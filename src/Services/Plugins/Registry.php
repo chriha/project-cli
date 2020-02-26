@@ -60,4 +60,19 @@ class Registry
         return $list;
     }
 
+    public static function incrementInstallations(Plugin $plugin) : bool
+    {
+        $client = new Client();
+
+        try {
+            $client->request('POST', $plugin->url_api . '/installation');
+        } catch (ConnectException | RequestException $e) {
+            Helpers::logger()->debug($e);
+
+            return false;
+        }
+
+        return true;
+    }
+
 }

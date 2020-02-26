@@ -45,6 +45,7 @@ class InstallCommand extends Command
             exit;
         }
 
+        Registry::incrementInstallations($plugin);
         $this->info('Plugin successfully installed!');
         $plugin->asListItem();
     }

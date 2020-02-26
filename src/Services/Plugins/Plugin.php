@@ -63,12 +63,12 @@ class Plugin
             . ($this->isInstalled() ? ' <fg=green>(installed)</>' : '')
         );
 
-        if ( ! empty($this->info['short_description'])) {
-            $output->writeln($this->info['short_description']);
+        if ( ! empty($this->info['title'])) {
+            $output->writeln($this->info['title']);
         }
 
-        if ( ! empty($this->info['description'])) {
-            $output->writeln('<options=bold>Description:</>');
+        if ( ! empty($this->info['short_description'])) {
+            $output->writeln('<options=bold>short_description:</>');
             $output->writeln($this->info['description'] ?? '-');
         }
 

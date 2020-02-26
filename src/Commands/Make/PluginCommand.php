@@ -69,6 +69,10 @@ class PluginCommand extends Command
 
         $this->info('Plugin successfully created!');
         $this->warn($path);
+        $this->output->writeln(
+            'For easier installation in the future, make sure to submit your plugin here:'
+            . PHP_EOL . 'https://cli.lazu.io/plugins/submit'
+        );
     }
 
 }
