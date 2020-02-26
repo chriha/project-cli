@@ -340,7 +340,7 @@ class Application extends \Symfony\Component\Console\Application
                     );
 
                     foreach ($config['commands'] as $command) {
-                        if ( ! (new $command()) instanceof PluginContract) {
+                        if ( ! (new $command()) instanceof Command) {
                             continue;
                         }
 
