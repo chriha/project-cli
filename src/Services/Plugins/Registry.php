@@ -13,7 +13,7 @@ class Registry
 {
 
     /** @var string */
-    public static $url = 'http://localhost:8090/api/v1/plugins';
+    public static $url = 'http://cli.lazu.io/api/v1/plugins';
 
     public static function get(string $name) : Plugin
     {
