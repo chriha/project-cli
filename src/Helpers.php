@@ -181,7 +181,7 @@ class Helpers
      * @return string
      * @throws BindingResolutionException
      */
-    public static function hostsFile()
+    public static function hostsFile() : string
     {
         if (PHP_OS === 'Linux') {
             return '/etc/hosts';
@@ -189,6 +189,7 @@ class Helpers
 
         if (PHP_OS !== 'Darwin') {
             static::abort('Unsupported OS');
+            exit(0);
         }
 
         return '/private/etc/hosts';

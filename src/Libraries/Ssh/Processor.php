@@ -146,7 +146,7 @@ class Processor
      * @param array $processes
      * @return int
      */
-    protected function gatherExitCodes(array $processes)
+    protected function gatherExitCodes(array $processes) : int
     {
         $code = 0;
 
@@ -157,7 +157,7 @@ class Processor
         return $code;
     }
 
-    protected function getFrames()
+    protected function getFrames() : array
     {
         $ball   = "●";
         $frames = [];
