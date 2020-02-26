@@ -20,10 +20,9 @@ class CreateCommand extends Command
 
     /** @var array */
     protected $types = [
-        'django'  => 'https://github.com/chriha/project-cli-env-django.git',
-        'laravel' => 'https://github.com/chriha/project-cli-env-laravel.git',
-        'node'    => 'https://github.com/chriha/project-cli-env-node.git',
-        'php'     => 'https://github.com/chriha/project-cli-env-php.git',
+        'python' => 'https://github.com/ProjectCLI/environment-python.git',
+        'node'   => 'https://github.com/ProjectCLI/environment-node.git',
+        'php'    => 'https://github.com/ProjectCLI/environment-php.git',
     ];
 
 
@@ -31,8 +30,8 @@ class CreateCommand extends Command
     {
         $this->addOption(
             'type',
-            't',
-            InputOption::VALUE_OPTIONAL,
+            null,
+            InputOption::VALUE_REQUIRED,
             'Type of the project. Options: ' . implode(', ', array_keys($this->types)),
             'php'
         )
@@ -41,12 +40,6 @@ class CreateCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Specify the repository to use as base structure'
-            )
-            ->addOption(
-                'setup',
-                null,
-                InputOption::VALUE_NONE,
-                'Setup the project by its type'
             );
         $this->addArgument('directory', InputArgument::REQUIRED, 'Project directory');
     }
@@ -71,51 +64,20 @@ class CreateCommand extends Command
         }
 
         $clone = new Process(['git', 'clone', '-q', $repository, $directory]);
+        $path  = getcwd() . DS . $directory;
 
         $this->spinner('Creating project', $clone);
 
-        $path = getcwd() . DS . $directory;
+        $envFile = $directory . DS . '.env';
+
+        if (file_exists($envFile . '.example') && ! file_exists($envFile)) {
+            copy($envFile . '.example', $envFile);
+        }
 
         Helpers::recursiveRemoveDir($path . DS . '.git');
 
         $this->spinner('Initializing git', new Process(['git', 'init'], $path));
-
-        if ( ! $this->option('setup')) {
-            return;
-        }
-
-        chdir($path);
-        copy('.env.example', '.env');
-        touch('src' . DS . '.env');
-
-        if ($this->option('type') == 'laravel') {
-            if ( ! empty($blocked = $docker->hasOccupiedPorts())) {
-                $this->abort('Ports are already occupied: ' . implode(', ', $blocked));
-            }
-
-            $this->setupLaravel($path);
-        }
-
         $this->info(sprintf("Project '%s' successfully set up", $directory));
-    }
-
-    private function setupLaravel(string $path) : void
-    {
-        $destination = 'temp';
-        chdir($path);
-
-        $this->spinner( 'Setting up Laravel', new Process( [
-            'project', 'composer', 'create-project', 'laravel/laravel', $destination
-        ], getcwd() ) );
-
-        $this->spinner( 'Shutting down containers', new Process( [ 'project', 'down' ], getcwd() ) );
-
-        // move setup into temp
-        rename(getcwd() . DS . 'src' . DS . $destination, getcwd() . DS . 'temp' . DS . 'src');
-        // rm src directory
-        Helpers::rmdir(getcwd() . DS . 'src');
-        // mv temp/src into .
-        rename(getcwd() . DS . 'temp' . DS . 'src', getcwd() . DS . 'src');
     }
 
     protected function repository() : string
