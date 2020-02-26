@@ -9,8 +9,6 @@ return [
     new \Chriha\ProjectCLI\Commands\Docker\StatusCommand(),
     new \Chriha\ProjectCLI\Commands\Docker\TopCommand(),
     new \Chriha\ProjectCLI\Commands\Docker\UpCommand(),
-    new \Chriha\ProjectCLI\Commands\Laravel\ArtisanCommand(),
-    new \Chriha\ProjectCLI\Commands\Laravel\DumpServerCommand(),
     new \Chriha\ProjectCLI\Commands\Logs\ClearCommand(),
     new \Chriha\ProjectCLI\Commands\Logs\TailCommand(),
     new \Chriha\ProjectCLI\Commands\Make\CommandCommand(),
