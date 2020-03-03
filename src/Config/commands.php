@@ -24,6 +24,7 @@ return [
     new \Chriha\ProjectCLI\Commands\Plugins\ListCommand(),
     new \Chriha\ProjectCLI\Commands\Plugins\SearchCommand(),
     new \Chriha\ProjectCLI\Commands\Plugins\UninstallCommand(),
+    new \Chriha\ProjectCLI\Commands\Plugins\UpdateCommand(),
     new \Chriha\ProjectCLI\Commands\ProjectCLI\CloneCommand(),
     new \Chriha\ProjectCLI\Commands\ProjectCLI\HostsCommand(),
     new \Chriha\ProjectCLI\Commands\ProjectCLI\CreateCommand(),
