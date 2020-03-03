@@ -5,7 +5,6 @@ namespace Chriha\ProjectCLI;
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Console\Input\ArgvInput;
 use Chriha\ProjectCLI\Console\Output\ProjectStyle;
-use Chriha\ProjectCLI\Contracts\Plugin as PluginContract;
 use Chriha\ProjectCLI\Libraries\Config\Application as ApplicationConfig;
 use Chriha\ProjectCLI\Libraries\Config\Project;
 use Chriha\ProjectCLI\Services\Plugins\Plugin;
@@ -336,6 +335,7 @@ class Application extends \Symfony\Component\Console\Application
                         [
                             'name'     => $config['name'],
                             'commands' => $config['commands'],
+                            'version'  => $config['version'] ?? null,
                         ]
                     );
 
