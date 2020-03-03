@@ -88,9 +88,9 @@ class Git
         return $commits;
     }
 
-    public function isClean() : bool
+    public function isClean(string $path = null) : bool
     {
-        $process = new Process(['git', 'status', '--porcelain']);
+        $process = new Process(['git', 'status', '--porcelain'], $path);
         $process->run();
 
         return empty($process->getOutput());
