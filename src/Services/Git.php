@@ -138,9 +138,18 @@ class Git
         return 0 === $process->run();
     }
 
+    public static function fetch(?string $path = null) : bool
+    {
+        $process = new Process(['git', 'fetch', '-a'], $path);
+
+        return 0 === $process->run();
+    }
+
     public static function checkout(string $branch, ?string $path = null) : bool
     {
-        $process = new Process(['git', 'checkout', $branch], $path);
+        static::fetch($path);
+
+        $process = new Process(['git', 'checkout', '-f', $branch], $path);
 
         return 0 === $process->run();
     }
