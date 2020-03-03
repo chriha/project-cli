@@ -5,3 +5,4 @@
 /.save.json
 /.env
 project
+.constants.php
