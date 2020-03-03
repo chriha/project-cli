@@ -1,25 +1,27 @@
 # Project CLI
+**ProjectCLI** is a command line tool that translates complex tasks into simple, single commands.
+It also helps keeping a standard project structure across all projects. Here are some benefits of
+using ProjectCLI:
 
 - Initialize, setup and start whole environments (incl. web server, database, caching, mail server,
  etc.) in seconds
 - Set up even complex projects with a single command
 - Use (force) the same directory structure in **every** project
 - Reduce amount of necessary commands for each developer
-- The same environment, tools and versions for every developer, thanks to Docker
+- The same environment, tools and versions for every developer
 - Easier and colored log-tailing
 - Write your own [commands](https://github.com/chriha/project-cli/wiki/Commands) and
  [plugins](https://github.com/chriha/project-cli/wiki/Plugins) to extend ProjectCLI
 - Simple `/etc/hosts` and SSH config management
 
-> Supported project types: PHP, Laravel, Django, NodeJS
+For the plugin registry, more info, the documentation and some examples, check out [cli.lazu.io](https://cli.lazu.io).
 
 
 ## TOC
-- [Installation](#installation)
-  - [Dependencies](#dependencies)
-  - [Install ProjectCLI](#install-projectcli)
+- [Getting Started](#getting-started)
+  - [Dependencies](#prerequisites)
+  - [Install](#install)
   - [Update](#update)
-  - [Uninstall](#uninstall)
 - [Usage](#usage)
   - [Create a new project](#create-a-new-project)
   - [Start and stop environment and its services](#start-and-stop-environment-and-its-services)
@@ -29,37 +31,43 @@
   - [Hosts File](#hosts-file)
   - [Xdebug](#xdebug)
   - [Docker commands](#docker-commands)
+- [Uninstall](#uninstall)
 
 
-## Installation
-### Dependencies
+## Getting Started
+### Prerequisites
 - PHP CLI 7.2 or newer (incl. extensions: json, intl, xml, curl)
 
-
-### Install ProjectCLI
-After you've installed all [dependencies](#dependencies), get the latest release [here](https://github.com/chriha/project-cli/releases) and move it to `/usr/local/bin/project` or `/usr/bin/project`, depending on which paths are included in your `$PATH` variable. The `project` command will be available after you restart your terminal session.
-
+### Install
+After you've installed all [dependencies](#prerequisites), get the latest release [here](https://github.com/chriha/project-cli/releases) and move it to `/usr/local/bin/project` or `/usr/bin/project`, depending on which paths are included in your `$PATH` variable. The `project` command will be available after you restart your terminal session.
 
 ### Update
 To manually update **ProjectCLI**, just use the `project self-update` command.
 
 
-### Uninstall
-```shell
-rm -rf $HOME/.project /usr/local/bin/project
-```
-
-
 ## Usage
 > **It's mandatory, that the project has the according directory structure and files in order for ProjectCLI to work properly.**
 
+### Project Structure
+```
+- commands
+  | Contains project specific commands, created via 'project make:command'
+- conf
+  | Add configuration files for components (like nginx, PHP, crontab, supervisor, etc)
+- scripts
+  | Can contain scripts for deployment, HTTP requests or other complex tasks
+- src
+  | Contains the application src
+- temp
+  | Directory for temporary files, such as docker-compose service mounts
+```
 
 ### Create a new project
 ```shell
-project create FOLDER [--type=php|laravel|node|django] [--repository=URL_TO_YOUR_REPOSITORY]
+project create DIRECTORY [--type=php|node|python] [--repository=URL_TO_YOUR_REPOSITORY]
 ```
 
-#### Clone and automatically install existing projects
+### Clone and automatically install existing projects
 To create an automated setup for an existing project, you need to add a `setup` command via
 `project make:command SetupCommand`. In the `handle()` method, you specify the commands to set up
 the project (eg. copy env files, run migrations, seed test data, compile static files, etc).
@@ -73,15 +81,16 @@ existing `setup` command.
 
 ### Start and stop environment and its services
 ```shell
-project up|down|restart
+project [up|down|restart]
 ```
 
 ### Run any service specific command
+ProjectCLI will run all commands inside the according Docker service.
 ```shell
 # for the web service
-project artisan|composer|...
+project [artisan|composer|...]
 # for node / npm
-project node|npm install|run|...
+project [node|npm install|run|...]
 ```
 
 ### Show service status and resource statistics
@@ -90,13 +99,13 @@ project help status
 ```
 
 ### Logging
-Colored output, easily clear logs
+Find all your log files and see what's happening with your application. It'll also warn you, if your files get too big.
 ```shell
 project help logs:tail
 ```
 
 ### Xdebug
-Enable and disable Xdebug with a single command
+Enable and disable Xdebug with a single command.
 ```shell
 project help php:xdebug
 ```
@@ -107,7 +116,8 @@ List, enable, disable, add, remove and check hosts for existence
 project help hosts
 ```
 Whenever you change the hosts file (eg. enable, disable, add, rm), you have to run the command with
-sudo / as root. **ProjectCLI creates backups, but only keeps the last two version.**
+sudo / as root.
+> **ProjectCLI will create backups, but only keeps the last two versions.**
 
 ### Docker commands
 Run Docker Compose commands with your `docker-compose.yml`
@@ -117,4 +127,10 @@ project help docker:compose
 Using bash inside a container / service
 ```shell
 project docker:exec [DOCKER_SERVICE] bash
+```
+
+
+## Uninstall
+```shell
+rm -rf $HOME/.project $(which project)
 ```
