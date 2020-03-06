@@ -38,13 +38,13 @@ class PluginCommand extends Command
             );
         }
 
-        if ( ! $git->clone($this->repository, $path = Helpers::home($dir))) {
+        if ( ! $git->clone($this->repository, $dir)) {
             $this->abort('Plugin could not be created.');
         }
 
-        Helpers::rmdir($path . DS . '.git');
+        Helpers::rmdir($dir . DS . '.git');
 
-        $configPath    = $path . DS . 'project.yml';
+        $configPath    = $dir . DS . 'project.yml';
         $configContent = file_get_contents($configPath);
         $configContent = str_replace('__PLUGIN_NAME__', $name, $configContent);
         $configContent = str_replace('__NAMESPACE__', $namespace, $configContent);
@@ -54,20 +54,20 @@ class PluginCommand extends Command
 
         file_put_contents($configPath, Yaml::dump($config));
 
-        $plugin = file_get_contents($path . DS . 'plugin.php');
+        $plugin = file_get_contents($dir . DS . 'plugin.php');
         $plugin = str_replace('__PLUGIN_NAME__', $name, $plugin);
         $plugin = str_replace('__NAMESPACE__', $namespace, $plugin);
 
-        file_put_contents($path . DS . 'plugin.php', $plugin);
+        file_put_contents($dir . DS . 'plugin.php', $plugin);
 
-        $class = file_get_contents($path . DS . 'src/Commands/DummyCommand.php');
+        $class = file_get_contents($dir . DS . 'src/Commands/DummyCommand.php');
         $class = str_replace('__PLUGIN_NAME__', $name, $class);
         $class = str_replace('__NAMESPACE__', $namespace, $class);
 
-        file_put_contents($path . DS . 'src/Commands/DummyCommand.php', $class);
+        file_put_contents($dir . DS . 'src/Commands/DummyCommand.php', $class);
 
         $this->info('Plugin successfully created!');
-        $this->warn($path);
+        $this->warn($dir);
         $this->output->writeln(
             'For easier installation in the future, make sure to submit your plugin here:'
             . PHP_EOL . 'https://cli.lazu.io/plugins/submit'
