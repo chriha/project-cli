@@ -39,7 +39,7 @@ class Application extends \Symfony\Component\Console\Application
     private $logger;
 
     /** @var array */
-    private $plugins;
+    private $plugins = [];
 
     /** @var array */
     public const LEVEL_VERBOSITY = [
@@ -292,15 +292,14 @@ class Application extends \Symfony\Component\Console\Application
     public function addPluginCommands() : void
     {
         if (empty($path = Helpers::pluginsPath()) || ! is_dir($path)) {
-            return;
+            mkdir($path);
         }
 
         if ( ! ($dirHandle = opendir($path))) {
             return;
         }
 
-        $this->plugins = [];
-        $commands      = null;
+        $this->plugins = $commands = [];
 
         // looping through ~/.project/plugins/...
         while (false !== ($namespace = readdir($dirHandle))) {
