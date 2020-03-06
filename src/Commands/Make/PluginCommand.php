@@ -4,7 +4,6 @@ namespace Chriha\ProjectCLI\Commands\Make;
 
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Helpers;
-use Chriha\ProjectCLI\Services\Docker;
 use Chriha\ProjectCLI\Services\Git;
 use Symfony\Component\Yaml\Yaml;
 
@@ -21,7 +20,7 @@ class PluginCommand extends Command
     protected $repository = 'https://github.com/chriha/project-cli-plugin.git';
 
 
-    public function handle(Git $git, Docker $docker) : void
+    public function handle(Git $git) : void
     {
         if ( ! $namespace = trim($this->ask('Specify a namespace'))) {
             $this->abort('Please specify a namespace');
