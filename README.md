@@ -36,7 +36,7 @@ For the plugin registry, more info, the documentation and some examples, check o
 
 ## Getting Started
 ### Prerequisites
-- PHP CLI 7.2 or newer (incl. extensions: json, intl, xml, curl)
+- PHP CLI 7.2 or newer (incl. extensions: zlib, json, intl, xml, curl)
 
 ### Install
 After you've installed all [dependencies](#prerequisites), get the latest release [here](https://github.com/chriha/project-cli/releases) and move it to `/usr/local/bin/project` or `/usr/bin/project`, depending on which paths are included in your `$PATH` variable. The `project` command will be available after you restart your terminal session.
