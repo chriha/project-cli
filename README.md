@@ -38,8 +38,28 @@ For the plugin registry, more info, the documentation and some examples, check o
 ### Prerequisites
 - PHP CLI 7.2 or newer (incl. extensions: zlib, json, intl, xml, curl)
 
-### Install
-After you've installed all [dependencies](#prerequisites), get the latest release [here](https://github.com/chriha/project-cli/releases) and move it to `/usr/local/bin/project` or `/usr/bin/project`, depending on which paths are included in your `$PATH` variable. The `project` command will be available after you restart your terminal session.
+#### Install dependencies via Homebrew
+```shell
+$ brew install php@7.2
+```
+
+#### Install dependencies on Ubuntu
+Make sure the available version meets the requirements:
+```shell
+$ apt show php
+```
+If not, add the following repository:
+```shell
+$ add-apt-repository -y ppa:ondrej/php && apt-get update
+```
+Install the PHP CLI and extensions:
+```shell
+$ apt install php-cli php-xml php-curl php-zip php-intl php-json
+```
+
+
+### Install ProjectCLI
+After you've installed all [dependencies](#prerequisites), get the latest **ProjectCLI** release [here](https://github.com/chriha/project-cli/releases/latest/download/project) and move it to `/usr/local/bin/project` or `/usr/bin/project`, depending on your system. The `project` command will be available after you restart your terminal session.
 
 ### Update
 To manually update **ProjectCLI**, just use the `project self-update` command.
