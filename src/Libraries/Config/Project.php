@@ -93,6 +93,7 @@ class Project
         $config = $this->config;
 
         $config['version'] = $this->version()->prefix();
+        $config['type']    = $this->config['type'] ?? null;
 
         ksort($config);
 
