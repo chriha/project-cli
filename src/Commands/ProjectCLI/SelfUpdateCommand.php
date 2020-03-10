@@ -57,11 +57,11 @@ class SelfUpdateCommand extends Command
         $latest  = new Version($release['tag_name']);
 
         if ( ! $latest->gt($current)) {
-            $this->info('You have the latest version: <options=bold>' . $current . '</>');
+            $this->info('You have the latest version: <options=bold>v' . $current . '</>');
 
             return;
         } else {
-            $this->warn('New version available: <options=bold>' . $latest . '</>');
+            $this->warn('New version available: <options=bold>v' . $latest . '</>');
         }
 
         if ($this->option('check')) {
@@ -95,7 +95,7 @@ class SelfUpdateCommand extends Command
             }
         );
 
-        $this->info('You are now using <options=bold>' . $latest . '</>');
+        $this->info('You are now using <options=bold>v' . $latest . '</>');
     }
 
 }
