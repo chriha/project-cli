@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Commands\Php;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Services\Docker;
 
 class ComposerCommand extends Command
@@ -37,7 +38,7 @@ class ComposerCommand extends Command
 
     public static function isActive() : bool
     {
-        return PROJECT_IS_INSIDE;
+        return PROJECT_IS_INSIDE && Helpers::isProjectType('php');
     }
 
 }

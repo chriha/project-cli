@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Commands\Php;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Services\Docker;
 
 class PhpCommand extends Command

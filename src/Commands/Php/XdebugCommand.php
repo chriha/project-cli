@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Commands\Php;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Helpers;
 use Chriha\ProjectCLI\Services\Docker;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -185,7 +186,7 @@ class XdebugCommand extends Command
 
     public static function isActive() : bool
     {
-        return PROJECT_IS_INSIDE;
+        return PROJECT_IS_INSIDE && Helpers::isProjectType('php');
     }
 
 }
