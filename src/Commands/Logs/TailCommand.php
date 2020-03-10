@@ -166,4 +166,9 @@ class TailCommand extends Command
         sleep(5);
     }
 
+    public static function isActive() : bool
+    {
+        return PROJECT_IS_INSIDE;
+    }
+
 }
