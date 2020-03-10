@@ -2,9 +2,10 @@
 
 namespace Chriha\ProjectCLI;
 
+use Chriha\ProjectCLI\Libraries\Config\Project;
+use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Carbon;
-use Illuminate\Container\Container;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 
@@ -261,6 +262,17 @@ class Helpers
     public static function logger() : LoggerInterface
     {
         return static::app('logger');
+    }
+
+    public static function isProjectType(string $type) : bool
+    {
+        $config = new Project();
+
+        if ( ! $config->hasConfig()) {
+            return false;
+        }
+
+        return $config->get('type') === $type;
     }
 
 }
