@@ -10,8 +10,7 @@ using ProjectCLI:
 - Reduce amount of necessary commands for each developer
 - The same environment, tools and versions for every developer
 - Easier and colored log-tailing
-- Write your own [commands](https://github.com/chriha/project-cli/wiki/Commands) and
- [plugins](https://github.com/chriha/project-cli/wiki/Plugins) to extend ProjectCLI
+- Write your own commands and plugins to extend ProjectCLI
 - Simple `/etc/hosts` and SSH config management
 
 For the plugin registry, more info, the documentation and some examples, check out [cli.lazu.io](https://cli.lazu.io).
