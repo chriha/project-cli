@@ -97,7 +97,7 @@ class Project
 
         ksort($config);
 
-        $parsed = Yaml::dump($config);
+        $parsed = Yaml::dump($config, 6, 2);
 
         file_put_contents(Helpers::projectPath($this->file), $parsed);
     }
