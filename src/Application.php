@@ -170,7 +170,7 @@ class Application extends \Symfony\Component\Console\Application
 
         if ( ! empty($this->missing)) {
             $output->writeln('');
-            $text   = 'The project requires plugins';
+            $text   = 'Required plugins';
             $length = Str::length(strip_tags($text)) + 24;
 
             $output->writeln('<comment>' . str_repeat('*', $length) . '</>');
