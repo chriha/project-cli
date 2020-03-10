@@ -96,6 +96,7 @@ class SelfUpdateCommand extends Command
         );
 
         $this->info('You are now using <options=bold>v' . $latest . '</>');
+        exit;
     }
 
 }
