@@ -20,6 +20,7 @@ class CreateCommand extends Command
 
     /** @var array */
     protected $types = [
+        'django' => 'https://github.com/ProjectCLI/environment-django.git',
         'python' => 'https://github.com/ProjectCLI/environment-python.git',
         'node'   => 'https://github.com/ProjectCLI/environment-node.git',
         'php'    => 'https://github.com/ProjectCLI/environment-php.git',
