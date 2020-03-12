@@ -140,7 +140,7 @@ class Git
 
     public static function fetch(?string $path = null) : bool
     {
-        $process = new Process(['git', 'fetch', '-a'], $path);
+        $process = new Process(['git', 'fetch', '-a', '-t'], $path);
 
         return 0 === $process->run();
     }
