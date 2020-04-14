@@ -15,7 +15,7 @@ class UpdateCommand extends Command
     protected static $defaultName = 'plugins:update';
 
     /** @var string */
-    protected $description = 'Update the specified plugin.';
+    protected $description = 'Update the specified plugin';
 
 
     public function configure() : void
