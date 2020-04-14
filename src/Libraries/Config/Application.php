@@ -25,7 +25,7 @@ class Application
         $home = $_SERVER['HOME'] . DS . '.project';
 
         if ( ! is_dir($home)) {
-            mkdir($home, 700, true);
+            mkdir($home, 0750, true);
         }
 
         define('PROJECT_PATHS_HOME', $home);
