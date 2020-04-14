@@ -39,7 +39,7 @@ class Connection
 
     public function getRsyncCommand() : string
     {
-        $proxy   = (new Config)->get($this->getHost(), 'ProxyCommand');
+        $proxy   = (new Config())->get($this->getHost(), 'ProxyCommand');
         $command = "rsync ";
 
         // add proxy command for jump hosts
