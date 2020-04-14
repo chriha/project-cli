@@ -1,6 +1,6 @@
 {
     "name": "chriha/project-cli",
-    "version": "v2.2.2",
+    "version": "v2.2.3",
     "license": "MIT",
     "prefer-stable": true,
     "minimum-stability": "stable",
