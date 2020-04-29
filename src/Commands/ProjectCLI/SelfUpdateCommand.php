@@ -4,7 +4,6 @@ namespace Chriha\ProjectCLI\Commands\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Helpers;
-use GuzzleHttp\Client;
 use PHLAK\SemVer\Version;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -21,7 +20,12 @@ class SelfUpdateCommand extends Command
     public function configure() : void
     {
         $this->addOption('check', null, InputOption::VALUE_NONE, 'Check for updates');
-        $this->addOption('rollback', null, InputOption::VALUE_NONE, 'Rollback to previous version');
+        $this->addOption(
+            'rollback',
+            null,
+            InputOption::VALUE_NONE,
+            'Rollback to previous version'
+        );
     }
 
     public function handle() : void
@@ -47,17 +51,14 @@ class SelfUpdateCommand extends Command
             return;
         }
 
-        $client  = new Client();
-        $result  = $client->request(
-            'GET',
-            'https://api.github.com/repos/chriha/project-cli/releases/latest'
-        );
-        $release = json_decode($result->getBody()->getContents(), true);
+        $release = Helpers::latestRelease();
         $current = new Version(Helpers::app('app')->getVersion());
         $latest  = new Version($release['tag_name']);
 
         if ( ! $latest->gt($current)) {
-            $this->info('You have the latest version: <options=bold>v' . $current . '</>');
+            $this->info(
+                'You have the latest version: <options=bold>v' . $current . '</>'
+            );
 
             return;
         } else {

@@ -3,10 +3,13 @@
 namespace Chriha\ProjectCLI;
 
 use Chriha\ProjectCLI\Libraries\Config\Project;
+use GuzzleHttp\Client;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Carbon;
+use PHLAK\SemVer\Version;
 use Psr\Log\LoggerInterface;
+use ReflectionException;
 use Symfony\Component\Process\Process;
 
 class Helpers
@@ -19,7 +22,13 @@ class Helpers
      */
     public static function app($name = null)
     {
-        return $name ? Container::getInstance()->make($name) : Container::getInstance();
+        try {
+            return $name ? Container::getInstance()->make($name) : Container::getInstance();
+        } catch (ReflectionException $e) {
+            static::logger()->debug($e);
+        }
+
+        return null;
     }
 
     /**
@@ -274,6 +283,30 @@ class Helpers
         }
 
         return $config->get('type') === $type;
+    }
+
+    public static function latestRelease() : ?Version
+    {
+        $client = new Client();
+        $result = $client->request(
+            'GET',
+            'https://api.github.com/repos/chriha/project-cli/releases/latest'
+        );
+
+        $version = json_decode(
+                $result->getBody()->getContents(),
+                true
+            )['tag_name'] ?? null;
+
+        if ( ! $version) {
+            static::app('output')->writeln(
+                '<fg=yellow>Unable to fetch latest release.</>'
+            );
+
+            return null;
+        }
+
+        return new Version($version);
     }
 
 }
