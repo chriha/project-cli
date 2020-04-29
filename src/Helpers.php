@@ -28,7 +28,8 @@ class Helpers
      */
     public static function projectPath(string $path = '') : ?string
     {
-        return ! PROJECT_PATHS_PROJECT ? null : PROJECT_PATHS_PROJECT . DS . ltrim($path, DS);
+        return ! PROJECT_PATHS_PROJECT ? null : PROJECT_PATHS_PROJECT
+            . DS . ltrim($path, DS);
     }
 
     /**

@@ -19,7 +19,7 @@ class DownCommand extends Command
 
     public function handle(Docker $docker) : void
     {
-        $this->spinner('Shutting down project', $docker->process(['down']));
+        $this->spinner('Shutting down services', $docker->process(['down']));
     }
 
     public static function isActive() : bool

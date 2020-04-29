@@ -29,13 +29,15 @@ class ReleaseCommand extends Command
     public function handle(Project $config, Git $git) : void
     {
         if ( ! $git->isClean()) {
-            $this->abort('You working directory is not clean!');
+            $this->abort('Working directory is not clean.');
         }
 
         $branch = $git->branch();
 
         if ( ! $git->inBranch('master')
-            && ! $this->confirm('You are not in master. Are you sure you want to proceed?')) {
+            && ! $this->confirm(
+                'You are not in master. Are you sure you want to proceed?'
+            )) {
             $this->abort('Aborted!');
         } elseif (empty($branch)) {
             $this->abort('Not in a branch. Did you initialize Git?');

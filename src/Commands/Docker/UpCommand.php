@@ -31,7 +31,7 @@ class UpCommand extends Command
 
         $process = $docker->process($this->getParameters(['up', '-d']));
 
-        $this->spinner('Starting project', $process);
+        $this->spinner('Starting services', $process);
     }
 
     public static function isActive() : bool

@@ -145,7 +145,11 @@ class Application extends \Symfony\Component\Console\Application
             $alternative = $alternatives[0];
 
             $style = new ProjectStyle($input, $output);
-            $style->block(sprintf("\nCommand \"%s\" is not defined.\n", $name), null, 'error');
+            $style->block(
+                sprintf("\nCommand \"%s\" is not defined.\n", $name),
+                null,
+                'error'
+            );
 
             if ( ! $style->confirm(
                 sprintf('Do you want to run "%s" instead? ', $alternative),
@@ -174,7 +178,9 @@ class Application extends \Symfony\Component\Console\Application
             $length = Str::length(strip_tags($text)) + 24;
 
             $output->writeln('<comment>' . str_repeat('*', $length) . '</>');
-            $output->writeln('<comment>' . '*           ' . $text . '           *' . '</>');
+            $output->writeln(
+                '<comment>' . '*           ' . $text . '           *' . '</>'
+            );
             $output->writeln('<comment>' . str_repeat('*', $length) . '</>');
 
             foreach ($this->missing as $plugin) {
@@ -303,7 +309,9 @@ class Application extends \Symfony\Component\Console\Application
 
         // looping through ~/.project/plugins/...
         while (false !== ($namespace = readdir($dirHandle))) {
-            if ( ! ($namespaceHandle = $this->subdirectoryHandle($path . DS . $namespace))) {
+            if ( ! ($namespaceHandle = $this->subdirectoryHandle(
+                $path . DS . $namespace
+            ))) {
                 continue;
             }
 
@@ -326,7 +334,9 @@ class Application extends \Symfony\Component\Console\Application
 
                     require_once $pluginFile;
 
-                    if (is_null($config['commands'] ?? null) || empty($config['commands'])) {
+                    if (is_null(
+                            $config['commands'] ?? null
+                        ) || empty($config['commands'])) {
                         continue;
                     }
 
