@@ -6,6 +6,7 @@ use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Libraries\Config\Project;
 use Chriha\ProjectCLI\Services\Git;
 use PHLAK\SemVer\Version;
+use Symfony\Component\Process\Process;
 
 class ReleaseCommand extends Command
 {
@@ -62,7 +63,9 @@ class ReleaseCommand extends Command
             $latest = new Version($gitTag);
         }
 
-        if ( ! $this->confirm('Is ' . $this->release->prefix() . ' the release version?')) {
+        if ( ! $this->confirm(
+            'Is ' . $this->release->prefix() . ' the release version?'
+        )) {
             $choices = [
                 'Bump patch (backwards compatible bug fixes)',
                 'Bump minor (new functionality in a backwards compatible manner)',
@@ -97,25 +100,29 @@ class ReleaseCommand extends Command
             $this->info('New release version is: ' . $this->release->prefix());
         }
 
-        if ( ! is_null($latest) && $latest->gte($this->release)) {
+        if ( ! is_null($latest) && $latest->gt($this->release)) {
             $this->abort('Latest tag is higher than release version!');
         }
 
-        //if ( $this->confirm( 'Would you like to see the commits in this release and add notes / a changelog?', false ) )
-        //{
-        //    $this->commits = $git->commitRange( $latest->prefix() );
+        //if ( ! is_null($latest) && $this->confirm(
+        //        'Would you like to see the commits in this release and add notes / a changelog?',
+        //        false
+        //    )) {
+        //    $this->commits = $git->commitRange($latest->prefix());
         //
-        //    foreach ( $this->commits as $hash => $commit )
-        //    {
-        //        $this->output->write( '<warning>' . $commit['hash'] . '</warning> ' . $commit['subject'] );
-        //        $this->commits[$hash]['note'] = $this->ask( 'Anything to add?' );
+        //    foreach ($this->commits as $hash => $commit) {
+        //        $this->output->write(
+        //            "<comment>" . $commit['hash'] . "</comment> " . $commit['subject']
+        //        );
+        //        $this->commits[$hash]['note'] = $this->ask('Anything to add?');
         //    }
         //
-        //    $this->comment( 'Release notes / changelog:' );
+        //    $this->comment('Release notes / changelog:');
         //
-        //    foreach ( $this->commits as $hash => $commit )
-        //    {
-        //        if ( empty( $commit['note'] ) ) continue;
+        //    foreach ($this->commits as $hash => $commit) {
+        //        if (empty($commit['note'])) {
+        //            continue;
+        //        }
         //    }
         //}
 
@@ -126,6 +133,19 @@ class ReleaseCommand extends Command
                 $git->tag($this->release);
             }
         );
+
+        if ($this->confirm(
+            'Would you like to push this tag? <comment>' . $this->release->prefix(
+            ) . '</comment>'
+        )) {
+            $this->task(
+                'Pushing tag',
+                function () use ($git)
+                {
+                    (new Process(['git push origin ' . $this->release->prefix()]))->run();
+                }
+            );
+        }
 
         if ( ! $this->getApplication()->has('deploy')) {
             return;
