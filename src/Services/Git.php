@@ -119,7 +119,7 @@ class Git
     {
         $process = new Process(['git tag ' . $version->prefix()]);
 
-        if ( ! $push) {
+        if ( ! $process->run() || ! $push) {
             return;
         }
 
