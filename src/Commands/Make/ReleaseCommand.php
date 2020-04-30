@@ -135,8 +135,8 @@ class ReleaseCommand extends Command
         );
 
         if ($this->confirm(
-            'Would you like to push this tag? <comment>' . $this->release->prefix(
-            ) . '</comment>'
+            'Would you like to push this tag? '
+            . '<comment>' . $this->release->prefix() . '</comment>'
         )) {
             $this->task(
                 'Pushing tag',
@@ -167,7 +167,7 @@ class ReleaseCommand extends Command
         $this->call(
             'deploy',
             [
-                'tag' => $this->release->prefix(),
+                'tag'         => $this->release->prefix(),
                 'environment' => $environment
             ]
         );
