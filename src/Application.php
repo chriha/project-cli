@@ -418,12 +418,13 @@ class Application extends \Symfony\Component\Console\Application
         $output = Helpers::app('output');
 
         $output->writeln('');
-        $output->writeln('<comment>Checking for new version ... </comment>');
+        $output->write('<comment>Checking for new version ... </comment>');
 
         $release = Helpers::latestRelease();
         $current = new Version(Helpers::app('app')->getVersion());
 
         if ($release && $release->gt($current)) {
+            $output->writeln('');
             $output->writeln('');
             $text   = 'New version available: ' . $release->prefix();
             $length = Str::length(strip_tags($text)) + 12;
@@ -437,6 +438,8 @@ class Application extends \Symfony\Component\Console\Application
             }
 
             $output->writeln('');
+        } else {
+            $output->writeln("<fg=green>done</>");
         }
 
         Helpers::app('config')->set('version_checked_at', Carbon::now()->format('c'));
