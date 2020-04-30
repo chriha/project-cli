@@ -117,9 +117,10 @@ class Git
 
     public function tag(Version $version, bool $push = true) : void
     {
-        $process = new Process(['git tag ' . $version->prefix()]);
+        $process = new Process(['git', 'tag', $version->prefix()]);
+        $process->run();
 
-        if ( ! $process->run() || ! $push) {
+        if ( ! $process->isSuccessful() || ! $push) {
             return;
         }
 
