@@ -11,7 +11,7 @@ use Illuminate\Container\Container;
 
 Container::setInstance($container = new Container());
 
-$application = new Application('Project CLI', 'v2.2.5');
+$application = new Application('Project CLI', 'v2.2.6');
 $application->configureApp();
 $application->addCommands(require __DIR__ . '/../src/Config/commands.php');
 $application->addProjectCommands();
