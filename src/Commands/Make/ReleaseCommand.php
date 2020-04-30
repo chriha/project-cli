@@ -130,7 +130,7 @@ class ReleaseCommand extends Command
             'Creating tag',
             function () use ($git)
             {
-                $git->tag($this->release);
+                $git->tag($this->release, false);
             }
         );
 
