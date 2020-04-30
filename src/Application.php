@@ -81,9 +81,15 @@ class Application extends \Symfony\Component\Console\Application
 
     public function doRun(InputInterface $input, OutputInterface $output)
     {
-        $this->logger = new ConsoleLogger($output, static::LEVEL_VERBOSITY, static::LEVEL_FORMAT);
+        $this->logger = new ConsoleLogger(
+            $output,
+            static::LEVEL_VERBOSITY,
+            static::LEVEL_FORMAT
+        );
 
         Helpers::app()->instance('logger', $this->logger);
+        Helpers::app()->instance('input', $input);
+        Helpers::app()->instance('output', new ProjectStyle($input, $output));
 
         if (true === $input->hasParameterOption(['--version', '-V'], true)) {
             $output->writeln($this->getLongVersion());
