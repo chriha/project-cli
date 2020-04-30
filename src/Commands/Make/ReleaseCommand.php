@@ -142,7 +142,7 @@ class ReleaseCommand extends Command
                 'Pushing tag',
                 function () use ($git)
                 {
-                    (new Process(['git push origin ' . $this->release->prefix()]))->run();
+                    (new Process(['git', 'push', 'origin', $this->release->prefix()]))->run();
                 }
             );
         }
