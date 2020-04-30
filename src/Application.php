@@ -2,6 +2,7 @@
 
 namespace Chriha\ProjectCLI;
 
+use Carbon\Carbon;
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Console\Input\ArgvInput;
 use Chriha\ProjectCLI\Console\Output\ProjectStyle;
@@ -10,6 +11,7 @@ use Chriha\ProjectCLI\Libraries\Config\Project;
 use Chriha\ProjectCLI\Services\Plugins\Plugin;
 use Exception;
 use Illuminate\Support\Str;
+use PHLAK\SemVer\Version;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\ConsoleEvents;
@@ -195,6 +197,8 @@ class Application extends \Symfony\Component\Console\Application
 
             $output->writeln('');
         }
+
+        $this->checkForNewRelease();
 
         return $exitCode;
     }
@@ -395,6 +399,47 @@ class Application extends \Symfony\Component\Console\Application
 
             $this->missing[] = $name;
         }
+    }
+
+    protected function checkForNewRelease() : void
+    {
+        $checkedAt = Helpers::app('config')->get('version_checked_at');
+
+        if ( ! $checkedAt) {
+            $checkedAt = Carbon::now()->subDay()->format('c');
+        }
+
+        $checkedAt = Carbon::parse($checkedAt);
+
+        if ($checkedAt->diffInHours(Carbon::now()) < 24) {
+            return;
+        }
+
+        $output = Helpers::app('output');
+
+        $output->writeln('');
+        $output->writeln('<comment>Checking for new version ... </comment>');
+
+        $release = Helpers::latestRelease();
+        $current = new Version(Helpers::app('app')->getVersion());
+
+        if ($release && $release->gt($current)) {
+            $output->writeln('');
+            $text   = 'New version available: ' . $release->prefix();
+            $length = Str::length(strip_tags($text)) + 12;
+
+            $output->writeln('<fg=blue>' . str_repeat('*', $length) . '</>');
+            $output->writeln('<fg=blue>' . '*     ' . $text . '     *' . '</>');
+            $output->writeln('<fg=blue>' . str_repeat('*', $length) . '</>');
+
+            foreach ($this->missing as $plugin) {
+                $output->writeln('- ' . $plugin);
+            }
+
+            $output->writeln('');
+        }
+
+        Helpers::app('config')->set('version_checked_at', Carbon::now()->format('c'));
     }
 
     public function __destruct()
