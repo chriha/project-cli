@@ -4,6 +4,7 @@ namespace Chriha\ProjectCLI\Commands\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Helpers;
+use GuzzleHttp\Client;
 use PHLAK\SemVer\Version;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -51,7 +52,12 @@ class SelfUpdateCommand extends Command
             return;
         }
 
-        $release = Helpers::latestRelease();
+        $client  = new Client();
+        $result  = $client->request(
+            'GET',
+            'https://api.github.com/repos/chriha/project-cli/releases/latest'
+        );
+        $release = json_decode($result->getBody()->getContents(), true);
         $current = new Version(Helpers::app('app')->getVersion());
         $latest  = new Version($release['tag_name']);
 
