@@ -104,17 +104,6 @@ class Helpers
     }
 
     /**
-     * Display the date in "humanized" time-ago form.
-     *
-     * @param string $date
-     * @return string
-     */
-    public static function timeAgo($date)
-    {
-        return Carbon::parse($date)->diffForHumans();
-    }
-
-    /**
      * @param string $string
      * @return string
      */
