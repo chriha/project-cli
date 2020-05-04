@@ -6,7 +6,6 @@ use Chriha\ProjectCLI\Libraries\Config\Project;
 use GuzzleHttp\Client;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\BindingResolutionException;
-use Illuminate\Support\Carbon;
 use PHLAK\SemVer\Version;
 use Psr\Log\LoggerInterface;
 use ReflectionException;
@@ -23,7 +22,9 @@ class Helpers
     public static function app($name = null)
     {
         try {
-            return $name ? Container::getInstance()->make($name) : Container::getInstance();
+            return $name
+                ? Container::getInstance()->make($name)
+                : Container::getInstance();
         } catch (ReflectionException $e) {
             static::logger()->debug($e);
         }

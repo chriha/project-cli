@@ -2,7 +2,6 @@
 
 namespace Chriha\ProjectCLI;
 
-use Carbon\Carbon;
 use Chriha\ProjectCLI\Commands\Command;
 use Chriha\ProjectCLI\Console\Input\ArgvInput;
 use Chriha\ProjectCLI\Console\Output\ProjectStyle;
@@ -405,13 +404,12 @@ class Application extends \Symfony\Component\Console\Application
     {
         $checkedAt = Helpers::app('config')->get('version_checked_at');
 
-        if ( ! $checkedAt) {
-            $checkedAt = Carbon::now()->subDay()->format('c');
+        if ( ! $checkedAt || ! is_int($checkedAt)) {
+            $checkedAt = time() - 86400;
         }
 
-        $checkedAt = Carbon::parse($checkedAt);
-
-        if ($checkedAt->diffInHours(Carbon::now()) < 24) {
+        // was last check more than 24hrs ago
+        if ((time() - $checkedAt) < 86400) {
             return;
         }
 
@@ -442,7 +440,7 @@ class Application extends \Symfony\Component\Console\Application
             $output->writeln("<fg=green>done</>");
         }
 
-        Helpers::app('config')->set('version_checked_at', Carbon::now()->format('c'));
+        Helpers::app('config')->set('version_checked_at', time());
     }
 
     public function __destruct()
