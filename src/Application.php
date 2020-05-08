@@ -92,7 +92,8 @@ class Application extends \Symfony\Component\Console\Application
         Helpers::app()->instance('input', $input);
         Helpers::app()->instance('output', new ProjectStyle($input, $output));
 
-        if (true === $input->hasParameterOption(['--version', '-V'], true)) {
+        if (true === $input->hasParameterOption(['--version', '-V'], true)
+            && count($_SERVER['argv']) === 2) {
             $output->writeln($this->getLongVersion());
 
             return 0;
