@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Commands\ProjectCLI;
 
 use Chriha\ProjectCLI\Commands\Command;
+use Chriha\ProjectCLI\Helpers;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Process\Process;
@@ -39,6 +40,11 @@ class CloneCommand extends Command
 
         $repository = $this->argument('repository');
         $directory  = $this->argument('directory') ?? pathinfo($repository, PATHINFO_FILENAME);
+
+        if (substr($repository, 0, 4) === 'git@' && !Helpers::isKnownHost($repository)) {
+            $this->error('Please verify this host first.');
+            $this->line('<fg=yellow>You can do this via:</> ssh HOST_TO_VERIFY');
+        }
 
         $this->spinner(
             'Cloning repository',
