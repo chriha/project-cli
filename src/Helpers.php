@@ -299,4 +299,14 @@ class Helpers
         return new Version($version);
     }
 
+    public static function isKnownHost(string $url) : bool
+    {
+        $url  = preg_replace('/^git@(.*):(.*)/', 'https://$1/$2', $url);
+        $host = parse_url($url)['host'] ?? null;
+
+        exec("ssh-keygen -F {$host}", $output, $return);
+
+        return ! is_null($host) && $return === 0;
+    }
+
 }
