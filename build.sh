@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-#if [ ! -z "$(git status --porcelain)" ]; then
-#    printf "You have uncommitted changes\n"
-#    exit
-#fi
+if [ ! -z "$(git status --porcelain)" ]; then
+    printf "You have uncommitted changes\n"
+    exit
+fi
 
 CURRENT=$(git describe --tags `git rev-list --tags --max-count=1`)
 
