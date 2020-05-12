@@ -69,7 +69,7 @@ class Application
     private function loadConfig()
     {
         $path          = Helpers::home($this->file);
-        $this->default = require_once __DIR__ . '/../../Config/default.php';
+        $this->default = require __DIR__ . '/../../Config/default.php';
 
         if ( ! $path || ! is_file($path)) {
             $this->config = $this->default;
