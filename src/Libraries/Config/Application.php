@@ -29,7 +29,9 @@ class Application
             mkdir($home, 0750, true);
         }
 
-        define('PROJECT_PATHS_HOME', $home);
+        if ( ! defined('PROJECT_PATHS_HOME')) {
+            define('PROJECT_PATHS_HOME', $home);
+        }
 
         $this->loadConfig();
 
