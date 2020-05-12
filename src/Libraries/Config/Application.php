@@ -3,6 +3,7 @@
 namespace Chriha\ProjectCLI\Libraries\Config;
 
 use Chriha\ProjectCLI\Helpers;
+use Exception;
 use Illuminate\Support\Arr;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
@@ -11,13 +12,13 @@ class Application
 {
 
     /** @var array */
-    private $default;
-
-    /** @var array */
     protected $config;
 
     /** @var string */
     protected $file = 'config.yml';
+
+    /** @var bool */
+    protected $errored = false;
 
 
     public function __construct()
@@ -68,19 +69,23 @@ class Application
 
     private function loadConfig()
     {
-        $path          = Helpers::home($this->file);
-        $this->default = require __DIR__ . '/../../Config/default.php';
+        $path    = Helpers::home($this->file);
+        $default = require __DIR__ . '/../../Config/default.php';
 
-        if ( ! $path || ! is_file($path)) {
-            $this->config = $this->default;
-        } else {
-            try {
-                $this->config = Yaml::parse(file_get_contents($path));
-            } catch (ParseException $e) {
-                Helpers::abort("Unable to parse project config '{$this->file}'");
+        try {
+            if ( ! $path || ! is_file($path)) {
+                $this->config = $default;
+            } else {
+                try {
+                    $this->config = Yaml::parse(file_get_contents($path));
+                } catch (ParseException $e) {
+                    Helpers::abort("Unable to parse project config '{$this->file}'");
+                }
+
+                $this->config = array_merge($default, $this->config);
             }
-
-            $this->config = array_merge($this->default, $this->config);
+        } catch (Exception $e) {
+            $this->errored = true;
         }
     }
 
@@ -91,7 +96,7 @@ class Application
 
     public function save()
     {
-        if (empty($this->config)) {
+        if (empty($this->config) || $this->errored) {
             return;
         }
 
