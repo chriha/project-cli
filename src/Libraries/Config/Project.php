@@ -103,22 +103,17 @@ class Project
     public function version(Version $version = null) : Version
     {
         if ($version) {
-            $this->set('version', $version);
+            $this->set('version', $version)->save();
         }
 
         return ($version = $this->get('version'))
             ? new Version($version) : new Version();
     }
 
-    public function __destruct()
-    {
-        $this->save();
-    }
-
-    public function save()
+    public function save() : self
     {
         if (empty($this->config)) {
-            return;
+            return $this;
         }
 
         $config = $this->config;
@@ -131,6 +126,8 @@ class Project
         $parsed = Yaml::dump($config, 6, 2);
 
         file_put_contents(Helpers::projectPath($this->file), $parsed);
+
+        return $this;
     }
 
 }

@@ -122,24 +122,19 @@ class Application
         }
     }
 
-    public function __destruct()
-    {
-        $this->save();
-    }
-
-    public function save()
+    public function save() : self
     {
         if (empty($this->config) || $this->errored) {
-            return;
+            return $this;
         }
 
-        $config = $this->config;
+        ksort($this->config);
 
-        ksort($config);
-
-        $parsed = Yaml::dump($config);
+        $parsed = Yaml::dump($this->config, 6, 2);
 
         file_put_contents(Helpers::home($this->file), $parsed);
+
+        return $this;
     }
 
 }
