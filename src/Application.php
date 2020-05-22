@@ -441,7 +441,7 @@ class Application extends \Symfony\Component\Console\Application
             $output->writeln("<fg=green>done</>");
         }
 
-        Helpers::app('config')->set('version_checked_at', time());
+        Helpers::app('config')->set('version_checked_at', time())->save();
     }
 
     public function __destruct()
