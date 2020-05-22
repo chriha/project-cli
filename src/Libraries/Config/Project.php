@@ -19,6 +19,18 @@ class Project
 
 
     /**
+     * @return mixed
+     */
+    public function all()
+    {
+        if (empty($this->config)) {
+            $this->loadConfig();
+        }
+
+        return $this->config;
+    }
+
+    /**
      * @param string $path
      * @return mixed
      */
@@ -38,9 +50,28 @@ class Project
      */
     public function set(string $path, $value) : self
     {
-        $this->config = Arr::set($this->config, $path, $value);
+        if (empty($this->config)) {
+            $this->loadConfig();
+        }
 
-        return $this;
+        Arr::set($this->config, $path, $value);
+
+        return $this->save();
+    }
+
+    /**
+     * @param string $path
+     * @return Project
+     */
+    public function unset(string $path) : self
+    {
+        if (empty($this->config)) {
+            $this->loadConfig();
+        }
+
+        Arr::forget($this->config, $path);
+
+        return $this->save();
     }
 
     public function hasConfig() : bool

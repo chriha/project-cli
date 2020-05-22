@@ -45,6 +45,18 @@ class Application
     }
 
     /**
+     * @return mixed
+     */
+    public function all() : ?array
+    {
+        if (empty($this->config)) {
+            $this->loadConfig();
+        }
+
+        return $this->config;
+    }
+
+    /**
      * @param string $path
      * @return mixed
      */
@@ -64,9 +76,28 @@ class Application
      */
     public function set(string $path, $value) : self
     {
-        $this->config = Arr::set($this->config, $path, $value);
+        if (empty($this->config)) {
+            $this->loadConfig();
+        }
 
-        return $this;
+        Arr::set($this->config, $path, $value);
+
+        return $this->save();
+    }
+
+    /**
+     * @param string $path
+     * @return Application
+     */
+    public function unset(string $path) : self
+    {
+        if (empty($this->config)) {
+            $this->loadConfig();
+        }
+
+        Arr::forget($this->config, $path);
+
+        return $this->save();
     }
 
     private function loadConfig()
