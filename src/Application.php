@@ -34,6 +34,7 @@ class Application extends \Symfony\Component\Console\Application
 
     private $defaultCommand;
 
+    /** @var EventDispatcher */
     private $dispatcher;
 
     /** @var LoggerInterface */
@@ -207,7 +208,7 @@ class Application extends \Symfony\Component\Console\Application
     {
         Helpers::app()->instance('app', $this);
 
-        $this->dispatchErrorEvent();
+        $this->addEventListeners();
 
         $path      = trim(shell_exec('git rev-parse --show-toplevel 2>/dev/null'));
         $path      = (empty($path) && ! is_dir(getcwd() . DS . 'src')) ? null : $path;
@@ -223,28 +224,6 @@ class Application extends \Symfony\Component\Console\Application
             $dotEnv = new Dotenv();
             $dotEnv->loadEnv($envPath);
         }
-    }
-
-    protected function dispatchErrorEvent() : void
-    {
-        $dispatcher = new EventDispatcher();
-
-        $dispatcher->addListener(
-            ConsoleEvents::ERROR,
-            function (ConsoleErrorEvent $event)
-            {
-                $event->getOutput()->writeln(
-                    sprintf(
-                        'Oops, exception thrown while running command <info>%s</info>. If you think '
-                        . PHP_EOL . 'this is a problem with ProjectCLI, please feel free to create an issue at '
-                        . PHP_EOL . '<comment>https://github.com/chriha/project-cli/issues</comment>',
-                        $event->getCommand()->getName()
-                    )
-                );
-            }
-        );
-
-        $this->setDispatcher($dispatcher);
     }
 
     /**
@@ -469,6 +448,42 @@ class Application extends \Symfony\Component\Console\Application
         }
 
         return opendir($dir);
+    }
+
+    private function addEventListeners() : void
+    {
+        $dispatcher = new EventDispatcher();
+
+        //$dispatcher->addListener(
+        //    ConsoleEvents::COMMAND,
+        //    function (ConsoleCommandEvent $event)
+        //    {
+        //        $input   = $event->getInput();
+        //        $output  = $event->getOutput();
+        //        $command = $event->getCommand();
+        //        $output->writeln(
+        //            sprintf('Before running command <info>%s</info>', $command->getName())
+        //        );
+        //        $application = $command->getApplication();
+        //    }
+        //);
+
+        $dispatcher->addListener(
+            ConsoleEvents::ERROR,
+            function (ConsoleErrorEvent $event)
+            {
+                $event->getOutput()->writeln(
+                    sprintf(
+                        'Oops, exception thrown while running command <info>%s</info>. If you think '
+                        . PHP_EOL . 'this is a problem with ProjectCLI, please feel free to create an issue at '
+                        . PHP_EOL . '<comment>https://github.com/chriha/project-cli/issues</comment>',
+                        $event->getCommand()->getName()
+                    )
+                );
+            }
+        );
+
+        $this->setDispatcher($dispatcher);
     }
 
 }
