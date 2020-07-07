@@ -125,17 +125,7 @@ class XdebugCommand extends Command
             }
         );
 
-        $this->task(
-            'Restarting PHP FPM',
-            function () use ($docker)
-            {
-                $docker->exec(
-                    'web',
-                    ['service', "php{$this->version}-fpm", 'restart', '&>', '/dev/null']
-                )
-                    ->disableOutput()->run();
-            }
-        );
+        $this->restartPhp();
 
         $this->updateIni($docker);
     }
@@ -159,17 +149,7 @@ class XdebugCommand extends Command
             }
         );
 
-        $this->task(
-            'Restarting PHP FPM',
-            function () use ($docker)
-            {
-                $docker->exec(
-                    'web',
-                    ['service', "php{$this->version}-fpm", 'restart', '&>', '/dev/null']
-                )
-                    ->disableOutput()->run();
-            }
-        );
+        $this->restartPhp();
 
         $this->updateIni($docker);
     }
@@ -182,6 +162,11 @@ class XdebugCommand extends Command
     protected function updateIni(Docker $docker) : void
     {
         $this->ini = shell_exec($docker->compose() . ' ' . $docker->runExec() . ' php -i');
+    }
+
+    protected function restartPhp() : void
+    {
+        $this->call('docker:exec', ['web', 'service', "php{$this->version}-fpm", 'restart']);
     }
 
     public static function isActive() : bool
