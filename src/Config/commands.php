@@ -16,6 +16,7 @@ return [
     new \Chriha\ProjectCLI\Commands\Make\ReleaseCommand(),
     new \Chriha\ProjectCLI\Commands\Node\NodeCommand(),
     new \Chriha\ProjectCLI\Commands\Node\NpmCommand(),
+    new \Chriha\ProjectCLI\Commands\Php\CheckPackageSecurityCommand(),
     new \Chriha\ProjectCLI\Commands\Php\ComposerCommand(),
     new \Chriha\ProjectCLI\Commands\Php\PhpCommand(),
     new \Chriha\ProjectCLI\Commands\Php\TestCommand(),
