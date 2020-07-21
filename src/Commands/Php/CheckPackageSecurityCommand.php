@@ -7,6 +7,7 @@ use Chriha\ProjectCLI\Helpers;
 use Illuminate\Support\Str;
 use SensioLabs\Security\SecurityChecker;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 
 class CheckPackageSecurityCommand extends Command
 {
@@ -29,6 +30,8 @@ class CheckPackageSecurityCommand extends Command
             'Relative path to the composer.lock file',
             'src/composer.lock'
         );
+
+        $this->addOption('fix', null, InputOption::VALUE_NONE, 'Fix possible vulnerabilities');
     }
 
     public function handle(SecurityChecker $checker) : void
@@ -75,8 +78,14 @@ class CheckPackageSecurityCommand extends Command
             $this->comment(str_repeat('*', $length));
             $this->comment("*     {$string}     *");
             $this->comment(str_repeat('*', $length));
-            $this->output->newLine();
         }
+
+        if ($this->option('fix') && ! empty($alerts)) {
+            $this->warn('Fixing vulnerabilities ...');
+            $this->call('composer', array_merge(['update'], array_keys($alerts)));
+        }
+
+        $this->output->newLine();
     }
 
     public static function isActive() : bool
