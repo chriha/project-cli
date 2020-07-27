@@ -119,7 +119,7 @@ class Processor
         $delimiter = 'EOF-PROJECT-CLI';
 
         if ($this->connection->isLocal()) {
-            $process = new Process($script);
+            $process = new Process($script, null, null, null, null);
         } else {
             $process = new Process(
                 $this->connection->getSshCommand() . " 'bash -se' << \\$delimiter" . PHP_EOL
@@ -127,7 +127,7 @@ class Processor
                 . 'set -e' . PHP_EOL
                 . (is_array($script) ? implode(" && ", $script) : $script) . PHP_EOL
                 . $delimiter
-            );
+            , null, null, null, null);
         }
 
         return $process->setTimeout(null);
