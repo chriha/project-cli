@@ -6,6 +6,7 @@ return [
     new \Chriha\ProjectCLI\Commands\Docker\ExecCommand(),
     new \Chriha\ProjectCLI\Commands\Docker\LogsCommand(),
     new \Chriha\ProjectCLI\Commands\Docker\RestartCommand(),
+    new \Chriha\ProjectCLI\Commands\Docker\ShellCommand(),
     new \Chriha\ProjectCLI\Commands\Docker\StatusCommand(),
     new \Chriha\ProjectCLI\Commands\Docker\TopCommand(),
     new \Chriha\ProjectCLI\Commands\Docker\UpCommand(),
