@@ -83,7 +83,7 @@ To manually update **ProjectCLI**, just use the `project self-update` command.
 
 ### Create a new project
 ```shell
-project create DIRECTORY [--type=php|node|python] [--repository=URL_TO_YOUR_REPOSITORY]
+project create NAME [--type=php|node|python] [--repository=URL_TO_YOUR_REPOSITORY]
 ```
 
 ### Clone and automatically install existing projects
@@ -145,7 +145,7 @@ project help docker:compose
 ```
 Using bash inside a container / service
 ```shell
-project docker:exec [DOCKER_SERVICE] bash
+project help shell
 ```
 
 
