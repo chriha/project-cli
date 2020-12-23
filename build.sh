@@ -1,26 +1,9 @@
 #!/usr/bin/env bash
 
-if [ ! -z "$(git status --porcelain)" ]; then
-    printf "You have uncommitted changes\n"
-    exit
-fi
+PREVIOUS=${1}
+VERSION=${2}
 
-CURRENT=$(git describe --tags `git rev-list --tags --max-count=1`)
-
-read -p "new version: "  NEW
-
-if [ -z "$NEW" ]; then
-    printf "specify a new version!\n"
-    exit
-fi
-
-sed -i '.bak' "s/$CURRENT/$NEW/" bin/project
-sed -i '.bak' "s/$CURRENT/$NEW/" composer.json
-
-rm -f composer.json.bak bin/project.bak
+sed -i "s/$PREVIOUS/$VERSION/" bin/project
+sed -i "s/$PREVIOUS/$VERSION/" composer.json
 
 box compile
-
-./project --version
-
-printf "commit your changes and create a new release!\n"

@@ -1,0 +1,14 @@
+branches: ["master"]
+
+plugins:
+  - "@semantic-release/commit-analyzer"
+  - "@semantic-release/release-notes-generator"
+  - - "@semantic-release/changelog"
+    - changelogFile: CHANGELOG.md
+  - - "@semantic-release/exec"
+    - prepareCmd: "./build.sh ${lastRelease.version} ${nextRelease.version}"
+  - - "@semantic-release/github"
+    - assets:
+        - path: "project"
+          label: "project binary"
+  - "@semantic-release/git"

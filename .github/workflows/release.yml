@@ -1,0 +1,32 @@
+name: Create new release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Setup Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Setup PHP with intl, zip, curl, json, xml
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.2'
+          extensions: intl, zip, curl, json, xml
+          tools: composer:v2
+      - name: Install Box
+        run: composer global require humbug/box:3.8
+      - name: Install Plugins
+        run: npm i @semantic-release/changelog @semantic-release/git @semantic-release/exec -D
+      - name: Create Release
+        run: npx semantic-release@^17.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

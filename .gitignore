@@ -6,3 +6,5 @@
 /.env
 project
 .constants.php
+package-lock.json
+/node_modules
