@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-PREVIOUS=${1}
-VERSION=${2}
+VERSION=${1}
 
-sed -i "s/$PREVIOUS/$VERSION/" bin/project
-sed -i "s/$PREVIOUS/$VERSION/" composer.json
+sed -i '.bak' "s/CURRENT_VERSION/$VERSION/" bin/project
+sed -i '.bak' "s/CURRENT_VERSION/$VERSION/" composer.json
 
 composer install
 box compile
