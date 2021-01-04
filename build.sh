@@ -6,4 +6,5 @@ VERSION=${2}
 sed -i "s/$PREVIOUS/$VERSION/" bin/project
 sed -i "s/$PREVIOUS/$VERSION/" composer.json
 
+composer install
 box compile
