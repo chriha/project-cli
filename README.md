@@ -1,4 +1,7 @@
 # Project CLI
+
+![Release build](https://github.com/chriha/project-cli/workflows/Release%20Build/badge.svg)
+
 **ProjectCLI** is a command line tool that translates complex tasks into simple, single commands.
 It also helps keeping a standard project structure across all projects. Here are some benefits of
 using ProjectCLI:
