@@ -111,8 +111,8 @@ ProjectCLI will run all commands inside the according Docker service.
 ```shell
 # for the web service
 project [artisan|composer|...]
-# for node / npm
-project [node|npm install|run|...]
+# for node / npm / npx
+project [node|npm|npx install|run|...]
 ```
 
 ### Show service status and resource statistics
