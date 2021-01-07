@@ -1,4 +1,7 @@
 # Project CLI
+
+![Release build](https://github.com/chriha/project-cli/workflows/Release%20Build/badge.svg)
+
 **ProjectCLI** is a command line tool that translates complex tasks into simple, single commands.
 It also helps keeping a standard project structure across all projects. Here are some benefits of
 using ProjectCLI:
@@ -108,8 +111,8 @@ ProjectCLI will run all commands inside the according Docker service.
 ```shell
 # for the web service
 project [artisan|composer|...]
-# for node / npm
-project [node|npm install|run|...]
+# for node / npm / npx
+project [node|npm|npx install|run|...]
 ```
 
 ### Show service status and resource statistics
