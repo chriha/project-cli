@@ -1,3 +1,10 @@
+## [2.7.3](https://github.com/chriha/project-cli/compare/v2.7.2...v2.7.3) (2021-01-22)
+
+
+### Bug Fixes
+
+* enable / allow PHP 8 ([4f5c80a](https://github.com/chriha/project-cli/commit/4f5c80a39180fb387e4ed1d67bcf4dcb002780a2))
+
 ## [2.7.2](https://github.com/chriha/project-cli/compare/v2.7.1...v2.7.2) (2021-01-04)
 
 
