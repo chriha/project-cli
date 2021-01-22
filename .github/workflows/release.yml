@@ -19,7 +19,7 @@ jobs:
       - name: Setup PHP with intl, zip, curl, json, xml
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.2'
+          php-version: '7.4'
           extensions: intl, zip, curl, json, xml
           tools: composer:v2
       - name: Install Box
