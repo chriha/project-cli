@@ -1,6 +1,6 @@
 {
     "name": "chriha/project-cli",
-    "version": "vCURRENT_VERSION",
+    "version": "v2.7.3",
     "license": "MIT",
     "prefer-stable": true,
     "minimum-stability": "stable",
@@ -14,7 +14,7 @@
         "bin/project"
     ],
     "require": {
-        "php": "^7.2|^8.0",
+        "php": "^7.2 || ^8.0",
         "ext-curl": "*",
         "ext-intl": "*",
         "ext-json": "*",
