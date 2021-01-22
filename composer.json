@@ -14,7 +14,7 @@
         "bin/project"
     ],
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^7.2",
         "ext-curl": "*",
         "ext-intl": "*",
         "ext-json": "*",
