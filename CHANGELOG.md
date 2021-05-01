@@ -1,3 +1,11 @@
+## [2.7.4](https://github.com/chriha/project-cli/compare/v2.7.3...v2.7.4) (2021-05-01)
+
+
+### Bug Fixes
+
+* don't use PHP 8 as required version ([ef9e691](https://github.com/chriha/project-cli/commit/ef9e69166fc89e713d27fed6912721df6259c3e4))
+* update composer packages ([f0ef7ca](https://github.com/chriha/project-cli/commit/f0ef7caf500919d84ed8198057df863a06663a93))
+
 ## [2.7.3](https://github.com/chriha/project-cli/compare/v2.7.2...v2.7.3) (2021-01-22)
 
 
