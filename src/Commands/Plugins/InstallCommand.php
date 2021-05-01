@@ -84,8 +84,6 @@ class InstallCommand extends Command
             Helpers::rmdir($path);
             $this->abort('Unable to find plugin version. Reverting ...');
         }
-
-        Registry::incrementInstallations($plugin);
     }
 
     protected function checkForRequiredPlugins(array $available) : array

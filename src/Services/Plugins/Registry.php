@@ -15,14 +15,14 @@ class Registry
 {
 
     /** @var string */
-    public static $url = 'https://cli.lazu.io/api/v1/plugins';
+    public static $url = 'https://raw.githubusercontent.com/ProjectCLI/registry/main/plugins.json';
 
     public static function get(string $name) : Plugin
     {
         $client = new Client();
 
         try {
-            $result = $client->request('GET', self::$url . '/' . urlencode($name));
+            $result = $client->request('GET', self::$url);
         } catch (ClientException $e) {
             if ($e->getCode() === 404) {
                 throw new NotFoundException();
@@ -37,11 +37,23 @@ class Registry
 
         $info = json_decode($result->getBody()->getContents(), true)['data'] ?? null;
 
-        if ( ! $info) {
+        if (! $info) {
             Helpers::abort(
                 'Unable to get plugin info. Please try again later.',
                 'Invalid response format.'
             );
+        }
+
+        foreach ($info as $item) {
+            if (strtolower($item['name']) !== strtolower($name)) {
+                continue;
+            }
+
+            $info = $item;
+        }
+
+        if (!$info) {
+            Helpers::abort('Unable to find requested plugin.');
         }
 
         return new Plugin($info);
@@ -49,11 +61,10 @@ class Registry
 
     public static function search(string $query) : ?Collection
     {
-        $query  = '?' . http_build_query(['q' => $query]);
         $client = new Client();
 
         try {
-            $result = $client->request('GET', self::$url . $query);
+            $result = $client->request('GET', self::$url);
         } catch (ConnectException | RequestException $e) {
             Helpers::abort('Unable to connect to registry. Please try again later.', $e);
             exit;
@@ -63,25 +74,15 @@ class Registry
         $json = json_decode($result->getBody()->getContents(), true);
 
         foreach ($json['data'] as $item) {
+            if (! str_contains($item['title'], $query) && ! str_contains($item['name'], $query)
+                && ! str_contains($item['short_description'] ?? '', $query)) {
+                continue;
+            }
+
             $list->put($item['id'], new Plugin($item));
         }
 
         return $list;
-    }
-
-    public static function incrementInstallations(Plugin $plugin) : bool
-    {
-        $client = new Client();
-
-        try {
-            $client->request('POST', $plugin->url_api . '/installation');
-        } catch (ConnectException | RequestException $e) {
-            Helpers::logger()->debug($e);
-
-            return false;
-        }
-
-        return true;
     }
 
 }
