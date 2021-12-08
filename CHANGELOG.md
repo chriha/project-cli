@@ -1,3 +1,10 @@
+## [2.7.5](https://github.com/chriha/project-cli/compare/v2.7.4...v2.7.5) (2021-12-08)
+
+
+### Bug Fixes
+
+* update PHP version and packages ([92168cf](https://github.com/chriha/project-cli/commit/92168cf41cbe06c129b939edd5524a9c97a8bc93))
+
 ## [2.7.4](https://github.com/chriha/project-cli/compare/v2.7.3...v2.7.4) (2021-05-01)
 
 
