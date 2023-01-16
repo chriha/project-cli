@@ -48,7 +48,6 @@ class UpdateCommand extends Command
             $this->abort('Unable to update plugin. Try again later ...');
         }
 
-        Registry::incrementInstallations($plugin);
         $this->info('Plugin successfully updated!');
     }
 

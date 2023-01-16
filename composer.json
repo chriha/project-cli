@@ -14,14 +14,14 @@
         "bin/project"
     ],
     "require": {
-        "php": "^7.2",
+        "php": "^7.3|^8.0",
         "ext-curl": "*",
         "ext-intl": "*",
         "ext-json": "*",
         "ext-xml": "*",
         "guzzlehttp/guzzle": "^6.3",
-        "illuminate/container": "^5.8",
-        "illuminate/support": "^5.8",
+        "illuminate/container": "^8.0",
+        "illuminate/support": "^8.0",
         "phlak/semver": "^2.0",
         "psr/log": "^1.1",
         "sensiolabs/security-checker": "^6.0",

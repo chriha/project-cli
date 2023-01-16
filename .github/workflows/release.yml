@@ -23,7 +23,7 @@ jobs:
           extensions: intl, zip, curl, json, xml
           tools: composer:v2
       - name: Install Box
-        run: composer global require humbug/box:^3.11
+        run: composer global require humbug/box:^3.8
       - name: Install Plugins
         run: npm i @semantic-release/changelog @semantic-release/git @semantic-release/exec -D
       - name: Create Release
